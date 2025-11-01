@@ -1,0 +1,54 @@
+.callback-container {
+  min-height: 100vh;
+  background: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.callback-content {
+  text-align: center;
+}
+
+.callback-error {
+  color: rgb(239, 68, 68);
+}
+
+.error-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.error-subtitle {
+  color: #94a3b8;
+}
+
+.callback-success {
+  color: white;
+}
+
+.spinner {
+  display: inline-block;
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid rgba(251, 191, 36, 0.3);
+  border-top-color: #fbbf24;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.success-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.success-subtitle {
+  color: #94a3b8;
+}

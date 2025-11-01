@@ -1,103 +1,116 @@
-import Image from "next/image";
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Settings, Gavel, MessageSquare, BarChart3, Scale } from 'lucide-react';
+import { useAuth } from './context/AuthContext';
+import './Home.css';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const { isAuthenticated, loading } = useAuth();
+  const router = useRouter();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      router.push('/dashboard');
+    }
+  }, [isAuthenticated, loading, router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0f172a] flex items-center justify-center">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return null;
+  }
+
+  return (
+    <div className="min-h-screen bg-[#0f172a] text-white">
+      <nav className="nav">
+        <div className="nav-left">
+          <img src="/logo.jpeg" alt="KAANOONGPT Logo" className="logo-image" />
+          <span className="logo-text">KAANOONGPT</span>
+        </div>
+        <div className="nav-right">
+          <Link href="/auth/login">
+            <button className="btn-login">Log in</button>
+          </Link>
+          <Link href="/auth/signup">
+            <button className="btn-signup">Sign up for free</button>
+          </Link>
+          <button className="btn-settings">
+            <Settings size={24} strokeWidth={2} />
+          </button>
+        </div>
+      </nav>
+
+      <main className="main-padding">
+        <div className="hero text-center">
+          <div className="mb-6 flex justify-center">
+            <div className="p-4 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full inline-block">
+              <Scale size={64} strokeWidth={2.5} className="text-white" />
+            </div>
+          </div>
+          <h1 className="hero-title-new">Welcome to Kaanoongpt</h1>
+          <p className="hero-subtitle max-w-3xl mx-auto">
+            Your AI Legal Companion — Ask Law, Watch Lawyers Argue, See the Verdict.
+          </p>
+        </div>
+
+        <div className="features-grid">
+          <div className="card card-white">
+            <div className="card-icon-bg bg-yellow-100">
+              <Gavel size={48} className="text-yellow-600" />
+            </div>
+            <h2 className="card-title">Courtroom Simulator</h2>
+            <p className="card-desc">
+              Watch AI lawyers debate your case and the judge deliver a verdict — just like a real courtroom
+            </p>
+            <button className="card-btn bg-yellow-500 text-black hover:bg-yellow-600">
+              Agent Battle Mode
+            </button>
+          </div>
+
+          <div className="card card-gold">
+            <div className="card-icon-bg card-icon-green bg-blue-100">
+              <MessageSquare size={48} className="text-blue-600" />
+            </div>
+            <h2 className="card-title">Ask the Law</h2>
+            <p className="card-desc card-desc-dark">
+              Chat with AI to get clear answers on Nepali laws in English or Nepali - anytime, anywhere
+            </p>
+            <button className="card-btn bg-white text-blue-600 hover:bg-gray-100">
+              Q&A Bot
+            </button>
+          </div>
+
+          <div className="card card-white">
+            <div className="card-icon-bg bg-green-100">
+              <BarChart3 size={48} className="text-green-600" />
+            </div>
+            <h2 className="card-title">Case Predictor</h2>
+            <p className="card-desc">
+              Upload case details and discover the probability of winning, backed by past precedents.
+            </p>
+            <button className="card-btn bg-gray-300 text-gray-700 cursor-not-allowed" disabled>
+              Coming Soon
+            </button>
+          </div>
+        </div>
+
+        <div className="footer">
+          <p>
+            By using this app, you agree to our{' '}
+            <Link href="/terms" className="footer-link">Terms</Link> of Service and{' '}
+            <Link href="/privacy" className="footer-link">Privacy Policy</Link>.
+          </p>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
