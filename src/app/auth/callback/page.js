@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
 import './callback.css';
 
-export default function GoogleCallback() {
+function CallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login } = useAuth();
@@ -55,7 +55,7 @@ export default function GoogleCallback() {
     };
 
     handleCallback();
-  }, []); // ✅ Run ONCE on mount only
+  }, [processing, searchParams, login, router]);
 
   return (
     <div className="callback-container">
@@ -74,5 +74,22 @@ export default function GoogleCallback() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function GoogleCallback() {
+  return (
+    <Suspense fallback={
+      <div className="callback-container">
+        <div className="callback-content">
+          <div className="callback-success">
+            <div className="spinner"></div>
+            <p className="success-title">Loading...</p>
+          </div>
+        </div>
+      </div>
+    }>
+      <CallbackContent />
+    </Suspense>
   );
 }
