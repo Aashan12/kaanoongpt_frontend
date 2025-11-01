@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { Suspense, useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Mail, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './page.css';
+import { apiRequest, API_URL } from '../../lib/api';
 
-export default function VerifyOTP() {
+function VerifyOTPContent() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -215,7 +216,7 @@ export default function VerifyOTP() {
           </div>
           <h1 className="otp-title">Verify Your Email</h1>
           <p className="otp-subtitle">
-            We've sent a 6-digit code to<br />
+            We&apos;ve sent a 6-digit code to<br />
             <strong>{email}</strong>
           </p>
         </div>
@@ -268,7 +269,7 @@ export default function VerifyOTP() {
         </div>
 
         <div className="help-text">
-          <p>Didn't receive the code? Check your spam folder or try resending.</p>
+          <p>Didn&apos;t receive the code? Check your spam folder or try resending.</p>
         </div>
       </div>
 
@@ -279,5 +280,24 @@ export default function VerifyOTP() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function VerifyOTP() {
+  return (
+    <Suspense fallback={
+      <div className="otp-container">
+        <div className="otp-card">
+          <div className="otp-header">
+            <div className="icon-container">
+              <Mail size={48} className="mail-icon" />
+            </div>
+            <h1 className="otp-title">Loading...</h1>
+          </div>
+        </div>
+      </div>
+    }>
+      <VerifyOTPContent />
+    </Suspense>
   );
 }
