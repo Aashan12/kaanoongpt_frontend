@@ -16,7 +16,7 @@ function VerifyOTPContent() {
   const [resendTimer, setResendTimer] = useState(60);
   const [canResend, setCanResend] = useState(false);
   const [email, setEmail] = useState('');
-  
+
   const inputRefs = useRef([]);
   const { login } = useAuth();
   const router = useRouter();
@@ -73,7 +73,7 @@ function VerifyOTPContent() {
   const handlePaste = (e) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text').slice(0, 6);
-    
+
     if (!/^\d+$/.test(pastedData)) return;
 
     const newOtp = [...otp];
@@ -89,7 +89,7 @@ function VerifyOTPContent() {
 
   const handleVerify = async () => {
     const otpCode = otp.join('');
-    
+
     if (otpCode.length !== 6) {
       setError('Please enter all 6 digits');
       return;
@@ -110,7 +110,7 @@ function VerifyOTPContent() {
       const signupData = JSON.parse(signupDataStr);
 
       // Send OTP verification request
-      const response = await fetch(`${API_URL}/auth/verify-otp`, {
+      const response = await fetch(`${API_URL}/api/kanoongpt/auth/verify-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -137,7 +137,7 @@ function VerifyOTPContent() {
       if (data.access_token) {
         login(data.access_token);
         console.log('✅ Logged in successfully!');
-        
+
         // Show success message briefly before redirect
         alert('Account verified successfully! Welcome to KAANOONGPT!');
         router.push('/dashboard');
@@ -167,7 +167,7 @@ function VerifyOTPContent() {
     try {
       console.log('📧 Resending OTP...');
 
-      const response = await fetch(`${API_URL}/auth/resend-otp`, {
+      const response = await fetch(`${API_URL}/api/kanoongpt/auth/resend-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -183,11 +183,11 @@ function VerifyOTPContent() {
 
       console.log('✅ OTP resent successfully!');
       alert('New OTP sent to your email!');
-      
+
       // Reset timer
       setResendTimer(60);
       setCanResend(false);
-      
+
       // Clear current OTP
       setOtp(['', '', '', '', '', '']);
       inputRefs.current[0]?.focus();
@@ -243,8 +243,8 @@ function VerifyOTPContent() {
           ))}
         </div>
 
-        <button 
-          onClick={handleVerify} 
+        <button
+          onClick={handleVerify}
           className="verify-btn"
           disabled={loading || otp.join('').length !== 6}
         >
@@ -257,8 +257,8 @@ function VerifyOTPContent() {
               Resend code in <strong>{resendTimer}s</strong>
             </p>
           ) : (
-            <button 
-              onClick={handleResend} 
+            <button
+              onClick={handleResend}
               className="resend-btn"
               disabled={resendLoading}
             >
