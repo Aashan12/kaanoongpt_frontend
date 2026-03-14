@@ -11,6 +11,9 @@ export default function Dashboard() {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
+  const [enabledFeatures, setEnabledFeatures] = useState(null); // null = loading, [] = loaded
+
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
   useEffect(() => {
     console.log('Dashboard useEffect - loading:', loading, 'isAuthenticated:', isAuthenticated, 'user:', user);
@@ -25,6 +28,27 @@ export default function Dashboard() {
       setShouldRender(true);
     }
   }, [isAuthenticated, loading, user, router]);
+
+  // Fetch enabled features for user's country
+  useEffect(() => {
+    if (!isAuthenticated || !user) return;
+    const token = localStorage.getItem('access_token');
+    if (!token) return;
+    fetch(`${API_URL}/api/courtroom/setup/enabled-features`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.json())
+      .then((d) => setEnabledFeatures(d.enabled_features || []))
+      .catch(() => setEnabledFeatures([
+        'courtroom_simulator', 'ask_the_law', 'case_predictor',
+        'legal_case_search', 'kanoon_analyze', 'drafting_assistant',
+      ]));
+  }, [isAuthenticated, user]);
+
+  const isFeatureEnabled = (key) => {
+    if (enabledFeatures === null) return true; // still loading, show all
+    return enabledFeatures.includes(key);
+  };
 
   console.log('Dashboard render - loading:', loading, 'shouldRender:', shouldRender, 'user:', user);
 
@@ -325,6 +349,7 @@ export default function Dashboard() {
           <h2 className="services-heading">Services</h2>
           <div className="services-grid">
             {/* Courtroom Simulator Card */}
+            {isFeatureEnabled('courtroom_simulator') && (
             <div className="service-card" onClick={() => handleFeatureClick('Courtroom Simulator')}>
               <div className="service-card-header">
                 <div className="service-icon service-icon-amber">
@@ -339,8 +364,10 @@ export default function Dashboard() {
                 Start Battle →
               </button>
             </div>
+            )}
 
             {/* Ask the Law Card */}
+            {isFeatureEnabled('ask_the_law') && (
             <div className="service-card" onClick={() => handleFeatureClick('Ask the Law')}>
               <div className="service-card-header">
                 <div className="service-icon service-icon-blue">
@@ -355,8 +382,10 @@ export default function Dashboard() {
                 Ask Now →
               </button>
             </div>
+            )}
 
             {/* Case Predictor Card */}
+            {isFeatureEnabled('case_predictor') && (
             <div className="service-card service-card-disabled">
               <div className="service-card-header">
                 <div className="service-icon service-icon-green">
@@ -371,8 +400,10 @@ export default function Dashboard() {
                 Coming Soon →
               </button>
             </div>
+            )}
 
             {/* Legal Case Search Card */}
+            {isFeatureEnabled('legal_case_search') && (
             <div className="service-card service-card-disabled">
               <div className="service-card-header">
                 <div className="service-icon service-icon-gray">
@@ -390,8 +421,10 @@ export default function Dashboard() {
                 Coming Soon →
               </button>
             </div>
+            )}
 
             {/* Kanoon Analyze Card */}
+            {isFeatureEnabled('kanoon_analyze') && (
             <div className="service-card service-card-disabled">
               <div className="service-card-header">
                 <div className="service-icon service-icon-gray">
@@ -411,8 +444,10 @@ export default function Dashboard() {
                 Coming Soon →
               </button>
             </div>
+            )}
 
             {/* Drafting Assistant Card */}
+            {isFeatureEnabled('drafting_assistant') && (
             <div className="service-card service-card-disabled">
               <div className="service-card-header">
                 <div className="service-icon service-icon-gray">
@@ -430,6 +465,7 @@ export default function Dashboard() {
                 Coming Soon →
               </button>
             </div>
+            )}
           </div>
         </div>
 

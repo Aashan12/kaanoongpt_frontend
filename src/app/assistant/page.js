@@ -1,9 +1,13 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
-import { Send, Menu, X, Plus, Trash2, Clock, MessageSquare, Home, User, FileText } from 'lucide-react';
+import {
+  Send, Menu, X, Plus, Trash2, Clock, MessageSquare, Home,
+  User, FileText, Scale, Sparkles, BookOpen, ArrowDown,
+  Zap, Search, Shield, ChevronDown
+} from 'lucide-react';
 import PDFViewer from '../components/PDFViewer';
 import './assistant.css';
 
@@ -14,186 +18,150 @@ export default function Assistant() {
   const router = useRouter();
   const [chatMessage, setChatMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [showSuggestions, setShowSuggestions] = useState(true);
-  const [chatMessages, setChatMessages] = useState([
-    { type: 'bot', text: '👋 Namaste! I\'m your AI Legal Assistant. Ask me anything about Nepali law!' }
-  ]);
+  const [chatMessages, setChatMessages] = useState([]);
   const [abortController, setAbortController] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState('Nepal');
   const [responseMode, setResponseMode] = useState('fast');
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
-  const [chatHistory, setChatHistory] = useState([
-    { id: 1, title: 'Criminal Penalties in Nepal', date: 'Today' }
-  ]);
+  const [chatHistory, setChatHistory] = useState([]);
   const [currentChatId, setCurrentChatId] = useState(null);
-  const messagesEndRef = useRef(null);
-  const settingsDropdownRef = useRef(null);
   const [pdfViewerOpen, setPdfViewerOpen] = useState(false);
   const [selectedCitation, setSelectedCitation] = useState(null);
-  const [currentModel, setCurrentModel] = useState('llama'); // Track current AI model
+  const [currentModel, setCurrentModel] = useState(null);
+  const [showScrollBtn, setShowScrollBtn] = useState(false);
+  const [showModelMenu, setShowModelMenu] = useState(false);
+  const [availableModels, setAvailableModels] = useState([]);
+  const messagesEndRef = useRef(null);
+  const chatContainerRef = useRef(null);
+  const inputRef = useRef(null);
+  const modelMenuRef = useRef(null);
 
-  // Load chat history from localStorage on mount
-  useEffect(() => {
-    const savedChats = localStorage.getItem('chatHistory');
-    if (savedChats) {
-      try {
-        setChatHistory(JSON.parse(savedChats));
-      } catch (e) {
-        console.error('Failed to load chat history:', e);
-      }
-    }
-  }, []);
+  const isEmptyChat = chatMessages.length === 0;
 
-  // Load current AI model on mount
+  // Close model menu on outside click
   useEffect(() => {
-    const fetchCurrentModel = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/model/current`);
-        if (response.ok) {
-          const data = await response.json();
-          setCurrentModel(data.provider);
-          console.log('Current model:', data.provider);
-        }
-      } catch (error) {
-        console.error('Failed to fetch current model:', error);
-      }
+    if (!showModelMenu) return;
+    const handler = (e) => {
+      if (modelMenuRef.current && !modelMenuRef.current.contains(e.target)) setShowModelMenu(false);
     };
-    fetchCurrentModel();
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [showModelMenu]);
+
+  // Load chat history from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('chatHistory');
+    if (saved) { try { setChatHistory(JSON.parse(saved)); } catch {} }
   }, []);
 
-  // Save chat history to localStorage whenever it changes
+  // Fetch admin-configured chat models
+  useEffect(() => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : '';
+    fetch(`${API_BASE_URL}/api/courtroom/setup/chat-models`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(r => r.json())
+      .then(d => {
+        const models = d.models || [];
+        setAvailableModels(models);
+        if (models.length > 0 && !currentModel) setCurrentModel(models[0]);
+      })
+      .catch(() => {});
+  }, []);
+
+  // Save chat history
   useEffect(() => {
     localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
   }, [chatHistory]);
 
-  // Load current chat messages from localStorage
+  // Load messages for current chat
   useEffect(() => {
     if (currentChatId) {
-      const savedMessages = localStorage.getItem(`chat_${currentChatId}`);
-      if (savedMessages) {
-        try {
-          setChatMessages(JSON.parse(savedMessages));
-        } catch (e) {
-          console.error('Failed to load chat messages:', e);
-        }
-      }
+      const saved = localStorage.getItem(`chat_${currentChatId}`);
+      if (saved) { try { setChatMessages(JSON.parse(saved)); } catch {} }
     }
   }, [currentChatId]);
 
-  // Save current chat messages to localStorage
+  // Save messages for current chat
   useEffect(() => {
-    if (currentChatId && chatMessages.length > 1) {
+    if (currentChatId && chatMessages.length > 0) {
       localStorage.setItem(`chat_${currentChatId}`, JSON.stringify(chatMessages));
     }
   }, [chatMessages, currentChatId]);
 
+  // Health check
   useEffect(() => {
-    const checkConnection = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/health`);
-        setIsConnected(response.ok);
-      } catch (error) {
-        setIsConnected(false);
-      }
+    const check = async () => {
+      try { const r = await fetch(`${API_BASE_URL}/health`); setIsConnected(r.ok); }
+      catch { setIsConnected(false); }
     };
-    checkConnection();
-    const interval = setInterval(checkConnection, 30000);
-    return () => clearInterval(interval);
+    check();
+    const i = setInterval(check, 30000);
+    return () => clearInterval(i);
   }, []);
 
+  // Auto-scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatMessages]);
 
-  // Close settings dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (settingsDropdownRef.current && !settingsDropdownRef.current.contains(event.target)) {
-        setSettingsMenuOpen(false);
-      }
-    };
-
-    if (settingsMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [settingsMenuOpen]);
+  // Show/hide scroll button
+  const handleScroll = useCallback(() => {
+    if (!chatContainerRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+    setShowScrollBtn(scrollHeight - scrollTop - clientHeight > 100);
+  }, []);
 
   if (loading) {
     return (
-      <div className="loading-screen">
-        <div className="loading-spinner"></div>
-        <div className="loading-text">Loading your legal companion...</div>
+      <div className="ka-loading">
+        <div className="ka-loading-spinner" />
+        <p>Loading...</p>
       </div>
     );
   }
+  if (!isAuthenticated) return null;
 
-  if (!isAuthenticated) {
-    return null;
-  }
+  const generateTitle = (msg) => msg.substring(0, 50) + (msg.length > 50 ? '...' : '');
 
-  const handleSendMessage = async () => {
-    if (!chatMessage.trim() || isTyping) return;
-    if (abortController) {
-      abortController.abort();
-      setAbortController(null);
-    }
-
-    const userMsg = chatMessage.trim();
-    console.log('=== SENDING MESSAGE ===');
-    console.log('Message:', userMsg);
-    console.log('Country:', selectedCountry);
-    console.log('Mode:', responseMode);
-    console.log('API URL:', `${API_BASE_URL}/api/rag/ultra-stream`);
+  const handleSendMessage = async (overrideMsg) => {
+    const userMsg = (overrideMsg || chatMessage).trim();
+    if (!userMsg || isTyping) return;
+    if (abortController) { abortController.abort(); setAbortController(null); }
 
     setChatMessage('');
+    if (inputRef.current) { inputRef.current.style.height = 'auto'; }
     setChatMessages(prev => [...prev, { type: 'user', text: userMsg }]);
     setIsTyping(true);
-    setShowSuggestions(false); // Hide suggestions when sending message
 
-    // Auto-generate title on first message
+    // Create or update chat in history
     let activeChatId = currentChatId;
     if (!currentChatId) {
-      const newChatId = Date.now();
-      const generatedTitle = generateChatTitle(userMsg);
-      const newChat = {
-        id: newChatId,
-        title: generatedTitle,
-        date: 'Today'
-      };
-      setChatHistory(prev => [newChat, ...prev]);
-      setCurrentChatId(newChatId);
-      activeChatId = newChatId;
-    } else if (currentChatId && chatMessages.length === 1) {
-      const generatedTitle = generateChatTitle(userMsg);
-      setChatHistory(prev => prev.map(chat =>
-        chat.id === currentChatId && chat.title === 'New Chat'
-          ? { ...chat, title: generatedTitle }
-          : chat
-      ));
+      const newId = Date.now();
+      setChatHistory(prev => [{ id: newId, title: generateTitle(userMsg), date: 'Today' }, ...prev]);
+      setCurrentChatId(newId);
+      activeChatId = newId;
     }
 
-    const newAbortController = new AbortController();
-    setAbortController(newAbortController);
-    const botMessageId = Date.now();
+    const ctrl = new AbortController();
+    setAbortController(ctrl);
+    const botId = Date.now();
 
     try {
-      const conversationHistory = chatMessages
-        .slice(-10)
-        .map(msg => ({ role: msg.type === 'user' ? 'user' : 'assistant', content: msg.text }));
+      const history = chatMessages.slice(-10).map(m => ({
+        role: m.type === 'user' ? 'user' : 'assistant', content: m.text
+      }));
 
       const response = await fetch(`${API_BASE_URL}/api/rag/ultra-stream`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          question: userMsg,
-          country: selectedCountry,
-          mode: responseMode,
-          conversation_history: conversationHistory
+          question: userMsg, country: selectedCountry,
+          mode: responseMode, conversation_history: history,
+          model_id: currentModel?.id || null
         }),
-        signal: newAbortController.signal,
+        signal: ctrl.signal,
       });
 
       if (!response.ok) throw new Error(`Stream failed: ${response.statusText}`);
@@ -201,190 +169,76 @@ export default function Assistant() {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let fullText = '';
-      let ttftReceived = false;
       let buffer = '';
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split('\n');
-
-        // Keep the last incomplete line in the buffer
         buffer = lines.pop() || '';
 
         for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            try {
-              const data = JSON.parse(line.slice(6));
-
-              if (data.type === 'status') {
-                // Show status message
-                setChatMessages(prev => {
-                  const exists = prev.find(m => m.id === botMessageId);
-                  if (!exists) {
-                    return [...prev, {
-                      id: botMessageId,
-                      type: 'bot',
-                      text: '',
-                      isStreaming: true,
-                      status: data.message,
-                      startTime: Date.now()
-                    }];
-                  }
-                  return prev.map(msg =>
-                    msg.id === botMessageId
-                      ? { ...msg, status: data.message }
-                      : msg
-                  );
-                });
-              } else if (data.type === 'ttft') {
-                // Time To First Token - show just the time value
-                setChatMessages(prev => prev.map(msg =>
-                  msg.id === botMessageId
-                    ? {
-                      ...msg,
-                      ttft: data.time,
-                      ttftMessage: `⏱️ ${data.time}s`,
-                      status: null
-                    }
-                    : msg
-                ));
-              } else if (data.type === 'token') {
-                // Stream individual token - accumulate text
-                fullText += data.text;
-                setChatMessages(prev => prev.map(msg =>
-                  msg.id === botMessageId
-                    ? {
-                      ...msg,
-                      text: fullText,
-                      status: null,
-                      isStreaming: true
-                    }
-                    : msg
-                ));
-              } else if (data.type === 'sources') {
-                // Store sources
-                setChatMessages(prev => prev.map(msg =>
-                  msg.id === botMessageId
-                    ? { ...msg, sources: data.sources }
-                    : msg
-                ));
-              } else if (data.type === 'complete') {
-                // Stream complete - finalize message
-                setIsTyping(false);
-                setChatMessages(prev => prev.map(msg =>
-                  msg.id === botMessageId
-                    ? {
-                      ...msg,
-                      text: fullText || data.text,
-                      isStreaming: false,
-                      status: null,
-                      responseTime: data.response_time
-                    }
-                    : msg
-                ));
-                setAbortController(null);
-              } else if (data.type === 'error') {
-                throw new Error(data.message);
-              }
-            } catch (e) {
-              console.warn('Parse error:', e);
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const data = JSON.parse(line.slice(6));
+            if (data.type === 'status') {
+              setChatMessages(prev => {
+                const exists = prev.find(m => m.id === botId);
+                if (!exists) return [...prev, { id: botId, type: 'bot', text: '', isStreaming: true, status: data.message }];
+                return prev.map(m => m.id === botId ? { ...m, status: data.message } : m);
+              });
+            } else if (data.type === 'token') {
+              fullText += data.text;
+              setChatMessages(prev => prev.map(m =>
+                m.id === botId ? { ...m, text: fullText, status: null, isStreaming: true } : m
+              ));
+            } else if (data.type === 'sources') {
+              setChatMessages(prev => prev.map(m =>
+                m.id === botId ? { ...m, sources: data.sources } : m
+              ));
+            } else if (data.type === 'complete') {
+              setIsTyping(false);
+              setChatMessages(prev => prev.map(m =>
+                m.id === botId ? { ...m, text: fullText || data.text, isStreaming: false, status: null, responseTime: data.response_time } : m
+              ));
+              setAbortController(null);
+            } else if (data.type === 'error') {
+              throw new Error(data.message);
             }
-          }
-        }
-      }
-
-      // Process any remaining buffer
-      if (buffer.trim().startsWith('data: ')) {
-        try {
-          const data = JSON.parse(buffer.slice(6));
-          if (data.type === 'complete') {
-            setIsTyping(false);
-            setChatMessages(prev => prev.map(msg =>
-              msg.id === botMessageId
-                ? {
-                  ...msg,
-                  text: fullText || data.text,
-                  isStreaming: false,
-                  status: null,
-                  responseTime: data.response_time
-                }
-                : msg
-            ));
-            setAbortController(null);
-          }
-        } catch (e) {
-          console.warn('Final buffer parse error:', e);
+          } catch (e) { if (e.message?.includes('Stream failed')) throw e; }
         }
       }
     } catch (error) {
-      console.error('=== STREAMING ERROR ===');
-      console.error('Error:', error);
-      console.error('Stack:', error.stack);
-
       if (error.name !== 'AbortError') {
         setIsTyping(false);
-        setChatMessages(prev => prev.map(msg =>
-          msg.id === botMessageId
-            ? {
-              ...msg,
-              text: `❌ Error: ${error.message}. Please check the console for details and try again.`,
-              isStreaming: false,
-              status: null
-            }
-            : msg
-        ));
+        setChatMessages(prev => {
+          const exists = prev.find(m => m.id === botId);
+          const errMsg = { id: botId, type: 'bot', text: `Something went wrong: ${error.message}`, isStreaming: false, isError: true };
+          return exists ? prev.map(m => m.id === botId ? errMsg : m) : [...prev, errMsg];
+        });
       }
-    }
-  };
-
-  const handleInputChange = (e) => {
-    setChatMessage(e.target.value);
-
-    // Auto-resize textarea
-    e.target.style.height = 'auto';
-    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
-
-    // Hide suggestions when user starts typing
-    if (e.target.value.trim() && showSuggestions) {
-      setShowSuggestions(false);
     }
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); }
+  };
+
+  const handleInputChange = (e) => {
+    setChatMessage(e.target.value);
+    e.target.style.height = 'auto';
+    e.target.style.height = Math.min(e.target.scrollHeight, 150) + 'px';
   };
 
   const handleNewChat = () => {
-    const newChatId = Date.now();
-    const initialMessages = [{ type: 'bot', text: '👋 Namaste! I\'m your AI Legal Assistant. Ask me anything about Nepali law!' }];
-
-    // Create new chat session
-    const newChat = {
-      id: newChatId,
-      title: 'New Chat',
-      date: 'Today',
-      messages: initialMessages
-    };
-
-    setChatHistory(prev => [newChat, ...prev]);
-    setChatMessages(initialMessages);
-    setCurrentChatId(newChatId);
+    setChatMessages([]);
+    setCurrentChatId(null);
     setChatMessage('');
   };
 
-  const generateChatTitle = (message) => {
-    // Generate title from first user message (first 50 chars)
-    return message.substring(0, 50) + (message.length > 50 ? '...' : '');
-  };
-
   const handleDeleteChat = (id) => {
-    setChatHistory(prev => prev.filter(chat => chat.id !== id));
+    setChatHistory(prev => prev.filter(c => c.id !== id));
     localStorage.removeItem(`chat_${id}`);
     if (currentChatId === id) handleNewChat();
   };
@@ -394,338 +248,252 @@ export default function Assistant() {
     setSidebarOpen(false);
   };
 
-  const legalSystems = [
-    { code: 'Nepal', name: 'Nepal Law', flag: '🇳🇵' },
-    { code: 'USA', name: 'US Federal Law', flag: '🇺🇸', disabled: true }
+  const suggestions = [
+    { icon: <Scale size={18} />, text: 'What are the penalties for theft in Nepal?', label: 'Criminal Law' },
+    { icon: <Shield size={18} />, text: 'What are my fundamental rights under Nepal Constitution?', label: 'Constitutional' },
+    { icon: <BookOpen size={18} />, text: 'How to register a business in Nepal?', label: 'Business Law' },
+    { icon: <User size={18} />, text: 'What are employee rights under Nepal Labour Act?', label: 'Labour Law' },
   ];
 
-  const responseModes = [
-    { id: 'lightning', name: 'Lightning', icon: '⚡', description: 'Quick' },
-    { id: 'fast', name: 'Fast', icon: '🚀', description: 'Balanced' },
-    { id: 'complete', name: 'Complete', icon: '🔍', description: 'Detailed' }
-  ];
+  // --- Render helpers ---
+  const renderMessage = (msg, idx) => {
+    const isUser = msg.type === 'user';
+    return (
+      <div key={msg.id || idx} className={`ka-msg ${isUser ? 'ka-msg-user' : 'ka-msg-bot'} ${msg.isError ? 'ka-msg-error' : ''}`}>
+        <div className="ka-msg-row">
+          {!isUser && (
+            <div className="ka-avatar">
+              <img src="/logo.png" alt="AI" />
+            </div>
+          )}
+          <div className={`ka-bubble ${isUser ? 'ka-bubble-user' : 'ka-bubble-bot'}`}>
+            {msg.isStreaming && msg.status && (
+              <div className="ka-status">
+                <div className="ka-dots"><span /><span /><span /></div>
+                <span>{msg.status}</span>
+              </div>
+            )}
+            {msg.text && (
+              <div className="ka-text">
+                {msg.text}
+                {msg.isStreaming && <span className="ka-cursor">▊</span>}
+              </div>
+            )}
+            {msg.responseTime && (
+              <div className="ka-meta">⏱ {msg.responseTime}s</div>
+            )}
+            {msg.sources && msg.sources.length > 0 && (
+              <div className="ka-sources">
+                <div className="ka-sources-row">
+                  <button
+                    className="ka-source-chip"
+                    onClick={() => {
+                      setSelectedCitation({ ...msg.sources[0], url: msg.sources[0].file_url || msg.sources[0].url });
+                      setPdfViewerOpen(true);
+                    }}
+                    title={`${msg.sources[0].source} — Page ${msg.sources[0].page}`}
+                  >
+                    <FileText size={12} />
+                    <span>{msg.sources[0].article || msg.sources[0].source}</span>
+                    {msg.sources[0].page && <span className="ka-chip-page">p.{msg.sources[0].page}</span>}
+                  </button>
+                  {msg.sources.length > 1 && (
+                    <button
+                      className="ka-source-more"
+                      onClick={() => {
+                        setChatMessages(prev => prev.map(m =>
+                          m.id === msg.id ? { ...m, showAllSources: !m.showAllSources } : m
+                        ));
+                      }}
+                    >
+                      {msg.showAllSources ? 'Hide' : `+${msg.sources.length - 1} more`}
+                    </button>
+                  )}
+                </div>
+                {msg.showAllSources && (
+                  <div className="ka-sources-expanded">
+                    {msg.sources.slice(1).map((src, i) => (
+                      <button
+                        key={i}
+                        className="ka-source-chip"
+                        onClick={() => {
+                          setSelectedCitation({ ...src, url: src.file_url || src.url });
+                          setPdfViewerOpen(true);
+                        }}
+                        title={`${src.source} — Page ${src.page}`}
+                      >
+                        <FileText size={12} />
+                        <span>{src.article || src.source}</span>
+                        {src.page && <span className="ka-chip-page">p.{src.page}</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <div className="assistant-page">
-      <div className="bg-decoration">
-        <div className="floating-shape shape-1"></div>
-        <div className="floating-shape shape-2"></div>
-        <div className="floating-shape shape-3"></div>
-      </div>
-
+    <div className="ka-page">
       {/* Sidebar */}
-      <aside className={`assistant-sidebar ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
-        <div className="sidebar-header">
-          <h2 className="sidebar-title">KAANOONGPT</h2>
-          <button className="sidebar-close-btn" onClick={() => setSidebarOpen(false)} aria-label="Close sidebar">
-            <X size={20} />
+      <aside className={`ka-sidebar ${sidebarOpen ? 'open' : ''}`}>
+        <div className="ka-sidebar-top">
+          <div className="ka-sidebar-brand">
+            <Scale size={20} />
+            <span>KaanoonGPT</span>
+          </div>
+          <button className="ka-sidebar-close" onClick={() => setSidebarOpen(false)} aria-label="Close sidebar">
+            <X size={18} />
           </button>
         </div>
-        <button className="new-chat-btn" onClick={handleNewChat}>
-          <Plus size={18} />
+        <button className="ka-new-chat" onClick={handleNewChat}>
+          <Plus size={16} />
           <span>New Chat</span>
         </button>
-        <div className="chat-history">
-          {chatHistory.length > 0 ? (
-            chatHistory.map((chat) => (
-              <div key={chat.id} className={`chat-history-item ${currentChatId === chat.id ? 'active' : ''}`}>
-                <button className="chat-history-link" onClick={() => handleSelectChat(chat.id)} title={chat.title}>
-                  <MessageSquare size={16} />
-                  <span className="chat-title">{chat.title}</span>
-                </button>
-                <button className="chat-delete-btn" onClick={() => handleDeleteChat(chat.id)} title="Delete chat" aria-label="Delete chat">
-                  <Trash2 size={16} />
-                </button>
-              </div>
-            ))
-          ) : (
-            <div className="empty-history">
-              <Clock size={24} />
+        <div className="ka-history">
+          {chatHistory.length > 0 ? chatHistory.map(chat => (
+            <div key={chat.id} className={`ka-history-item ${currentChatId === chat.id ? 'active' : ''}`}>
+              <button className="ka-history-link" onClick={() => handleSelectChat(chat.id)} title={chat.title}>
+                <MessageSquare size={14} />
+                <span>{chat.title}</span>
+              </button>
+              <button className="ka-history-del" onClick={() => handleDeleteChat(chat.id)} aria-label="Delete">
+                <Trash2 size={14} />
+              </button>
+            </div>
+          )) : (
+            <div className="ka-history-empty">
+              <Clock size={20} />
               <p>No conversations yet</p>
             </div>
           )}
         </div>
-      </aside>
-
-      {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
-
-      {/* Header */}
-      <header className="assistant-header">
-        <div className="header-content">
-          <div className="header-left">
-            <button className="sidebar-toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)} title="Toggle sidebar" aria-label="Toggle sidebar">
-              <Menu size={20} />
-            </button>
-            <span className="header-logo-text">KaanoonGPT</span>
-          </div>
-
-          <div className="header-actions">
-            <button className="header-action-btn desktop-only" onClick={() => router.push('/dashboard')} title="Home">
-              <Home size={18} />
-              <span>Home</span>
-            </button>
-            <button className="header-action-btn desktop-only" title="Profile">
-              <User size={18} />
-              <span>Profile</span>
-            </button>
-            <div className="settings-dropdown-container" ref={settingsDropdownRef}>
-              <button
-                className="header-action-btn settings-btn"
-                onClick={() => setSettingsMenuOpen(!settingsMenuOpen)}
-                title="Settings"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="3"></circle>
-                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                </svg>
-                <span>Settings</span>
-              </button>
-              {settingsMenuOpen && (
-                <div className="settings-dropdown-menu">
-                  <button className="dropdown-item" onClick={() => { router.push('/dashboard'); setSettingsMenuOpen(false); }}>
-                    <Home size={18} />
-                    <span className="desktop-text">Home</span>
-                  </button>
-                  <button className="dropdown-item">
-                    <User size={18} />
-                    <span className="desktop-text">Profile</span>
-                  </button>
-                  <div className="dropdown-divider"></div>
-
-                  <div className="dropdown-section">
-                    <div className="dropdown-section-title">
-                      <span className="section-icon">🤖</span>
-                      <span className="desktop-text">AI Model</span>
-                    </div>
-                    <button
-                      className={`dropdown-item dropdown-option ${currentModel === 'llama' ? 'active' : ''}`}
-                      onClick={async () => {
-                        try {
-                          const response = await fetch(`${API_BASE_URL}/api/model/switch`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ provider: 'llama' })
-                          });
-                          if (response.ok) {
-                            setCurrentModel('llama');
-                            console.log('✅ Switched to Llama');
-                          }
-                        } catch (error) {
-                          console.error('Failed to switch model:', error);
-                        }
-                        setSettingsMenuOpen(false);
-                      }}
-                    >
-                      <span className="mode-icon">🦙</span>
-                      <span className="desktop-text option-name">Llama (Local)</span>
-                      {currentModel === 'llama' && <span className="checkmark">✓</span>}
-                    </button>
-                    <button
-                      className={`dropdown-item dropdown-option ${currentModel === 'openai' ? 'active' : ''}`}
-                      onClick={async () => {
-                        try {
-                          const response = await fetch(`${API_BASE_URL}/api/model/switch`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ provider: 'openai' })
-                          });
-                          if (response.ok) {
-                            setCurrentModel('openai');
-                            console.log('✅ Switched to OpenAI');
-                          } else {
-                            const error = await response.json();
-                            alert(`Failed: ${error.detail}`);
-                          }
-                        } catch (error) {
-                          console.error('Failed to switch model:', error);
-                          alert('Failed to switch model. Make sure backend is running.');
-                        }
-                        setSettingsMenuOpen(false);
-                      }}
-                    >
-                      <span className="mode-icon">☁️</span>
-                      <span className="desktop-text option-name">OpenAI GPT-4</span>
-                      {currentModel === 'openai' && <span className="checkmark">✓</span>}
-                    </button>
-                  </div>
-
-                  <div className="dropdown-divider"></div>
-
-                  <div className="dropdown-section">
-                    <div className="dropdown-section-title">
-                      <span className="section-icon">⚡</span>
-                      <span className="desktop-text">Response Time</span>
-                    </div>
-                    {responseModes.map((mode) => (
-                      <button
-                        key={mode.id}
-                        className={`dropdown-item dropdown-option ${responseMode === mode.id ? 'active' : ''}`}
-                        onClick={() => { setResponseMode(mode.id); setSettingsMenuOpen(false); }}
-                      >
-                        <span className="mode-icon">{mode.icon}</span>
-                        <span className="desktop-text option-name">{mode.name}</span>
-                        {responseMode === mode.id && <span className="checkmark">✓</span>}
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className="dropdown-divider"></div>
-
-                  <div className="dropdown-section">
-                    <div className="dropdown-section-title">
-                      <span className="section-icon">🏛️</span>
-                      <span className="desktop-text">Legal System</span>
-                    </div>
-                    {legalSystems.map((system) => (
-                      <button
-                        key={system.code}
-                        className={`dropdown-item dropdown-option ${selectedCountry === system.code ? 'active' : ''} ${system.disabled ? 'disabled' : ''}`}
-                        onClick={() => { if (!system.disabled) { setSelectedCountry(system.code); setSettingsMenuOpen(false); } }}
-                        disabled={system.disabled}
-                      >
-                        <span className="country-flag">{system.flag}</span>
-                        <span className="desktop-text option-name">{system.name}</span>
-                        {selectedCountry === system.code && <span className="checkmark">✓</span>}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Chat Area */}
-      <main className="assistant-main">
-        {/* Chat Header */}
-        <div className="chat-header">
-          <div className="chat-header-content">
-            <div className="chat-header-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-              </svg>
-            </div>
-            <span className="chat-header-text">Chat with Kanoon AI...</span>
-          </div>
-          <button className="chat-header-scroll-btn" onClick={() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })} title="Scroll to bottom">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="18 15 12 21 6 15"></polyline>
-            </svg>
+        <div className="ka-sidebar-footer">
+          <button className="ka-sidebar-nav" onClick={() => router.push('/dashboard')}>
+            <Home size={16} /><span>Home</span>
           </button>
         </div>
+      </aside>
+      {sidebarOpen && <div className="ka-overlay" onClick={() => setSidebarOpen(false)} />}
 
-        {/* Chat Messages */}
-        <div className="chat-messages">
-          {chatMessages.map((msg, idx) => (
-            <div key={msg.id || idx} className={`message-wrapper ${msg.type === 'user' ? 'message-user' : 'message-bot'} ${msg.isError ? 'message-error' : ''} message-appear`}>
-              {msg.type === 'bot' && (
-                <div className="message-avatar avatar-bot">
-                  <img src="/logo.png" alt="AI" className="avatar-logo" />
+      {/* Main */}
+      <div className="ka-main">
+        {/* Top bar */}
+        <header className="ka-topbar">
+          <div className="ka-topbar-left">
+            <button className="ka-menu-btn" onClick={() => setSidebarOpen(true)} aria-label="Open sidebar">
+              <Menu size={20} />
+            </button>
+            <span className="ka-topbar-title">KaanoonGPT</span>
+          </div>
+          <div className="ka-topbar-right">
+            <div className="ka-chip">{selectedCountry === 'Nepal' ? '🇳🇵' : '🇺🇸'} {selectedCountry}</div>
+            <div className="ka-model-picker" ref={modelMenuRef}>
+              <button className="ka-chip ka-chip-model" onClick={() => setShowModelMenu(!showModelMenu)}>
+                {currentModel ? currentModel.name : 'No model'}
+                <ChevronDown size={12} />
+              </button>
+              {showModelMenu && availableModels.length > 0 && (
+                <div className="ka-model-menu">
+                  {availableModels.map(m => (
+                    <button
+                      key={m.id}
+                      className={`ka-model-opt ${currentModel?.id === m.id ? 'active' : ''}`}
+                      onClick={() => { setCurrentModel(m); setShowModelMenu(false); }}
+                    >
+                      <span className="ka-model-provider">{m.provider}</span>
+                      <span>{m.name}</span>
+                      {currentModel?.id === m.id && <span className="ka-check">✓</span>}
+                    </button>
+                  ))}
                 </div>
               )}
-              <div className={`message-bubble ${msg.type === 'user' ? 'bubble-user' : 'bubble-bot'}`}>
-                {msg.isStreaming && msg.status && (
-                  <div className="streaming-status">
-                    <div className="typing-dots">
-                      <span></span>
-                      <span></span>
-                      <span></span>
+            </div>
+            <div className={`ka-status-dot ${isConnected ? 'online' : 'offline'}`} title={isConnected ? 'Connected' : 'Disconnected'} />
+          </div>
+        </header>
+
+        {/* Chat area */}
+        <div className="ka-chat" ref={chatContainerRef} onScroll={handleScroll}>
+          {isEmptyChat ? (
+            <div className="ka-welcome">
+              <div className="ka-welcome-icon">
+                <img src="/logo.png" alt="KaanoonGPT" className="ka-welcome-logo" />
+              </div>
+              <h1 className="ka-welcome-title">Ask about Nepal Law</h1>
+              <p className="ka-welcome-sub">
+                Your AI legal assistant powered by Nepal's Constitution, Civil Code, Criminal Code, and Labour Act.
+              </p>
+              <div className="ka-suggestions">
+                {suggestions.map((s, i) => (
+                  <button
+                    key={i}
+                    className="ka-suggestion"
+                    onClick={() => handleSendMessage(s.text)}
+                    disabled={isTyping || !isConnected}
+                  >
+                    <div className="ka-suggestion-icon">{s.icon}</div>
+                    <div className="ka-suggestion-content">
+                      <span className="ka-suggestion-label">{s.label}</span>
+                      <span className="ka-suggestion-text">{s.text}</span>
                     </div>
-                    <span>{msg.status}</span>
-                  </div>
-                )}
-                <div className="message-text">
-                  {msg.text}
-                  {msg.isStreaming && msg.text && <span className="streaming-cursor">|</span>}
-                </div>
-                {msg.responseTime && (
-                  <div className="response-time-indicator">
-                    <span>⏱️ {msg.responseTime}s</span>
-                  </div>
-                )}
-                {msg.sources && msg.sources.length > 0 && (
-                  <div className="citations-section">
-                    <div className="citations-header">📚 Sources</div>
-                    <div className="citations-list">
-                      {msg.sources.map((citation, idx) => (
-                        <button
-                          key={idx}
-                          className="citation-item"
-                          onClick={() => {
-                            setSelectedCitation(citation);
-                            setPdfViewerOpen(true);
-                          }}
-                          title="Click to view PDF"
-                        >
-                          <FileText size={16} />
-                          <span className="citation-name">{citation.source}</span>
-                          <span className="citation-page">p. {citation.page}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                  </button>
+                ))}
               </div>
             </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Chat Input */}
-        <div className="chat-input-section">
-          <div className="input-wrapper">
-            <div className="textarea-container">
-              <button className="attach-btn" title="Attach file">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-                </svg>
-              </button>
-              <textarea
-                value={chatMessage}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-                placeholder={`Ask about ${selectedCountry} law...`}
-                className="chat-input"
-                disabled={!isConnected || isTyping}
-                rows={1}
-                style={{ resize: 'none', overflow: 'hidden' }}
-              />
-              {isTyping ? (
-                <button onClick={() => { if (abortController) { abortController.abort(); setAbortController(null); setIsTyping(false); } }} className="chat-stop-btn" title="Stop generating">
-                  ⏹
-                </button>
-              ) : (
-                <button onClick={handleSendMessage} className="chat-send-btn" disabled={!isConnected || !chatMessage.trim()} title="Send message">
-                  <Send size={20} />
-                </button>
-              )}
-            </div>
-          </div>
-          {/* Suggestions */}
-          {showSuggestions && (
-            <div className="chat-suggestions">
-              <button className="suggestion-chip" onClick={() => { setChatMessage('What are the penalties for theft in Nepal?'); }} disabled={isTyping || !isConnected}>
-                ⚖️ Criminal penalties
-              </button>
-              <button className="suggestion-chip" onClick={() => { setChatMessage('How to register a business in Nepal?'); }} disabled={isTyping || !isConnected}>
-                💼 Business registration
-              </button>
-              <button className="suggestion-chip" onClick={() => { setChatMessage('What are employee rights in Nepal?'); }} disabled={isTyping || !isConnected}>
-                👤 Employee rights
-              </button>
+          ) : (
+            <div className="ka-messages">
+              {chatMessages.map(renderMessage)}
+              <div ref={messagesEndRef} />
             </div>
           )}
         </div>
-      </main>
 
-      {/* PDF Viewer Modal */}
+        {/* Scroll to bottom */}
+        {showScrollBtn && (
+          <button className="ka-scroll-btn" onClick={() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })}>
+            <ArrowDown size={18} />
+          </button>
+        )}
+
+        {/* Input */}
+        <div className="ka-input-area">
+          <div className="ka-input-box">
+            <textarea
+              ref={inputRef}
+              value={chatMessage}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              placeholder="Ask about Nepal law..."
+              className="ka-input"
+              disabled={!isConnected || isTyping}
+              rows={1}
+            />
+            {isTyping ? (
+              <button className="ka-send-btn ka-stop-btn" onClick={() => { abortController?.abort(); setAbortController(null); setIsTyping(false); }} title="Stop">
+                <div className="ka-stop-icon" />
+              </button>
+            ) : (
+              <button className="ka-send-btn" onClick={() => handleSendMessage()} disabled={!isConnected || !chatMessage.trim()} title="Send">
+                <Send size={18} />
+              </button>
+            )}
+          </div>
+          <p className="ka-disclaimer">KaanoonGPT can make mistakes. Verify important legal information with a qualified lawyer.</p>
+        </div>
+      </div>
+
+      {/* PDF Viewer */}
       <PDFViewer
         isOpen={pdfViewerOpen}
         onClose={() => setPdfViewerOpen(false)}
-        pdfUrl={selectedCitation?.url}
-        citation={selectedCitation?.source}
-        highlightText={selectedCitation?.snippet}
+        pdfUrl={selectedCitation?.file_url || selectedCitation?.url}
+        citation={selectedCitation?.article ? `${selectedCitation.article}, ${selectedCitation.source}` : selectedCitation?.source}
+        highlightText={selectedCitation?.snippet || selectedCitation?.searchText}
         pageNumber={selectedCitation?.page}
       />
     </div>

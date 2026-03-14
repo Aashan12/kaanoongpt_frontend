@@ -1,251 +1,56 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Download, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, Download, BookOpen, X } from 'lucide-react';
 import './chat-trial.css';
 
-const JUDGE_NAMES = ['Judge Morrison', 'Judge Chen', 'Judge Williams', 'Judge Rodriguez', 'Judge Thompson'];
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const WS_BASE_URL = API_BASE_URL.replace('http', 'ws');
 
-function getRandomName(array) {
-  return array[Math.floor(Math.random() * array.length)];
+function getPhaseLabel(phase, round, numRounds) {
+  switch (phase) {
+    case 'research': return '📚 Research Phase';
+    case 'opening_statements': return '📜 Opening Statements';
+    case 'argument_rounds': return `⚔️ Round ${round} of ${numRounds}`;
+    case 'closing_statements': return '📝 Closing Statements';
+    case 'verdict': return '⚖️ Verdict';
+    case 'complete': return '✅ Trial Complete';
+    default: return '🔄 Starting...';
+  }
 }
 
-function StreamingText({ text, isStreaming }) {
-  const [displayedText, setDisplayedText] = useState('');
-
-  useEffect(() => {
-    if (!isStreaming) {
-      setDisplayedText(text);
-      return;
-    }
-
-    let index = 0;
-    const interval = setInterval(() => {
-      if (index < text.length) {
-        setDisplayedText(text.substring(0, index + 1));
-        index++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 15);
-
-    return () => clearInterval(interval);
-  }, [text, isStreaming]);
-
-  return <div className="chat-text">{displayedText}</div>;
+function getAgentColor(agent) {
+  switch (agent) {
+    case 'plaintiff': return '#3b82f6';
+    case 'defendant': return '#ef4444';
+    case 'judge': return '#f59e0b';
+    default: return '#94a3b8';
+  }
 }
 
-function ThinkingProcess({ analysis, speaker }) {
-  const [expanded, setExpanded] = useState(false);
-
-  if (!analysis) return null;
-
-  return (
-    <div className="thinking-process">
-      <button
-        className="thinking-toggle"
-        onClick={() => setExpanded(!expanded)}
-      >
-        <span className="thinking-icon">💭</span>
-        <span className="thinking-label">{speaker} is thinking...</span>
-        {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-      </button>
-
-      {expanded && (
-        <div className="thinking-content">
-          {analysis.case_analysis && (
-            <div className="thinking-section">
-              <h4>Case Analysis</h4>
-              <p>{analysis.case_analysis}</p>
-            </div>
-          )}
-          {analysis.precedent_research && (
-            <div className="thinking-section">
-              <h4>Precedent Research</h4>
-              <p>{analysis.precedent_research}</p>
-            </div>
-          )}
-          {analysis.legal_arguments && (
-            <div className="thinking-section">
-              <h4>Legal Arguments</h4>
-              {Array.isArray(analysis.legal_arguments) ? (
-                <ul>
-                  {analysis.legal_arguments.map((arg, idx) => (
-                    <li key={idx}>{arg}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p>{analysis.legal_arguments}</p>
-              )}
-            </div>
-          )}
-          {analysis.evidence_evaluation && (
-            <div className="thinking-section">
-              <h4>Evidence Evaluation</h4>
-              <p>{analysis.evidence_evaluation}</p>
-            </div>
-          )}
-          {analysis.strategy && (
-            <div className="thinking-section">
-              <h4>Strategy</h4>
-              <p>{analysis.strategy}</p>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
+function getAgentIcon(agent) {
+  switch (agent) {
+    case 'plaintiff': return '🔵';
+    case 'defendant': return '🔴';
+    case 'judge': return '⚖️';
+    default: return '📋';
+  }
 }
 
-function VerdictReport({ verdict, caseTitle, onClose }) {
-  const downloadReport = () => {
-    const reportText = `
-COURT VERDICT REPORT
-═══════════════════════════════════════════════════════════════
-
-CASE: ${caseTitle}
-JUDGE: ${verdict.judge}
-DATE: ${new Date().toLocaleDateString()}
-
-───────────────────────────────────────────────────────────────
-VERDICT
-───────────────────────────────────────────────────────────────
-
-Decision: ${verdict.verdict}
-Damages Awarded: ${verdict.damages}
-Confidence Score: ${(verdict.confidence * 100).toFixed(1)}%
-
-───────────────────────────────────────────────────────────────
-REASONING
-───────────────────────────────────────────────────────────────
-
-${verdict.reasoning}
-
-───────────────────────────────────────────────────────────────
-CITATIONS & PRECEDENTS
-───────────────────────────────────────────────────────────────
-
-${verdict.citations.map((cite, idx) => `${idx + 1}. ${cite.title} (${cite.category})`).join('\n')}
-
-───────────────────────────────────────────────────────────────
-ANALYSIS
-───────────────────────────────────────────────────────────────
-
-Plaintiff Strength: ${verdict.plaintiff_strength}%
-Defendant Strength: ${verdict.defendant_strength}%
-Evidence Quality: ${verdict.evidence_quality}%
-
-═══════════════════════════════════════════════════════════════
-    `;
-
-    const element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(reportText));
-    element.setAttribute('download', `verdict_${caseTitle.replace(/\s+/g, '_')}.txt`);
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-  };
-
-  return (
-    <div className="verdict-report-overlay">
-      <div className="verdict-report">
-        <button onClick={onClose} className="report-close">✕</button>
-
-        <div className="report-header">
-          <h2>COURT VERDICT REPORT</h2>
-          <p className="report-case">{caseTitle}</p>
-        </div>
-
-        <div className="report-section">
-          <h3>VERDICT</h3>
-          <div className="verdict-box">
-            <div className="verdict-item">
-              <span className="label">Decision:</span>
-              <span className="value">{verdict.verdict}</span>
-            </div>
-            <div className="verdict-item">
-              <span className="label">Damages:</span>
-              <span className="value">{verdict.damages}</span>
-            </div>
-            <div className="verdict-item">
-              <span className="label">Confidence Score:</span>
-              <span className="value confidence">{(verdict.confidence * 100).toFixed(1)}%</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="report-section">
-          <h3>REASONING</h3>
-          <p className="reasoning-text">{verdict.reasoning}</p>
-        </div>
-
-        <div className="report-section">
-          <h3>CITATIONS & PRECEDENTS</h3>
-          <div className="citations-list">
-            {verdict.citations.map((cite, idx) => (
-              <div key={idx} className="citation-item">
-                <span className="citation-number">[{idx + 1}]</span>
-                <div className="citation-content">
-                  <strong>{cite.title}</strong>
-                  <p>{cite.category}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="report-section">
-          <h3>ANALYSIS METRICS</h3>
-          <div className="metrics-grid">
-            <div className="metric">
-              <span className="metric-label">Plaintiff Strength</span>
-              <div className="metric-bar">
-                <div className="metric-fill" style={{ width: `${verdict.plaintiff_strength}%` }}></div>
-              </div>
-              <span className="metric-value">{verdict.plaintiff_strength}%</span>
-            </div>
-            <div className="metric">
-              <span className="metric-label">Defendant Strength</span>
-              <div className="metric-bar">
-                <div className="metric-fill" style={{ width: `${verdict.defendant_strength}%` }}></div>
-              </div>
-              <span className="metric-value">{verdict.defendant_strength}%</span>
-            </div>
-            <div className="metric">
-              <span className="metric-label">Evidence Quality</span>
-              <div className="metric-bar">
-                <div className="metric-fill" style={{ width: `${verdict.evidence_quality}%` }}></div>
-              </div>
-              <span className="metric-value">{verdict.evidence_quality}%</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="report-footer">
-          <button onClick={downloadReport} className="download-btn">
-            <Download size={18} />
-            Download Report
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default function ChatTrial({ trialData, onBack }) {
+export default function ChatTrial({ config, onBack }) {
   const [messages, setMessages] = useState([]);
-  const [streamingMessageId, setStreamingMessageId] = useState(null);
-  const [trialPhase, setTrialPhase] = useState('loading');
+  const [phase, setPhase] = useState('connecting');
   const [round, setRound] = useState(0);
-  const [verdictData, setVerdictData] = useState(null);
-  const [showReport, setShowReport] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [trialId, setTrialId] = useState(null);
+  const [isComplete, setIsComplete] = useState(false);
+  const [winner, setWinner] = useState('');
+  const [error, setError] = useState('');
+  const [citations, setCitations] = useState([]);
+  const [showCitations, setShowCitations] = useState(false);
+  const [lawsCount, setLawsCount] = useState(0);
+  const [casesCount, setCasesCount] = useState(0);
   const messagesEndRef = useRef(null);
-  const messageIdRef = useRef(0);
-  const trialStartedRef = useRef(false);
-
-  const judgeName = useRef(getRandomName(JUDGE_NAMES)).current;
+  const wsRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -253,332 +58,328 @@ export default function ChatTrial({ trialData, onBack }) {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, streamingMessageId]);
+  }, [messages]);
 
+  // Connect to WebSocket and run trial
   useEffect(() => {
-    if (trialStartedRef.current) return;
-    trialStartedRef.current = true;
+    let ws;
+    try {
+      ws = new WebSocket(`${WS_BASE_URL}/api/courtroom/ws/trial`);
+      wsRef.current = ws;
 
-    const runTrial = async () => {
-      try {
-        setTrialPhase('preparation');
-        await runPreparationPhase();
+      ws.onopen = () => {
+        setPhase('setup');
+        addSystemMessage('Connecting to courtroom...');
+        // Send trial config
+        ws.send(JSON.stringify(config));
+      };
 
-        setTrialPhase('trial');
-        await runTrialPhase();
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        handleTrialEvent(data);
+      };
 
-        setTrialPhase('verdict');
-        await runVerdictPhase();
-      } catch (error) {
-        console.error('Trial error:', error);
-        addMessage('System', 'error', `Error during trial: ${error.message}`);
+      ws.onerror = (err) => {
+        console.error('WebSocket error:', err);
+        setError('Connection error. Falling back to REST API...');
+        // Fallback to REST
+        runTrialREST();
+      };
+
+      ws.onclose = () => {
+        if (!isComplete) {
+          // Unexpected close — might need REST fallback
+        }
+      };
+    } catch (e) {
+      console.error('WebSocket failed:', e);
+      runTrialREST();
+    }
+
+    return () => {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.close();
       }
     };
-
-    runTrial();
   }, []);
 
-  const addMessage = (speaker, role, text, analysis = null) => {
-    const msgId = messageIdRef.current++;
+  const addSystemMessage = (text) => {
     setMessages(prev => [...prev, {
-      id: msgId,
-      speaker,
-      role,
-      text,
-      analysis,
+      id: Date.now() + Math.random(),
+      type: 'system',
+      content: text,
       timestamp: new Date(),
     }]);
-    return msgId;
   };
 
-  const addStreamingMessage = async (speaker, role, text, analysis = null) => {
-    const msgId = addMessage(speaker, role, text, analysis);
-    setStreamingMessageId(msgId);
-
-    await new Promise(resolve => setTimeout(resolve, text.length * 15 + 300));
-
-    setStreamingMessageId(null);
-    return msgId;
+  const addAgentMessage = (agent, content, eventPhase, eventRound) => {
+    setMessages(prev => [...prev, {
+      id: Date.now() + Math.random(),
+      type: 'agent',
+      agent,
+      content,
+      phase: eventPhase,
+      round: eventRound,
+      timestamp: new Date(),
+    }]);
   };
 
-  const runPreparationPhase = async () => {
-    await addStreamingMessage(
-      judgeName,
-      'judge',
-      `Good morning. We are here today to address the matter of ${trialData.case_title}. I am ${judgeName}, presiding over this case. Let me allow the counsels time to prepare their arguments.`
-    );
+  const handleTrialEvent = (event) => {
+    switch (event.type) {
+      case 'trial_started':
+        setTrialId(event.trial_id);
+        addSystemMessage(`Trial ${event.trial_id} initiated.`);
+        break;
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+      case 'phase_start':
+        setPhase(event.phase);
+        if (event.round) setRound(event.round);
+        addSystemMessage(event.content);
+        break;
 
-    const plaintiffAnalysis = trialData.plaintiff_analysis;
-    const plaintiffPrepMsg = addMessage('Plaintiff', 'plaintiff', 'Reviewing case documents and precedents...', plaintiffAnalysis);
-    setStreamingMessageId(plaintiffPrepMsg);
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setStreamingMessageId(null);
+      case 'research_complete':
+        setLawsCount(event.laws_count || 0);
+        setCasesCount(event.cases_count || 0);
+        addSystemMessage(event.content);
+        break;
 
-    setMessages(prev => prev.map(msg =>
-      msg.id === plaintiffPrepMsg ? {
-        ...msg,
-        text: 'Analyzing legal precedents and preparing opening statement...'
-      } : msg
-    ));
-    await new Promise(resolve => setTimeout(resolve, 2000));
+      case 'argument':
+        addAgentMessage(event.agent, event.content, event.phase, event.round);
+        break;
 
-    setMessages(prev => prev.map(msg =>
-      msg.id === plaintiffPrepMsg ? {
-        ...msg,
-        text: 'Ready to present opening statement.'
-      } : msg
-    ));
+      case 'evaluation':
+        addAgentMessage(event.agent, event.content, event.phase, event.round);
+        break;
 
-    await new Promise(resolve => setTimeout(resolve, 800));
+      case 'verdict':
+        setPhase('verdict');
+        setWinner(event.winner || '');
+        addAgentMessage('judge', event.content, 'verdict', 0);
+        break;
 
-    const defendantAnalysis = trialData.defendant_analysis;
-    const defendantPrepMsg = addMessage('Defendant', 'defendant', 'Reviewing case documents and precedents...', defendantAnalysis);
-    setStreamingMessageId(defendantPrepMsg);
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setStreamingMessageId(null);
+      case 'trial_complete':
+        setIsComplete(true);
+        setPhase('complete');
+        // Extract citations from state if available
+        if (event.state) {
+          const allCitations = [
+            ...(event.state.relevant_laws || []).map(l => ({ ...l, type: 'law' })),
+            ...(event.state.relevant_cases || []).map(c => ({ ...c, type: 'case' })),
+          ];
+          setCitations(allCitations);
+        }
+        break;
 
-    setMessages(prev => prev.map(msg =>
-      msg.id === defendantPrepMsg ? {
-        ...msg,
-        text: 'Analyzing legal precedents and preparing defense statement...'
-      } : msg
-    ));
-    await new Promise(resolve => setTimeout(resolve, 2000));
+      case 'error':
+        setError(event.content);
+        addSystemMessage(`Error: ${event.content}`);
+        break;
 
-    setMessages(prev => prev.map(msg =>
-      msg.id === defendantPrepMsg ? {
-        ...msg,
-        text: 'Ready to present defense statement.'
-      } : msg
-    ));
-
-    await new Promise(resolve => setTimeout(resolve, 1000));
+      default:
+        break;
+    }
   };
 
-  const runTrialPhase = async () => {
-    // ROUND 1: Opening Statements
-    setRound(1);
+  // REST fallback if WebSocket fails
+  const runTrialREST = async () => {
+    setError('');
+    setPhase('setup');
+    addSystemMessage('Starting trial via REST API...');
 
-    const plaintiffStatement = trialData.plaintiff_analysis?.opening_statement ||
-      'Your Honor, the plaintiff respectfully submits that the defendant breached their contractual obligations.';
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/courtroom/trial/start`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(config),
+      });
 
-    await addStreamingMessage(
-      'Plaintiff',
-      'plaintiff',
-      plaintiffStatement,
-      trialData.plaintiff_analysis
-    );
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.detail || `HTTP ${res.status}`);
+      }
 
-    await new Promise(resolve => setTimeout(resolve, 1500));
+      const data = await res.json();
+      setTrialId(data.trial_id);
 
-    const defendantStatement = trialData.defendant_analysis?.opening_statement ||
-      'Your Honor, the defendant respectfully denies the plaintiff\'s allegations.';
+      // Replay events from REST response
+      if (data.events) {
+        for (const event of data.events) {
+          handleTrialEvent(event);
+          // Small delay for visual effect
+          await new Promise(r => setTimeout(r, 200));
+        }
+      }
 
-    const defendantReviewMsg = addMessage('Defendant', 'defendant', 'Reviewing plaintiff\'s statement and preparing response...', trialData.defendant_analysis);
-    setStreamingMessageId(defendantReviewMsg);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setStreamingMessageId(null);
+      // Also add messages from state
+      if (data.messages && data.messages.length > 0) {
+        for (const msg of data.messages) {
+          addAgentMessage(msg.role, msg.content, msg.phase || '', msg.round || 0);
+        }
+      }
 
-    setMessages(prev => prev.map(msg =>
-      msg.id === defendantReviewMsg ? {
-        ...msg,
-        text: defendantStatement
-      } : msg
-    ));
-
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // ROUND 2: Judge Questions and Rebuttals
-    setRound(2);
-
-    await addStreamingMessage(
-      judgeName,
-      'judge',
-      `Plaintiff, can you elaborate on your evidence and explain how the precedents support your damages claim?`
-    );
-
-    await new Promise(resolve => setTimeout(resolve, 1200));
-
-    const plaintiffRebuttal = trialData.plaintiff_analysis?.legal_arguments?.[0] ||
-      `Your Honor, the evidence clearly demonstrates that the defendant's breach caused substantial damages. The precedents we've reviewed consistently support our position. We have documented proof of the defendant's failure to perform, and the damages requested are reasonable and well-justified based on comparable cases.`;
-
-    await addStreamingMessage('Plaintiff', 'plaintiff', plaintiffRebuttal);
-
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    await addStreamingMessage(
-      judgeName,
-      'judge',
-      `Defendant, how do you respond to the plaintiff's evidence and the precedents cited?`
-    );
-
-    await new Promise(resolve => setTimeout(resolve, 1200));
-
-    const defendantRebuttal = trialData.defendant_analysis?.legal_arguments?.[0] ||
-      `Your Honor, the plaintiff's evidence is circumstantial and does not meet the legal threshold for material breach. We acted in good faith throughout this matter and made reasonable efforts to fulfill our obligations. The damages claimed are speculative and not supported by documented losses.`;
-
-    await addStreamingMessage('Defendant', 'defendant', defendantRebuttal);
-
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // ROUND 3: Final Arguments
-    setRound(3);
-
-    await addStreamingMessage(
-      judgeName,
-      'judge',
-      `Plaintiff, your final argument on the strength of your case and why you deserve the damages requested?`
-    );
-
-    await new Promise(resolve => setTimeout(resolve, 1200));
-
-    const plaintiffFinal = trialData.plaintiff_analysis?.legal_arguments?.[1] ||
-      `Your Honor, we have presented clear evidence of breach, documented damages, and supporting precedents. The defendant's failure to perform was material and caused foreseeable harm. We respectfully request full compensation as outlined in our damages assessment.`;
-
-    await addStreamingMessage('Plaintiff', 'plaintiff', plaintiffFinal);
-
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    await addStreamingMessage(
-      judgeName,
-      'judge',
-      `Defendant, your final statement?`
-    );
-
-    await new Promise(resolve => setTimeout(resolve, 1200));
-
-    const defendantFinal = trialData.defendant_analysis?.legal_arguments?.[1] ||
-      `Your Honor, we maintain that the plaintiff has failed to establish material breach. We fulfilled our obligations in good faith, and the plaintiff's damages claims are not supported by the evidence. We respectfully request dismissal of this case.`;
-
-    await addStreamingMessage('Defendant', 'defendant', defendantFinal);
-
-    await new Promise(resolve => setTimeout(resolve, 2000));
+      setIsComplete(true);
+      setPhase('complete');
+      setWinner(data.winner || '');
+    } catch (e) {
+      setError(e.message);
+      addSystemMessage(`Trial failed: ${e.message}`);
+    }
   };
 
-  const runVerdictPhase = async () => {
-    await addStreamingMessage(
-      judgeName,
-      'judge',
-      `I will now deliberate on this case based on the evidence, arguments, and precedents presented. This is a complex matter that requires careful consideration of all factors.`
-    );
+  const downloadTranscript = () => {
+    const lines = messages.map(msg => {
+      if (msg.type === 'system') return `[SYSTEM] ${msg.content}`;
+      const label = msg.agent ? msg.agent.toUpperCase() : 'UNKNOWN';
+      return `[${label}] ${msg.content}`;
+    });
 
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    const text = `COURTROOM TRIAL TRANSCRIPT\n${'='.repeat(60)}\n\nCase: ${config.case_title}\nType: ${config.case_type}\nPlaintiff: ${config.plaintiff_name}\nDefendant: ${config.defendant_name}\nRounds: ${config.num_rounds}\nDate: ${new Date().toLocaleDateString()}\n\n${'='.repeat(60)}\n\n${lines.join('\n\n')}`;
 
-    const verdictText = `After careful consideration of the evidence, legal arguments from both counsels, and the relevant precedents, I find that the plaintiff has presented a more compelling case. The evidence demonstrates a clear breach of the contractual obligations. The precedents cited support the plaintiff's position, and the damages claimed are reasonable and well-documented. Therefore, I rule in favor of the plaintiff and award damages of $125,000. This award reflects the documented losses and is consistent with similar cases in the precedent record.`;
-
-    await addStreamingMessage(judgeName, 'verdict', verdictText);
-
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    const verdict = {
-      judge: judgeName,
-      verdict: 'Plaintiff Wins',
-      damages: '$125,000',
-      confidence: 0.78,
-      reasoning: verdictText,
-      citations: [
-        { title: 'Smith v. Johnson Corp.', category: 'Contract Breach' },
-        { title: 'Williams v. Tech Solutions Inc.', category: 'Damages Assessment' },
-        { title: 'Anderson v. Business Partners LLC', category: 'Liability' }
-      ],
-      plaintiff_strength: 78,
-      defendant_strength: 22,
-      evidence_quality: 85
-    };
-
-    setVerdictData(verdict);
-    setShowReport(true);
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `trial_${config.case_title.replace(/\s+/g, '_')}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
-
-  if (!trialData) {
-    return null;
-  }
 
   return (
     <div className="chat-trial-wrapper">
-      {/* Sidebar */}
-      <div className={`chat-sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
-        <div className="sidebar-header">
-          <div className="sidebar-logo">
-            <span className="logo-icon">⚖️</span>
-            <div className="logo-text">
-              <div className="logo-title">AI Courtroom</div>
-              <div className="logo-subtitle">Simulator</div>
-            </div>
+      {/* Citations sidebar */}
+      {showCitations && (
+        <div className="citations-sidebar">
+          <div className="citations-sidebar-header">
+            <h3>📚 Legal References</h3>
+            <button onClick={() => setShowCitations(false)} className="citations-close">
+              <X size={18} />
+            </button>
           </div>
-          <button
-            className="sidebar-toggle"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-          >
-            {sidebarOpen ? '✕' : '☰'}
-          </button>
+          <div className="citations-sidebar-content">
+            {lawsCount > 0 && (
+              <div className="citations-group">
+                <h4>Statutes ({lawsCount})</h4>
+                {citations.filter(c => c.type === 'law').map((c, i) => (
+                  <div key={i} className="citation-card-sm">
+                    <span className="citation-badge law">LAW</span>
+                    <span className="citation-title-sm">{c.title || c.document || `Statute ${i + 1}`}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {casesCount > 0 && (
+              <div className="citations-group">
+                <h4>Case Precedents ({casesCount})</h4>
+                {citations.filter(c => c.type === 'case').map((c, i) => (
+                  <div key={i} className="citation-card-sm">
+                    <span className="citation-badge case">CASE</span>
+                    <span className="citation-title-sm">{c.title || c.document || `Case ${i + 1}`}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {citations.length === 0 && (
+              <p className="no-citations">Citations will appear as the trial progresses.</p>
+            )}
+          </div>
         </div>
+      )}
 
-        <div className="sidebar-search">
-          <input
-            type="text"
-            placeholder="Search cases..."
-            className="search-input"
-          />
-        </div>
-
-        <button className="new-simulation-btn">
-          <span>+</span>
-          New Simulation
-        </button>
-
-        <div className="sidebar-section">
-        </div>
-
-        <div className="sidebar-footer">
-        </div>
-      </div>
-
-      {/* Main Chat Area */}
+      {/* Main chat area */}
       <div className="chat-trial-container">
         <div className="chat-trial-header">
           <button onClick={onBack} className="chat-back-btn">
             <ArrowLeft size={20} />
           </button>
-          <h1>{trialData.case_title}</h1>
-          <div className="chat-round-indicator">
-            {trialPhase === 'loading' && 'Starting...'}
-            {trialPhase === 'preparation' && 'Preparation Phase'}
-            {trialPhase === 'trial' && `Round ${round}/3`}
-            {trialPhase === 'verdict' && 'Verdict'}
+          <div className="header-center">
+            <h1>{config.case_title}</h1>
+            <div className="header-meta">
+              <span className="meta-tag">{config.case_type}</span>
+              <span className="meta-tag">{config.plaintiff_name} v. {config.defendant_name}</span>
+            </div>
+          </div>
+          <div className="header-actions">
+            <div className="chat-round-indicator">
+              {getPhaseLabel(phase, round, config.num_rounds)}
+            </div>
+            <button
+              onClick={() => setShowCitations(!showCitations)}
+              className="btn-citations"
+              title="View legal references"
+            >
+              <BookOpen size={18} />
+            </button>
           </div>
         </div>
 
+        {error && (
+          <div className="trial-error-bar">
+            <span>{error}</span>
+          </div>
+        )}
+
         <div className="chat-messages">
-          {messages.map((msg) => (
-            <div key={`msg-${msg.id}-${msg.role}`} className={`chat-message chat-${msg.role}`}>
-              <div className="chat-bubble">
-                <div className="chat-speaker">{msg.speaker}</div>
-                {msg.analysis && (
-                  <ThinkingProcess analysis={msg.analysis} speaker={msg.speaker} />
-                )}
-                {streamingMessageId === msg.id ? (
-                  <StreamingText text={msg.text} isStreaming={true} />
-                ) : (
-                  <div className="chat-text">{msg.text}</div>
-                )}
-                <div className="chat-time">
-                  {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          {messages.map((msg) => {
+            if (msg.type === 'system') {
+              return (
+                <div key={msg.id} className="chat-message chat-system">
+                  <div className="system-bubble">
+                    {msg.content}
+                  </div>
+                </div>
+              );
+            }
+
+            const agentClass = `chat-${msg.agent || 'system'}`;
+            return (
+              <div key={msg.id} className={`chat-message ${agentClass}`}>
+                <div className="chat-avatar">
+                  {getAgentIcon(msg.agent)}
+                </div>
+                <div className="chat-bubble">
+                  <div className="chat-speaker" style={{ color: getAgentColor(msg.agent) }}>
+                    {msg.agent === 'plaintiff' && config.plaintiff_name + ' (Plaintiff Attorney)'}
+                    {msg.agent === 'defendant' && config.defendant_name + ' (Defense Attorney)'}
+                    {msg.agent === 'judge' && 'Judge'}
+                  </div>
+                  <div className="chat-text">{msg.content}</div>
+                  <div className="chat-time">
+                    {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </div>
                 </div>
               </div>
+            );
+          })}
+
+          {/* Loading indicator when trial is running */}
+          {!isComplete && !error && (
+            <div className="chat-message chat-system">
+              <div className="typing-indicator">
+                <span></span><span></span><span></span>
+              </div>
             </div>
-          ))}
+          )}
+
           <div ref={messagesEndRef} />
         </div>
 
-        {showReport && verdictData && (
-          <VerdictReport
-            verdict={verdictData}
-            caseTitle={trialData.case_title}
-            onClose={() => setShowReport(false)}
-          />
+        {/* Bottom bar */}
+        {isComplete && (
+          <div className="trial-complete-bar">
+            <div className="complete-info">
+              {winner && <span className="winner-badge">Winner: {winner}</span>}
+              <span className="complete-label">Trial Complete</span>
+            </div>
+            <div className="complete-actions">
+              <button onClick={downloadTranscript} className="btn-download">
+                <Download size={16} />
+                Download Transcript
+              </button>
+              <button onClick={onBack} className="btn-new-trial">
+                New Trial
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>
