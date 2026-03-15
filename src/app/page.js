@@ -2,12 +2,14 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { MessageSquare, BarChart3, ChevronRight, Gavel, ArrowRight, CheckCircle, Volume2, VolumeX } from 'lucide-react';
 import { useAuth } from './context/AuthContext';
 import './Home.css';
 
 export default function Home() {
   const { isAuthenticated, loading } = useAuth();
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef(null);
@@ -21,38 +23,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    // Wait for DOM to be ready
-    const timer = setTimeout(() => {
-      const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px'
-      };
-
-      const observerCallback = (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('bento-visible');
-          }
-        });
-      };
-
-      const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-      featureCardsRef.current.forEach((card) => {
-        if (card) {
-          observer.observe(card);
-        }
-      });
-
-      return () => {
-        featureCardsRef.current.forEach((card) => {
-          if (card) observer.unobserve(card);
-        });
-      };
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, []);
+    if (!loading && isAuthenticated) {
+      router.push('/dashboard');
+    }
+  }, [loading, isAuthenticated, router]);
 
   const toggleMute = () => {
     if (videoRef.current) {

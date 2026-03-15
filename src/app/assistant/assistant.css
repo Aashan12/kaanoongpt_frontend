@@ -488,9 +488,20 @@
 }
 
 .ka-text {
-  white-space: pre-wrap;
   word-break: break-word;
+  line-height: 1.7;
 }
+.ka-text p { margin: 0 0 0.6em 0; }
+.ka-text p:last-child { margin-bottom: 0; }
+.ka-text strong { font-weight: 600; color: var(--ka-text); }
+.ka-text ol, .ka-text ul { margin: 0.4em 0 0.6em 1.4em; padding: 0; }
+.ka-text li { margin-bottom: 0.3em; }
+.ka-text h1, .ka-text h2, .ka-text h3 { margin: 0.8em 0 0.4em; font-weight: 600; color: var(--ka-text); }
+.ka-text h1 { font-size: 1.15em; }
+.ka-text h2 { font-size: 1.08em; }
+.ka-text h3 { font-size: 1em; }
+.ka-text code { background: rgba(255,255,255,0.06); padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.9em; }
+.ka-text blockquote { border-left: 3px solid var(--ka-accent); margin: 0.5em 0; padding: 0.3em 0.8em; color: var(--ka-text-secondary); }
 .ka-cursor {
   animation: ka-blink 0.8s infinite;
   color: var(--ka-accent);
