@@ -9,9 +9,18 @@ import {
   Zap, Search, Shield, ChevronDown
 } from 'lucide-react';
 import PDFViewer from '../components/PDFViewer';
+import ReactMarkdown from 'react-markdown';
 import './assistant.css';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+function getToken() {
+  return typeof window !== 'undefined' ? localStorage.getItem('access_token') : '';
+}
+
+function authHeaders() {
+  return { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' };
+}
 
 export default function Assistant() {
   const { isAuthenticated, loading, user } = useAuth();
@@ -49,18 +58,22 @@ export default function Assistant() {
     return () => document.removeEventListener('mousedown', handler);
   }, [showModelMenu]);
 
-  // Load chat history from localStorage
+  // Load conversation list from server
   useEffect(() => {
-    const saved = localStorage.getItem('chatHistory');
-    if (saved) { try { setChatHistory(JSON.parse(saved)); } catch {} }
-  }, []);
+    if (!isAuthenticated) return;
+    fetch(`${API_BASE_URL}/api/conversations`, { headers: authHeaders() })
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setChatHistory(data.map(c => ({ id: c.id, title: c.title, date: c.updated_at })));
+        }
+      })
+      .catch(() => {});
+  }, [isAuthenticated]);
 
   // Fetch admin-configured chat models
   useEffect(() => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : '';
-    fetch(`${API_BASE_URL}/api/courtroom/setup/chat-models`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
+    fetch(`${API_BASE_URL}/api/courtroom/setup/chat-models`, { headers: authHeaders() })
       .then(r => r.json())
       .then(d => {
         const models = d.models || [];
@@ -70,35 +83,27 @@ export default function Assistant() {
       .catch(() => {});
   }, []);
 
-  // Save chat history
+  // Load messages when switching conversations
   useEffect(() => {
-    localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
-  }, [chatHistory]);
-
-  // Load messages for current chat
-  useEffect(() => {
-    if (currentChatId) {
-      const saved = localStorage.getItem(`chat_${currentChatId}`);
-      if (saved) { try { setChatMessages(JSON.parse(saved)); } catch {} }
-    }
+    if (!currentChatId) return;
+    fetch(`${API_BASE_URL}/api/conversations/${currentChatId}`, { headers: authHeaders() })
+      .then(r => r.json())
+      .then(data => {
+        if (data.messages) {
+          setChatMessages(data.messages.map((m, i) => ({
+            id: `${currentChatId}_${i}`,
+            type: m.role === 'user' ? 'user' : 'bot',
+            text: m.content,
+            sources: m.sources || null,
+          })));
+        }
+      })
+      .catch(() => {});
   }, [currentChatId]);
 
-  // Save messages for current chat
+  // Health check — once on mount only
   useEffect(() => {
-    if (currentChatId && chatMessages.length > 0) {
-      localStorage.setItem(`chat_${currentChatId}`, JSON.stringify(chatMessages));
-    }
-  }, [chatMessages, currentChatId]);
-
-  // Health check
-  useEffect(() => {
-    const check = async () => {
-      try { const r = await fetch(`${API_BASE_URL}/health`); setIsConnected(r.ok); }
-      catch { setIsConnected(false); }
-    };
-    check();
-    const i = setInterval(check, 30000);
-    return () => clearInterval(i);
+    fetch(`${API_BASE_URL}/health`).then(r => setIsConnected(r.ok)).catch(() => setIsConnected(false));
   }, []);
 
   // Auto-scroll
@@ -123,7 +128,16 @@ export default function Assistant() {
   }
   if (!isAuthenticated) return null;
 
-  const generateTitle = (msg) => msg.substring(0, 50) + (msg.length > 50 ? '...' : '');
+  // Save a message to the server
+  const saveMessage = async (convId, role, content, sources = null) => {
+    try {
+      const body = { role, content };
+      if (sources) body.sources = sources;
+      await fetch(`${API_BASE_URL}/api/conversations/${convId}/messages`, {
+        method: 'POST', headers: authHeaders(), body: JSON.stringify(body),
+      });
+    } catch {}
+  };
 
   const handleSendMessage = async (overrideMsg) => {
     const userMsg = (overrideMsg || chatMessage).trim();
@@ -135,14 +149,26 @@ export default function Assistant() {
     setChatMessages(prev => [...prev, { type: 'user', text: userMsg }]);
     setIsTyping(true);
 
-    // Create or update chat in history
+    // Create conversation on server if new chat
     let activeChatId = currentChatId;
     if (!currentChatId) {
-      const newId = Date.now();
-      setChatHistory(prev => [{ id: newId, title: generateTitle(userMsg), date: 'Today' }, ...prev]);
-      setCurrentChatId(newId);
-      activeChatId = newId;
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/conversations`, {
+          method: 'POST', headers: authHeaders(),
+          body: JSON.stringify({ title: userMsg.substring(0, 50) + (userMsg.length > 50 ? '...' : ''), country: selectedCountry, model_id: currentModel?.id || null }),
+        });
+        const data = await res.json();
+        activeChatId = data.id;
+        setCurrentChatId(data.id);
+        setChatHistory(prev => [{ id: data.id, title: data.title, date: 'Now' }, ...prev]);
+      } catch {
+        setIsTyping(false);
+        return;
+      }
     }
+
+    // Save user message to server
+    await saveMessage(activeChatId, 'user', userMsg);
 
     const ctrl = new AbortController();
     setAbortController(ctrl);
@@ -169,6 +195,7 @@ export default function Assistant() {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let fullText = '';
+      let botSources = null;
       let buffer = '';
 
       while (true) {
@@ -194,6 +221,7 @@ export default function Assistant() {
                 m.id === botId ? { ...m, text: fullText, status: null, isStreaming: true } : m
               ));
             } else if (data.type === 'sources') {
+              botSources = data.sources;
               setChatMessages(prev => prev.map(m =>
                 m.id === botId ? { ...m, sources: data.sources } : m
               ));
@@ -203,6 +231,8 @@ export default function Assistant() {
                 m.id === botId ? { ...m, text: fullText || data.text, isStreaming: false, status: null, responseTime: data.response_time } : m
               ));
               setAbortController(null);
+              // Save assistant response to server
+              await saveMessage(activeChatId, 'assistant', fullText, botSources);
             } else if (data.type === 'error') {
               throw new Error(data.message);
             }
@@ -237,9 +267,11 @@ export default function Assistant() {
     setChatMessage('');
   };
 
-  const handleDeleteChat = (id) => {
+  const handleDeleteChat = async (id) => {
+    try {
+      await fetch(`${API_BASE_URL}/api/conversations/${id}`, { method: 'DELETE', headers: authHeaders() });
+    } catch {}
     setChatHistory(prev => prev.filter(c => c.id !== id));
-    localStorage.removeItem(`chat_${id}`);
     if (currentChatId === id) handleNewChat();
   };
 
@@ -275,7 +307,7 @@ export default function Assistant() {
             )}
             {msg.text && (
               <div className="ka-text">
-                {msg.text}
+                <ReactMarkdown>{msg.text}</ReactMarkdown>
                 {msg.isStreaming && <span className="ka-cursor">▊</span>}
               </div>
             )}

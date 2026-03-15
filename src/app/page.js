@@ -2,12 +2,14 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { MessageSquare, BarChart3, ChevronRight, Gavel, ArrowRight, CheckCircle, Volume2, VolumeX } from 'lucide-react';
 import { useAuth } from './context/AuthContext';
 import './Home.css';
 
 export default function Home() {
   const { isAuthenticated, loading } = useAuth();
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef(null);
@@ -17,6 +19,12 @@ export default function Home() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      router.push('/dashboard');
+    }
+  }, [loading, isAuthenticated, router]);
 
   const toggleMute = () => {
     if (videoRef.current) {
