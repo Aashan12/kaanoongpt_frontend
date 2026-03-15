@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Settings, Mail, Lock, Eye, EyeOff, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Mail, Lock, Eye, EyeOff, ChevronRight } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './page.css';
 import { apiRequest, API_URL } from '../../lib/api';
@@ -142,40 +142,29 @@ export default function Login() {
 
         {/* Functional Right Side */}
         <main className="login-main-area">
-          <div className="login-top-nav">
-            <div className="login-top-spacer"></div>
-            <div className="login-top-actions">
-              <span>New to KaanoonGPT?</span>
-              <Link href="/auth/signup" className="login-btn-signup">Create Account</Link>
-            </div>
-          </div>
+          {/* Mobile Go Back Button */}
+          <button className="mobile-back-btn" onClick={handleBackClick}>
+            <ArrowLeft size={18} />
+            <span>Go Back</span>
+          </button>
 
           <div className="login-container">
-            <button className="back-nav-btn" onClick={handleBackClick}>
-              <ArrowLeft size={20} />
-              <span>Go Back</span>
-            </button>
-            <button className="settings-btn">
-              <Settings size={24} strokeWidth={2} />
-            </button>
-
             <div className="login-content">
-              <div className="logo-section">
-                <img src="/logo.jpeg" alt="KAANOONGPT" className="logo-img" />
-                <h1 className="welcome-title">Welcome Back</h1>
-                <p className="welcome-subtitle">Sign in to continue</p>
-              </div>
-
               <div className="login-card">
+                <div className="card-header">
+                  <h2>Enter your credentials</h2>
+                  <p>Sign in to access KaanoonGPT</p>
+                </div>
+
                 {error && (
                   <div className="error-message">{error}</div>
                 )}
 
                 <form onSubmit={handleEmailLogin}>
                   <div className="form-group">
-                    <label htmlFor="email" className="form-label">Email</label>
+                    <label htmlFor="email" className="form-label">EMAIL</label>
                     <div className="input-wrapper">
-                      <Mail size={20} className="input-icon" />
+                      <Mail size={18} className="input-icon" />
                       <input
                         type="email"
                         id="email"
@@ -190,9 +179,9 @@ export default function Login() {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="password" className="form-label">Password</label>
+                    <label htmlFor="password" className="form-label">PASSWORD</label>
                     <div className="input-wrapper">
-                      <Lock size={20} className="input-icon" />
+                      <Lock size={18} className="input-icon" />
                       <input
                         type={showPassword ? 'text' : 'password'}
                         id="password"
@@ -209,7 +198,7 @@ export default function Login() {
                         className="toggle-password"
                         disabled={loading}
                       >
-                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                       </button>
                     </div>
                   </div>
@@ -222,10 +211,8 @@ export default function Login() {
 
                   <button type="submit" className="continue-btn" disabled={loading}>
                     <span>{loading ? 'Signing in...' : 'Sign In'}</span>
-                    <ChevronRight size={20} />
+                    <ChevronRight size={18} />
                   </button>
-
-
                 </form>
 
                 <div className="signin-link">
@@ -235,15 +222,16 @@ export default function Login() {
                   </Link>
                 </div>
               </div>
-
-              <div className="footer">
-                <p>
-                  By using this app, you agree to our{' '}
-                  <Link href="/terms" className="footer-link">Terms</Link> of Service and{' '}
-                  <Link href="/privacy" className="footer-link">Privacy Policy</Link>.
-                </p>
-              </div>
             </div>
+          </div>
+
+          {/* Footer outside card - at bottom */}
+          <div className="footer">
+            <p>
+              By using this app, you agree to our{' '}
+              <Link href="/terms" className="footer-link">Terms of Service</Link> and{' '}
+              <Link href="/privacy" className="footer-link">Privacy Policy</Link>.
+            </p>
           </div>
         </main>
 

@@ -27,7 +27,7 @@
 /* Master Navigation - Full Width Top */
 .master-auth-nav {
   width: 100%;
-  height: 64px;
+  height: 80px;
   background: #0f172a;
   display: flex;
   align-items: center;
@@ -45,15 +45,15 @@
 }
 
 .master-logo-link img {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 6px;
 }
 
 .master-logo-link span {
   color: white;
   font-weight: 800;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   letter-spacing: 1px;
 }
 
@@ -68,7 +68,7 @@
 .signup-sidebar {
   width: 50%;
   position: relative;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 80px);
   overflow: hidden;
   background: #000;
   display: flex;
@@ -147,19 +147,18 @@
   display: flex;
   flex-direction: column;
   background: #0f172a;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 80px);
   overflow-y: auto;
   position: relative;
-  /* For absolute top-nav */
   align-items: center;
-  justify-content: center;
+  padding: 0;
   color: white;
 }
 
 .auth-step-footer {
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   text-align: center;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.5);
 }
 
@@ -174,19 +173,37 @@
   text-decoration: underline;
 }
 
-/* Top Navigation - Elevated */
+/* Top Navigation - Removed (no longer needed) */
 .wizard-top-nav {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  justify-content: flex-end;
-  /* Align sign-in to the right */
+  display: none;
+}
+
+/* Mobile Back Button - Hidden on Desktop */
+.mobile-back-btn {
+  display: none;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
   align-items: center;
-  padding: 2.5rem 4rem;
-  background: transparent;
-  width: 100%;
-  z-index: 100;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+  font-size: 0.875rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 1.5rem;
+  left: 2rem;
+  z-index: 10;
+}
+
+.mobile-back-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .wizard-logo-static {
@@ -272,12 +289,12 @@
 .wizard-content-flow {
   max-width: 720px;
   width: 100%;
-  margin: auto;
-  /* Force centering in flex parent */
-  padding: 2rem;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  flex: 1;
 }
 
 /* Stepper Sidebar - Smaller Horizontal Top */
@@ -289,9 +306,8 @@
   position: relative;
   padding: 0;
   width: 100%;
-  max-width: 500px;
-  margin: 0 auto 3.5rem;
-  /* Increased bottom margin for breathing room */
+  max-width: 450px;
+  margin: 0 auto 0.75rem;
 }
 
 .wizard-progress-track {
@@ -335,19 +351,17 @@
 }
 
 .wizard-node-icon {
-  width: 36px;
-  /* Smaller icon */
-  height: 36px;
-  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   background: var(--pure-white);
   border: 1px solid var(--border-color);
-  /* Lighter border */
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   transition: all 0.4s;
 }
 
@@ -373,13 +387,13 @@
 }
 
 .node-title {
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: white;
 }
 
 .node-desc {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: rgba(255, 255, 255, 0.4);
   margin-top: 2px;
 }
@@ -389,15 +403,17 @@
   perspective: 1000px;
   width: 100%;
   max-width: 750px;
-  /* Slimmer card */
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .wizard-card-main {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 3rem;
+  border-radius: 20px;
+  padding: 1.25rem;
   box-shadow: 0 40px 100px rgba(0, 0, 0, 0.3);
   position: relative;
   overflow: hidden;
@@ -444,14 +460,14 @@
 .wizard-form-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
-  margin-bottom: 3rem;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .wizard-field {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
 }
 
 .wizard-field.full-width {
@@ -460,12 +476,14 @@
 
 .wizard-field label.form-label {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: #e2e8f0;
-  margin-bottom: 0.625rem;
+  color: #f1f5f9;
+  margin-bottom: 0.4rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .input-icon {
@@ -490,21 +508,24 @@
 
 .input-field {
   width: 100%;
-  padding: 0.875rem 0.875rem 0.875rem 3rem;
+  padding: 0.6rem 0.6rem 0.6rem 2.4rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(96, 165, 250, 0.2);
   border-radius: 8px;
-  color: white;
-  font-size: 0.95rem;
+  color: #ffffff;
+  font-size: 0.8rem;
   transition: all 0.2s;
   outline: none;
   font-family: inherit;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .input-field:focus {
   border-color: #60a5fa;
   background: rgba(96, 165, 250, 0.08);
   box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+  color: #ffffff;
 }
 
 /* Specific handling for select and textarea */
@@ -530,7 +551,8 @@ textarea.input-field {
 }
 
 .input-field::placeholder {
-  color: #64748b;
+  color: #94a3b8;
+  opacity: 1;
 }
 
 .input-field:disabled {
@@ -590,17 +612,16 @@ textarea.input-field {
 .wizard-btn-submit {
   width: 100%;
   background: #2563eb;
-  /* Vibrant Professional Blue */
   color: white;
   border: none;
-  padding: 1rem;
+  padding: 0.75rem;
   border-radius: 12px;
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
@@ -615,19 +636,20 @@ textarea.input-field {
 
 .wizard-btn-row {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .wizard-btn-back {
-  flex: 0 0 140px;
+  flex: 0 0 120px;
   background: white;
   color: var(--primary-navy);
   border: 1px solid var(--border-color);
-  padding: 1.1rem;
-  border-radius: 16px;
+  padding: 0.75rem;
+  border-radius: 12px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s;
+  font-size: 0.9rem;
 }
 
 .wizard-btn-back:hover {
@@ -970,72 +992,113 @@ textarea.input-field {
 /* Footer - Minimalist */
 .wizard-mini-footer {
   text-align: center;
-  margin-top: 2rem;
-  padding-bottom: 2rem;
+  margin-top: auto;
+  padding: 0.75rem;
+  width: 100%;
 }
 
 .wizard-mini-footer p {
-  font-size: 0.85rem;
-  color: var(--text-muted);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .wizard-mini-footer a {
-  color: var(--primary-navy);
+  color: #3b82f6;
   font-weight: 700;
   text-decoration: none;
+}
+
+.wizard-mini-footer a:hover {
+  text-decoration: underline;
 }
 
 /* RESPONSIVE REFINEMENTS */
 @media (max-width: 1024px) {
   .signup-sidebar {
-    width: 40%;
+    display: none !important;
   }
 
   .signup-main-area {
-    width: 60%;
+    width: 100%;
   }
 
-  .sidebar-branding h1 {
-    font-size: 2.75rem;
+  /* Show mobile back button on tablet */
+  .mobile-back-btn {
+    display: flex;
+    top: 1.5rem;
+    left: 2rem;
   }
 }
 
 @media (max-width: 768px) {
+  .master-auth-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+    height: 70px;
+  }
+
   .auth-split-container {
     flex-direction: column;
     overflow-y: auto;
+    margin-top: 70px;
   }
 
   .signup-sidebar {
-    width: 100%;
-    height: 300px;
-    /* Cinematic Header */
-    flex-shrink: 0;
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: none !important;
   }
 
   .signup-main-area {
     width: 100%;
     height: auto;
-    min-height: calc(100vh - 364px);
-    padding: 2rem 1rem;
+    min-height: calc(100vh - 70px);
+    padding: 0;
     justify-content: flex-start;
+    padding-top: 0;
+    overflow: hidden;
+  }
+
+  /* Show mobile back button */
+  .mobile-back-btn {
+    display: flex;
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 10;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
   }
 
   .wizard-content-flow {
-    margin-top: 1rem;
-    padding: 1rem;
+    margin-top: 0;
+    padding: 0 0.75rem 0;
   }
 
   .wizard-stepper {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 1.5rem;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    max-width: 400px;
+    margin-top: 0;
+    padding: 0;
   }
 
   .wizard-step-node {
     flex: none;
+    gap: 0.25rem;
+  }
+
+  .wizard-node-icon {
+    width: 26px;
+    height: 26px;
+    font-size: 0.75rem;
+  }
+
+  .node-title {
+    font-size: 0.75rem;
   }
 
   .wizard-progress-track {
@@ -1046,44 +1109,64 @@ textarea.input-field {
     display: none;
   }
 
-  .wizard-form-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+  .wizard-step-info {
+    margin-bottom: 0.35rem;
+    margin-top: 0;
   }
 
-  .sidebar-branding h1 {
-    font-size: 2.25rem;
+  .wizard-step-info h2 {
+    font-size: 0.95rem !important;
+    letter-spacing: 0 !important;
+    margin-bottom: 0.2rem !important;
+    margin-top: 0 !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
   }
 
-  .sidebar-branding p {
-    font-size: 1rem;
-  }
-
-  .wizard-top-nav {
-    padding: 1rem 1.5rem;
-    background: rgba(15, 23, 42, 0.9);
-    position: sticky;
-    top: 0;
-  }
-
-  .sidebar-back-btn {
-    top: 1rem;
-    left: 1rem;
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+  .wizard-step-info p {
+    display: none;
   }
 
   .wizard-card-main {
-    padding: 2rem 1.5rem;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    backdrop-filter: none;
+    padding: 0.75rem 1rem;
+    border-radius: 16px;
+  }
+
+  .wizard-form-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .wizard-field {
+    gap: 3px;
+  }
+
+  .wizard-field label.form-label {
+    font-size: 0.65rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .input-field {
+    padding: 0.5rem 0.5rem 0.5rem 2.2rem;
+    font-size: 0.75rem;
+  }
+
+  .input-icon {
+    left: 0.75rem;
+  }
+
+  .wizard-btn-next,
+  .wizard-btn-submit {
+    padding: 0.65rem;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
   }
 
   .wizard-btn-row {
     flex-direction: column-reverse;
-    gap: 1rem;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
   }
 
   .wizard-btn-back,
@@ -1091,19 +1174,64 @@ textarea.input-field {
   .wizard-btn-submit {
     width: 100%;
   }
+
+  .auth-step-footer {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .wizard-mini-footer {
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .wizard-mini-footer p {
+    font-size: 0.65rem;
+  }
 }
 
 @media (max-width: 480px) {
-  .signup-sidebar {
-    height: 240px;
+  .master-auth-nav {
+    height: 60px;
   }
 
-  .sidebar-branding h1 {
-    font-size: 1.75rem;
+  .master-logo-link img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .master-logo-link span {
+    font-size: 1.05rem;
+  }
+
+  .signup-main-area {
+    min-height: calc(100vh - 60px);
+    padding: 1rem;
+  }
+
+  .mobile-back-btn {
+    padding: 0.45rem 0.875rem;
+    font-size: 0.85rem;
+    gap: 0.4rem;
+    top: 1rem;
+    left: 1rem;
+  }
+
+  .wizard-content-flow {
+    padding: 3.5rem 1rem 0;
+  }
+
+  .mobile-back-btn svg {
+    width: 16px;
+    height: 16px;
   }
 
   .wizard-step-info h2 {
     font-size: 1.5rem;
+  }
+
+  .wizard-card-main {
+    padding: 1.5rem 1rem;
   }
 }
 

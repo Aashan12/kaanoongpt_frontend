@@ -11,11 +11,47 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef(null);
+  const featureCardsRef = useRef([]);
+  const featuresGridRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    // Wait for DOM to be ready
+    const timer = setTimeout(() => {
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px'
+      };
+
+      const observerCallback = (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('bento-visible');
+          }
+        });
+      };
+
+      const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+      featureCardsRef.current.forEach((card) => {
+        if (card) {
+          observer.observe(card);
+        }
+      });
+
+      return () => {
+        featureCardsRef.current.forEach((card) => {
+          if (card) observer.unobserve(card);
+        });
+      };
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const toggleMute = () => {
@@ -132,9 +168,14 @@ export default function Home() {
           <h2 className="section-title">Powerful Features</h2>
           <p className="section-subtitle">Everything you need to understand your legal rights</p>
 
-          <div className="features-grid">
+          <div className="features-grid" ref={featuresGridRef}>
             {/* Ask the Law */}
-            <Link href="/auth/login" className="feature-card">
+            <Link 
+              href="/auth/login" 
+              className="feature-card bento-card"
+              ref={(el) => (featureCardsRef.current[0] = el)}
+              data-direction="left"
+            >
               <div className="feature-icon-wrapper">
                 <MessageSquare size={32} />
               </div>
@@ -148,7 +189,12 @@ export default function Home() {
             </Link>
 
             {/* Courtroom Simulator */}
-            <Link href="/auth/login" className="feature-card">
+            <Link 
+              href="/auth/login" 
+              className="feature-card bento-card"
+              ref={(el) => (featureCardsRef.current[1] = el)}
+              data-direction="right"
+            >
               <div className="feature-icon-wrapper">
                 <Gavel size={32} />
               </div>
@@ -162,7 +208,11 @@ export default function Home() {
             </Link>
 
             {/* Case Predictor */}
-            <div className="feature-card feature-card-coming">
+            <div 
+              className="feature-card feature-card-coming bento-card"
+              ref={(el) => (featureCardsRef.current[2] = el)}
+              data-direction="left"
+            >
               <div className="feature-icon-wrapper">
                 <BarChart3 size={32} />
               </div>

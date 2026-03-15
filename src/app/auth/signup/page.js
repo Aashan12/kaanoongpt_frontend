@@ -6,8 +6,8 @@ import Link from 'next/link';
 import {
   Mail, Lock, Eye, EyeOff, ChevronRight,
   User, Calendar, Building2, Globe, FileUp, Phone,
-  MapPin, CheckCircle2, ShieldCheck, Map as MapIcon,
-  Search, Crosshair, ArrowLeft
+  MapPin, CheckCircle2, ShieldCheck,
+  ArrowLeft
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './page.css';
@@ -43,10 +43,7 @@ export default function SignUp() {
   const [cities, setCities] = useState([]);
   const [file, setFile] = useState(null);
 
-  const [showMapPicker, setShowMapPicker] = useState(true); // Changed from false to true
-  const mapRef = useRef(null);
-  const mapInstanceRef = useRef(null);
-  const markerRef = useRef(null);
+  // Map removed - no longer needed
 
   const { isAuthenticated } = useAuth();
   const router = useRouter();
@@ -59,144 +56,102 @@ export default function SignUp() {
     fetchCountries();
   }, [isAuthenticated, router]);
 
-  useEffect(() => {
-    if (currentStep === 2 && mapRef.current && !mapInstanceRef.current) {
-      initializeMap();
-    }
-  }, [currentStep, showMapPicker]);
-
-  const initializeMap = () => {
-    if (window.google) {
-      setTimeout(setupMap, 200);
-      return;
-    }
-    const script = document.createElement('script');
-    const hardcodedKey = 'AIzaSyAcT4M-vlZ8p9Bo8rK2n2oaIePKzk-G_lo';
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY || hardcodedKey}&libraries=places`;
-    script.async = true;
-    script.onload = () => setTimeout(setupMap, 200);
-    document.head.appendChild(script);
-  };
-
-  const setupMap = () => {
-    if (!mapRef.current) return;
-
-    const defaultCenter = { lat: formData.latitude, lng: formData.longitude };
-    const map = new window.google.maps.Map(mapRef.current, {
-      zoom: 16,
-      center: defaultCenter,
-      mapTypeControl: false,
-      streetViewControl: false,
-      fullscreenControl: false,
-      zoomControl: true,
-    });
-
-    const marker = new window.google.maps.Marker({
-      position: defaultCenter,
-      map: map,
-      draggable: true,
-      title: 'Herald College Kathmandu'
-    });
-
-    // Add Autocomplete logic for Map Search
-    const searchInput = document.getElementById('map-search-input');
-    if (searchInput) {
-      const autocomplete = new window.google.maps.places.Autocomplete(searchInput);
-      autocomplete.bindTo('bounds', map);
-
-      autocomplete.addListener('place_changed', () => {
-        const place = autocomplete.getPlace();
-        if (!place.geometry || !place.geometry.location) return;
-
-        if (place.geometry.viewport) {
-          map.fitBounds(place.geometry.viewport);
-        } else {
-          map.setCenter(place.geometry.location);
-          map.setZoom(17);
-        }
-
-        marker.setPosition(place.geometry.location);
-        setFormData(prev => ({
-          ...prev,
-          city: place.name || prev.city,
-          latitude: place.geometry.location.lat(),
-          longitude: place.geometry.location.lng()
-        }));
-      });
-    }
-
-    marker.addListener('dragend', () => {
-      const pos = marker.getPosition();
-      setFormData(prev => ({ ...prev, latitude: pos.lat(), longitude: pos.lng() }));
-    });
-
-    map.addListener('click', (e) => {
-      const pos = e.latLng;
-      marker.setPosition(pos);
-      setFormData(prev => ({ ...prev, latitude: pos.lat(), longitude: pos.lng() }));
-    });
-
-    mapInstanceRef.current = map;
-    markerRef.current = marker;
-  };
+  // Map initialization removed
 
   const fetchCountries = async () => {
     try {
+      console.log('Fetching countries from:', `${API_URL}/api/admin/system-setup/countries/`);
       const response = await fetch(`${API_URL}/api/admin/system-setup/countries/`);
+      console.log('Countries response status:', response.status);
       if (response.ok) {
         const data = await response.json();
-        setCountries(data);
+        console.log('Countries data received:', data);
+        // Extract the data array from the paginated response
+        const countriesArray = data.data || data;
+        setCountries(Array.isArray(countriesArray) ? countriesArray : []);
+      } else {
+        console.error('Countries fetch failed with status:', response.status);
+        setCountries([]);
       }
     } catch (err) {
       console.error('Error fetching countries:', err);
+      setCountries([]);
     }
   };
 
   const fetchStates = async (countryId) => {
     try {
+      console.log('Fetching states for country:', countryId);
       const response = await fetch(`${API_URL}/api/admin/system-setup/states/by-country/${countryId}`);
+      console.log('States response status:', response.status);
       if (response.ok) {
         const data = await response.json();
-        setStates(data);
+        console.log('States data received:', data);
+        // States API returns direct array, not paginated
+        setStates(Array.isArray(data) ? data : []);
+      } else {
+        console.error('States fetch failed with status:', response.status);
+        setStates([]);
       }
     } catch (err) {
       console.error('Error fetching states:', err);
+      setStates([]);
     }
   };
 
   const fetchCities = async (stateId) => {
     try {
+      console.log('Fetching cities for state:', stateId);
       const response = await fetch(`${API_URL}/api/admin/system-setup/cities/by-state/${stateId}`);
+      console.log('Cities response status:', response.status);
       if (response.ok) {
         const data = await response.json();
-        setCities(data);
+        console.log('Cities data received:', data);
+        // Cities API returns direct array, not paginated
+        setCities(Array.isArray(data) ? data : []);
+      } else {
+        console.error('Cities fetch failed with status:', response.status);
+        setCities([]);
       }
     } catch (err) {
       console.error('Error fetching cities:', err);
+      setCities([]);
     }
   };
 
   const fetchUserTypes = async () => {
     try {
+      console.log('Fetching user types from:', `${API_URL}/api/admin/system-setup/user-types/`);
       const response = await fetch(`${API_URL}/api/admin/system-setup/user-types/`);
+      console.log('User types response status:', response.status);
       if (response.ok) {
         const data = await response.json();
-        const activeTypes = data.filter(t => t.is_active);
+        console.log('User types data received:', data);
+        // User types API returns direct array, not paginated
+        const userTypesArray = Array.isArray(data) ? data : [];
+        const activeTypes = userTypesArray.filter(t => t.is_active);
         setUserTypes(activeTypes);
         if (activeTypes.length > 0 && !formData.organization_type) {
           setFormData(prev => ({ ...prev, organization_type: activeTypes[0].code }));
         }
+      } else {
+        console.error('User types fetch failed with status:', response.status);
+        setUserTypes([]);
       }
     } catch (err) {
       console.error('Error fetching user types:', err);
+      setUserTypes([]);
     }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log('handleChange called:', { name, value });
 
     if (name === 'country') {
-      const selectedCountry = countries.find(c => (c.id || c._id) === value);
+      console.log('Available countries:', countries);
+      const selectedCountry = Array.isArray(countries) ? countries.find(c => (c.id || c._id) === value) : null;
+      console.log('Selected country:', selectedCountry);
       if (selectedCountry) {
         setFormData(prev => ({
           ...prev,
@@ -212,30 +167,35 @@ export default function SignUp() {
       }
     }
     else if (name === 'state') {
-      const selectedState = states.find(s => (s.id || s._id) === value);
+      console.log('Available states:', states);
+      const selectedState = Array.isArray(states) ? states.find(s => (s._id || s.id) === value) : null;
+      console.log('Selected state:', selectedState);
       if (selectedState) {
-        setFormData(prev => ({
-          ...prev,
-          state: selectedState.name,
-          city: '',
-          latitude: selectedState.latitude || prev.latitude,
-          longitude: selectedState.longitude || prev.longitude
-        }));
-
-        // Update map if state has coords
-        if (selectedState.latitude && selectedState.longitude && markerRef.current) {
-          const newPos = { lat: selectedState.latitude, lng: selectedState.longitude };
-          markerRef.current.setPosition(newPos);
-          mapInstanceRef.current.setCenter(newPos);
+        // Update coordinates if state has them (map removed)
+        if (selectedState.latitude && selectedState.longitude) {
+          setFormData(prev => ({
+            ...prev,
+            state: selectedState.name,
+            city: '',
+            latitude: selectedState.latitude,
+            longitude: selectedState.longitude
+          }));
+        } else {
+          setFormData(prev => ({
+            ...prev,
+            state: selectedState.name,
+            city: ''
+          }));
         }
 
         setCities([]);
-        fetchCities(selectedState.id || selectedState._id);
+        fetchCities(selectedState._id || selectedState.id);
       } else {
         setFormData(prev => ({ ...prev, state: '', city: '' }));
       }
     }
     else if (name === 'city') {
+      console.log('City input changed:', value);
       setFormData(prev => ({ ...prev, city: value }));
     }
     else {
@@ -276,6 +236,9 @@ export default function SignUp() {
     setError('');
 
     try {
+      // Log the data being sent for debugging
+      console.log('Submitting signup data:', formData);
+      
       const response = await fetch(`${API_URL}/api/kanoongpt/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -283,11 +246,31 @@ export default function SignUp() {
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.detail || 'Signup failed');
+      console.log('Signup response:', data);
+      
+      if (!response.ok) {
+        // Handle validation errors from FastAPI
+        if (data.detail) {
+          if (Array.isArray(data.detail)) {
+            // FastAPI validation errors
+            const errorMessages = data.detail.map(err => `${err.loc.join('.')}: ${err.msg}`).join(', ');
+            throw new Error(errorMessages);
+          } else if (typeof data.detail === 'string') {
+            throw new Error(data.detail);
+          } else {
+            throw new Error(JSON.stringify(data.detail));
+          }
+        } else if (data.message) {
+          throw new Error(data.message);
+        } else {
+          throw new Error('Signup failed. Please check your information and try again.');
+        }
+      }
 
       sessionStorage.setItem('signupData', JSON.stringify(formData));
       router.push(`/auth/verify-otp?email=${encodeURIComponent(formData.email)}`);
     } catch (err) {
+      console.error('Signup error:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -378,12 +361,12 @@ export default function SignUp() {
             <Globe size={18} className="input-icon" />
             <select
               name="country"
-              value={countries.find(c => c.name === formData.country)?.id || countries.find(c => c.name === formData.country)?._id || ''}
+              value={Array.isArray(countries) ? (countries.find(c => c.name === formData.country)?.id || countries.find(c => c.name === formData.country)?._id || '') : ''}
               onChange={handleChange}
               className="input-field"
             >
               <option value="">Select Country</option>
-              {countries.map(c => <option key={c.id || c._id || c.code} value={c.id || c._id}>{c.name}</option>)}
+              {Array.isArray(countries) && countries.map(c => <option key={c.id || c._id || c.code} value={c.id || c._id}>{c.name}</option>)}
             </select>
           </div>
         </div>
@@ -394,13 +377,13 @@ export default function SignUp() {
             <MapPin size={18} className="input-icon" />
             <select
               name="state"
-              value={states.find(s => s.name === formData.state)?.id || states.find(s => s.name === formData.state)?._id || ''}
+              value={Array.isArray(states) ? (states.find(s => s.name === formData.state)?._id || states.find(s => s.name === formData.state)?.id || '') : ''}
               onChange={handleChange}
               disabled={!formData.country}
               className="input-field"
             >
               <option value="">Select State</option>
-              {states.map(s => <option key={s.id || s._id} value={s.id || s._id}>{s.name}</option>)}
+              {Array.isArray(states) && states.map(s => <option key={s._id || s.id} value={s._id || s.id}>{s.name}</option>)}
             </select>
           </div>
         </div>
@@ -408,35 +391,22 @@ export default function SignUp() {
         <div className="wizard-field full-width">
           <label className="form-label">City / Exact Location</label>
           <div className="input-wrapper">
-            <MapIcon size={18} className="input-icon" />
+            <MapPin size={18} className="input-icon" />
             <input
               type="text"
               name="city"
               value={formData.city}
               onChange={handleChange}
-              placeholder="e.g. Kathmandu, Baneshwor"
+              placeholder={formData.state ? "e.g. Kathmandu, Baneshwor" : "Please select a state first"}
               disabled={!formData.state}
               className="input-field"
             />
           </div>
-        </div>
-      </div>
-
-      <div className="map-integration-container">
-        <div className="map-controls-pnl">
-          <div className="coord-info">
-            <div className="coord-chip">Lat: <span>{formData.latitude.toFixed(6)}</span></div>
-            <div className="coord-chip">Lng: <span>{formData.longitude.toFixed(6)}</span></div>
-          </div>
-        </div>
-
-        <div className="map-picker-portal animate-fade-in">
-          <div className="map-search-box">
-            <Search size={18} />
-            <input id="map-search-input" type="text" placeholder="Search your specific location..." />
-          </div>
-          <div ref={mapRef} id="google-signup-map" className="google-map-node"></div>
-          <div className="map-hint">Click on map or drag marker to set exact location</div>
+          {!formData.state && (
+            <small style={{color: '#888', fontSize: '12px', marginTop: '4px'}}>
+              Select a state to enable city input
+            </small>
+          )}
         </div>
       </div>
 
@@ -465,7 +435,7 @@ export default function SignUp() {
               onChange={handleChange}
               className="input-field"
             >
-              {userTypes.map(t => <option key={t.code} value={t.code}>{t.name}</option>)}
+              {Array.isArray(userTypes) && userTypes.map(t => <option key={t.code} value={t.code}>{t.name}</option>)}
             </select>
           </div>
         </div>
@@ -613,6 +583,12 @@ export default function SignUp() {
 
         {/* Functional Right Side */}
         <main className="signup-main-area">
+          {/* Mobile Go Back Button */}
+          <button className="mobile-back-btn" onClick={() => window.history.back()}>
+            <ArrowLeft size={18} />
+            <span>Go Back</span>
+          </button>
+
           <div className="wizard-top-nav">
             <div className="wizard-logo-static">
               <span>Join KaanoonGPT</span>
