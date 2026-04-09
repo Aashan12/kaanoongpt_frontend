@@ -1,0 +1,178 @@
+.petition-preview-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ka-bg);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: var(--ka-card-bg);
+  border-bottom: 1px solid var(--ka-border);
+}
+
+.preview-header h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--ka-text);
+}
+
+.preview-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.preview-actions button {
+  padding: 0.5rem 0.875rem;
+  background: var(--ka-card-bg);
+  border: 1px solid var(--ka-border);
+  border-radius: 6px;
+  color: var(--ka-text);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.preview-actions button:hover {
+  background: var(--ka-border);
+}
+
+.preview-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  background: white;
+  color: #000;
+}
+
+.petition-document {
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  line-height: 1.8;
+  font-size: 14px;
+}
+
+.document-header {
+  text-align: right;
+  margin-bottom: 2rem;
+  font-size: 13px;
+}
+
+.document-title {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.document-title h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0.5rem 0;
+}
+
+.document-title .underline {
+  text-decoration: underline;
+  margin: 0.5rem 0;
+}
+
+.party-section {
+  margin: 2rem 0;
+  display: flex;
+  gap: 2rem;
+}
+
+.party-label {
+  min-width: 150px;
+  font-weight: 600;
+}
+
+.party-details {
+  flex: 1;
+  text-align: right;
+}
+
+.case-title {
+  text-align: center;
+  margin: 2rem 0;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.petition-section {
+  margin: 1.5rem 0;
+  text-align: justify;
+}
+
+.section-filled {
+  background: rgba(34, 197, 94, 0.1);
+  padding: 0.5rem;
+  border-radius: 4px;
+  border-left: 3px solid #22c55e;
+  animation: highlightFade 0.5s ease;
+}
+
+@keyframes highlightFade {
+  from {
+    background: rgba(34, 197, 94, 0.3);
+  }
+  to {
+    background: rgba(34, 197, 94, 0.1);
+  }
+}
+
+.section-empty {
+  color: #999;
+  font-style: italic;
+}
+
+.blank-field {
+  display: inline-block;
+  min-width: 100px;
+  border-bottom: 1px dotted #999;
+  color: #999;
+  padding: 0 0.5rem;
+}
+
+.filled-field {
+  display: inline-block;
+  background: rgba(59, 130, 246, 0.1);
+  padding: 0 0.5rem;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+.signature-section {
+  margin-top: 3rem;
+  text-align: right;
+}
+
+.date-section {
+  margin-top: 2rem;
+  text-align: right;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .preview-content {
+    padding: 1rem;
+  }
+
+  .petition-document {
+    font-size: 13px;
+  }
+
+  .party-section {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .party-details {
+    text-align: left;
+  }
+}

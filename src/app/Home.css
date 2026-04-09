@@ -35,7 +35,7 @@
 .shape-1 {
   width: 600px;
   height: 600px;
-  background: #F0DBCC;
+  background: #f0dbcc;
   top: -300px;
   right: -300px;
 }
@@ -59,7 +59,6 @@
 }
 
 @keyframes float {
-
   0%,
   100% {
     transform: translate(0, 0);
@@ -84,7 +83,7 @@
   width: 50px;
   height: 50px;
   border: 3px solid rgba(240, 219, 204, 0.1);
-  border-top: 3px solid #F0DBCC;
+  border-top: 3px solid #f0dbcc;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -175,13 +174,13 @@
 }
 
 .nav-link::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
   width: 0;
   height: 2px;
-  background: #F0DBCC;
+  background: #f0dbcc;
   transition: width 0.3s ease;
 }
 
@@ -224,12 +223,12 @@
 }
 
 .btn-signup {
-  background: #F0DBCC;
+  background: #f0dbcc;
   color: #1e293b;
 }
 
 .btn-signup:hover {
-  background: #E5CDB7;
+  background: #e5cdb7;
   transform: translateY(-1px);
 }
 
@@ -279,7 +278,7 @@
 
 .btn-primary {
   padding: 1.125rem 2.5rem;
-  background: #F0DBCC;
+  background: #f0dbcc;
   color: #1e293b;
   border: none;
   border-radius: 10px;
@@ -294,7 +293,7 @@
 }
 
 .btn-primary:hover {
-  background: #E5CDB7;
+  background: #e5cdb7;
   transform: translateY(-3px);
   box-shadow: 0 10px 30px rgba(240, 219, 204, 0.3);
 }
@@ -433,13 +432,18 @@
 }
 
 .feature-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(240, 219, 204, 0.1), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(240, 219, 204, 0.1),
+    transparent
+  );
   transition: left 0.6s ease;
   pointer-events: none;
 }
@@ -475,7 +479,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #F0DBCC;
+  color: #f0dbcc;
   transition: all 0.3s ease;
 }
 
@@ -489,6 +493,13 @@
   font-weight: 700;
   margin: 0;
   color: white;
+}
+
+.feature-nepali {
+  color: #8b5cf6 !important;
+  font-size: 0.95rem !important;
+  margin: 0.5rem 0 !important;
+  font-weight: 500 !important;
 }
 
 .feature-card p {
@@ -515,10 +526,10 @@
 }
 
 .feature-checklist li::before {
-  content: '✓';
+  content: "✓";
   position: absolute;
   left: 0;
-  color: #F0DBCC;
+  color: #f0dbcc;
   font-weight: 700;
   font-size: 1.1rem;
 }
@@ -531,7 +542,7 @@
   border-radius: 8px;
   font-size: 0.8rem;
   font-weight: 700;
-  color: #F0DBCC;
+  color: #f0dbcc;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-top: 0.5rem;
@@ -638,7 +649,7 @@
   left: 50%;
   transform: translateX(-50%);
   padding: 0.5rem 1rem;
-  background: #F0DBCC;
+  background: #f0dbcc;
   border-radius: 50px;
   font-size: 0.75rem;
   font-weight: 700;
@@ -655,7 +666,7 @@
 .price {
   font-size: 2.5rem;
   font-weight: 900;
-  color: #F0DBCC;
+  color: #f0dbcc;
   margin-bottom: 0.5rem;
 }
 
@@ -689,7 +700,7 @@
 }
 
 .price-features li svg {
-  color: #F0DBCC;
+  color: #f0dbcc;
   flex-shrink: 0;
 }
 
@@ -708,12 +719,12 @@
 }
 
 .pricing-btn-primary {
-  background: #F0DBCC;
+  background: #f0dbcc;
   color: #1e293b;
 }
 
 .pricing-btn-primary:hover {
-  background: #E5CDB7;
+  background: #e5cdb7;
   transform: translateY(-2px);
 }
 
@@ -727,6 +738,104 @@
   border-color: rgba(148, 163, 184, 0.6);
   background: rgba(148, 163, 184, 0.05);
   transform: translateY(-2px);
+}
+
+.price-alt {
+  font-size: 1rem;
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+/* Payment Methods */
+.payment-methods {
+  margin-top: 3.5rem;
+  text-align: center;
+}
+
+.payment-methods-title {
+  font-size: 0.9rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 1.25rem;
+  font-weight: 600;
+}
+
+.payment-methods-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.payment-method-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.payment-method-logo {
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+}
+
+.payment-method-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(148, 163, 184, 0.2);
+  background: #fff;
+}
+
+.payment-method-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.stripe-logo {
+  background: linear-gradient(135deg, #635bff, #4f46e5);
+  color: #fff;
+}
+
+.payment-method-label {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.payment-method-divider {
+  width: 1px;
+  height: 40px;
+  background: rgba(148, 163, 184, 0.15);
+}
+
+.payment-method-cards {
+  display: flex;
+  gap: 6px;
+}
+
+.card-badge {
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.card-badge.visa {
+  background: #1a1f71;
+  color: #fff;
+}
+
+.card-badge.mastercard {
+  background: #eb001b;
+  color: #fff;
 }
 
 /* CTA */
@@ -946,7 +1055,11 @@
   .feature-card {
     position: relative;
     padding: 2rem 1.5rem;
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(30, 41, 59, 0.3) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(30, 41, 59, 0.6) 0%,
+      rgba(30, 41, 59, 0.3) 100%
+    );
     border: 1px solid rgba(240, 219, 204, 0.15);
     border-radius: 20px;
     overflow: hidden;
@@ -956,19 +1069,31 @@
   }
 
   .feature-card:nth-child(1) {
-    background: linear-gradient(135deg, rgba(240, 219, 204, 0.15) 0%, rgba(30, 41, 59, 0.3) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(240, 219, 204, 0.15) 0%,
+      rgba(30, 41, 59, 0.3) 100%
+    );
   }
 
   .feature-card:nth-child(2) {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(30, 41, 59, 0.3) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.15) 0%,
+      rgba(30, 41, 59, 0.3) 100%
+    );
   }
 
   .feature-card:nth-child(3) {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(30, 41, 59, 0.3) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(16, 185, 129, 0.15) 0%,
+      rgba(30, 41, 59, 0.3) 100%
+    );
   }
 
   .feature-card::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -50%;
     left: -50%;
@@ -1004,7 +1129,8 @@
   }
 
   @keyframes iconFloat {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateY(0) scale(1);
       box-shadow: 0 8px 20px rgba(240, 219, 204, 0.15);
     }

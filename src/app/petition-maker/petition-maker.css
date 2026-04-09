@@ -1,0 +1,1557 @@
+/* ─── Petition Maker Reset ─── */
+.petition-maker {
+  min-height: 100vh;
+  background: var(--ka-bg);
+  color: var(--ka-text);
+}
+
+.petition-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ka-bg);
+}
+
+.petition-loading-text {
+  color: var(--ka-text-muted);
+  font-size: 1rem;
+}
+
+/* ─── Petition View Container ─── */
+.petition-view {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ka-bg);
+  overflow: hidden;
+  position: relative;
+}
+
+/* ─── Compact Header ─── */
+.petition-header-simple {
+  padding: 1.25rem 2rem;
+  text-align: center;
+  border-bottom: none;
+  background: var(--ka-bg);
+  flex-shrink: 0;
+}
+
+.petition-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ka-text);
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.02em;
+}
+
+.petition-subtitle {
+  color: var(--ka-text-secondary);
+  font-size: 0.875rem;
+}
+
+/* ─── Compact Progress Bar ─── */
+.petition-progress-container {
+  background: var(--ka-bg);
+  border-bottom: none;
+  border-top: none;
+  padding: 2rem 2rem 1.5rem;
+  flex-shrink: 0;
+  position: relative;
+  min-height: 100px;
+  overflow: visible;
+}
+
+/* Preview Toggle Button in Header */
+.preview-toggle-btn-header {
+  position: absolute;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.625rem 1.25rem;
+  background: transparent;
+  color: var(--ka-accent);
+  border: 2px solid var(--ka-accent);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.preview-toggle-btn-header:hover {
+  background: var(--ka-accent-glow);
+  transform: translateY(-50%) translateY(-2px);
+  box-shadow: 0 4px 12px var(--ka-accent-glow);
+}
+
+.preview-toggle-btn-header.hide {
+  background: transparent;
+  color: var(--ka-text-secondary);
+  border-color: var(--ka-border);
+}
+
+.preview-toggle-btn-header.hide:hover {
+  background: var(--ka-bg-secondary);
+  border-color: var(--ka-accent);
+  color: var(--ka-accent);
+}
+
+.progress-bar {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0;
+  overflow: visible;
+  background: transparent;
+}
+
+.progress-bar::before,
+.progress-bar::after {
+  display: none !important;
+}
+
+.progress-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  flex-wrap: nowrap;
+  gap: 0;
+  background: transparent;
+}
+
+.progress-steps::before,
+.progress-steps::after {
+  display: none !important;
+}
+
+.progress-step-wrapper {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  position: relative;
+}
+
+.progress-step-wrapper:last-child {
+  flex: 0 0 auto;
+}
+
+.progress-step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+  min-width: fit-content;
+}
+
+.progress-step-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--ka-bg-secondary);
+  border: 2px solid var(--ka-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ka-text-muted);
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.progress-step-circle.current {
+  background: var(--ka-accent-glow);
+  border-color: var(--ka-accent);
+  color: var(--ka-accent);
+  box-shadow: 0 0 0 4px var(--ka-accent-glow);
+  transform: scale(1.1);
+}
+
+.progress-step-circle.completed {
+  background: #10b981;
+  border-color: #10b981;
+  color: white;
+}
+
+.progress-step-label {
+  font-size: 0.75rem;
+  color: var(--ka-text-muted);
+  white-space: nowrap;
+  font-weight: 500;
+  text-align: center;
+}
+
+.progress-step-circle.current + .progress-step-label,
+.progress-step-circle.completed + .progress-step-label {
+  color: var(--ka-text);
+  font-weight: 600;
+}
+
+.progress-step-line {
+  flex: 1;
+  height: 2px;
+  background: var(--ka-border);
+  margin: 0 12px;
+  margin-bottom: 24px;
+  transition: all 0.3s;
+}
+
+.progress-step-line.completed {
+  background: #10b981;
+}
+
+
+/* ─── Scrollable Main Content ─── */
+.petition-main {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+  position: relative;
+}
+
+.petition-content-wrapper {
+  flex: 1 1 auto;
+  display: flex;
+  overflow: hidden;
+  min-height: 0;
+  max-height: 100%;
+  position: relative;
+}
+
+.petition-content-wrapper.split-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.petition-content-wrapper.full-width {
+  display: flex;
+}
+
+.petition-content-wrapper.full-width .petition-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.petition-content {
+  flex: 1 1 auto;
+  overflow-y: scroll !important;
+  overflow-x: hidden;
+  padding: 2rem;
+  height: 100%;
+  max-height: 100%;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Custom Scrollbar - Same as Assistant */
+.petition-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.petition-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.petition-content::-webkit-scrollbar-thumb {
+  background: var(--ka-border);
+  border-radius: 3px;
+}
+
+.petition-content::-webkit-scrollbar-thumb:hover {
+  background: var(--ka-text-muted);
+}
+
+.petition-placeholder {
+  text-align: center;
+  padding: 80px 24px;
+  color: var(--ka-text-muted);
+  font-size: 1.1rem;
+}
+
+.petition-placeholder-sub {
+  margin-top: 12px;
+  font-size: 0.95rem;
+  color: var(--ka-text-secondary);
+}
+
+.petition-placeholder strong {
+  color: var(--ka-accent);
+}
+
+/* ─── Case Type Selector ─── */
+.case-type-selector {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.case-type-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.case-type-header h2 {
+  font-size: 1.75rem;
+  color: var(--ka-text);
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.case-type-header p {
+  color: var(--ka-text-secondary);
+  font-size: 0.95rem;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.case-type-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+.case-type-card {
+  background: var(--ka-bg-secondary);
+  border: 1.5px solid var(--ka-border);
+  border-radius: 12px;
+  padding: 1.75rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 220px;
+}
+
+.case-type-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--case-color);
+  transform: scaleX(0);
+  transition: transform 0.25s ease;
+}
+
+.case-type-card:hover::before {
+  transform: scaleX(1);
+}
+
+.case-type-card:hover {
+  border-color: var(--case-color);
+  transform: translateY(-4px);
+  background: var(--ka-bg-secondary);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.case-type-card.selected {
+  border-color: #10b981;
+  background: var(--ka-bg-secondary);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);
+  transform: translateY(-2px);
+}
+
+.case-type-card.selected::before {
+  transform: scaleX(1);
+  background: #10b981;
+}
+
+.case-type-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  background: var(--ka-accent-glow);
+  color: var(--case-color);
+  transition: all 0.25s ease;
+}
+
+.case-type-card:hover .case-type-icon {
+  transform: scale(1.08);
+  background: var(--ka-accent-glow);
+}
+
+.case-type-card.selected .case-type-icon {
+  background: #10b981;
+  color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.case-type-card h3 {
+  font-size: 1.1rem;
+  color: var(--ka-text);
+  margin-bottom: 0.35rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.case-type-nepali {
+  color: var(--ka-accent);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.case-type-description {
+  color: var(--ka-text-secondary);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.case-type-selected-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #10b981;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  animation: badge-pop 0.3s ease;
+}
+
+@keyframes badge-pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ─── Navigation Buttons ─── */
+.petition-nav-buttons {
+  display: flex;
+  gap: 12px;
+  padding: 1.25rem 2rem;
+  background: var(--ka-bg);
+  flex-shrink: 0;
+}
+
+.petition-nav-spacer {
+  flex: 1;
+}
+
+.petition-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.petition-btn-primary {
+  background: var(--ka-accent);
+  color: var(--ka-bg);
+}
+
+.petition-btn-primary:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--ka-accent-glow);
+}
+
+.petition-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.petition-btn-secondary {
+  background: transparent;
+  border: 1.5px solid var(--ka-border);
+  color: var(--ka-text-secondary);
+}
+
+.petition-btn-secondary:hover {
+  border-color: var(--ka-accent);
+  color: var(--ka-accent);
+  background: var(--ka-accent-glow);
+}
+
+/* ─── Validation Messages ─── */
+.validation-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-top: 6px;
+}
+
+.validation-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+.validation-success {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+}
+
+.validation-info {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #60a5fa;
+}
+
+.validation-summary {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.validation-summary-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #f87171;
+  margin-bottom: 12px;
+}
+
+.validation-summary-header h4 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.validation-summary-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.validation-summary-list li {
+  color: #f87171;
+  font-size: 0.9rem;
+  padding: 6px 0;
+  padding-left: 24px;
+  position: relative;
+}
+
+.validation-summary-list li:before {
+  content: '•';
+  position: absolute;
+  left: 8px;
+}
+
+/* ─── Light Mode Support ─── */
+.ka-page.light .case-type-card {
+  background: #fafafa;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.ka-page.light .case-type-card:hover {
+  background: #fafafa;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.ka-page.light .case-type-card.selected {
+  background: #fafafa;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+  border-color: #10b981;
+}
+
+.ka-page.light .case-type-icon {
+  background: rgba(212, 165, 116, 0.12);
+}
+
+.ka-page.light .case-type-card:hover .case-type-icon {
+  background: rgba(212, 165, 116, 0.18);
+}
+
+.ka-page.light .petition-header-simple,
+.ka-page.light .petition-progress-container,
+.ka-page.light .petition-nav-buttons {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.ka-page.light .preview-toggle-btn-header {
+  border-color: #c4956a;
+  color: #c4956a;
+}
+
+.ka-page.light .preview-toggle-btn-header:hover {
+  background: rgba(212, 165, 116, 0.08);
+}
+
+.ka-page.light .preview-toggle-btn-header.hide {
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #3d3d3d;
+}
+
+.ka-page.light .preview-toggle-btn-header.hide:hover {
+  background: rgba(212, 165, 116, 0.08);
+  border-color: #c4956a;
+  color: #c4956a;
+}
+
+.ka-page.light .petition-btn-secondary {
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #3d3d3d;
+}
+
+.ka-page.light .petition-btn-secondary:hover {
+  border-color: #c4956a;
+  color: #c4956a;
+  background: rgba(212, 165, 116, 0.08);
+}
+
+.ka-page.light .progress-step-circle {
+  background: #f5f5f5;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.ka-page.light .progress-step-circle.current {
+  background: rgba(212, 165, 116, 0.15);
+  border-color: #d4a574;
+  color: #d4a574;
+  box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
+}
+
+.ka-page.light .progress-step-circle.completed {
+  background: #10b981;
+  border-color: #10b981;
+  color: white;
+}
+
+.ka-page.light .progress-step-line.completed {
+  background: #10b981;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1200px) {
+  .case-type-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  
+  .petition-content-wrapper.split-view {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .case-type-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .case-type-card {
+    min-height: 200px;
+    padding: 1.5rem 1rem;
+  }
+  
+  .case-type-icon {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (max-width: 768px) {
+  .petition-header-simple {
+    padding: 1rem;
+  }
+
+  .petition-title {
+    font-size: 1.25rem;
+  }
+  
+  .petition-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .petition-progress-container {
+    padding: 0.875rem 1rem;
+  }
+
+  .progress-step-label {
+    font-size: 0.6rem;
+    max-width: 70px;
+  }
+
+  .progress-step-circle {
+    width: 26px;
+    height: 26px;
+    font-size: 0.7rem;
+  }
+
+  .progress-step-line {
+    margin: 0 4px;
+    margin-bottom: 20px;
+    min-width: 10px;
+  }
+
+  .petition-content {
+    padding: 1.5rem 1rem;
+  }
+  
+  /* Stack form and preview vertically on mobile */
+  .petition-content-wrapper.split-view {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+
+  .case-type-grid {
+    grid-template-columns: 1fr;
+    gap: 0.875rem;
+  }
+  
+  .case-type-card {
+    min-height: 180px;
+    padding: 1.25rem 1rem;
+  }
+  
+  .case-type-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .case-type-header p {
+    font-size: 0.875rem;
+  }
+
+  .petition-nav-buttons {
+    flex-direction: column-reverse;
+    padding: 1rem;
+  }
+
+  .petition-nav-spacer {
+    display: none;
+  }
+
+  .petition-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+
+
+/* Form Sections */
+.form-section {
+  background: var(--ka-bg-secondary);
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  border: 1.5px solid var(--ka-border);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-section h3 {
+  color: var(--ka-text);
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.section-description {
+  color: var(--ka-text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+  padding: 0.875rem 1rem;
+  background: rgba(212, 165, 116, 0.08);
+  border-radius: 8px;
+  border-left: 3px solid var(--ka-accent);
+  line-height: 1.6;
+}
+
+.form-section h4 {
+  color: var(--ka-accent);
+  margin-top: 1.25rem;
+  margin-bottom: 0.875rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--ka-text);
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid var(--ka-border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  background: transparent !important;
+  color: var(--ka-text);
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--ka-accent);
+  box-shadow: 0 0 0 3px var(--ka-accent-glow);
+  background: transparent !important;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--ka-text-secondary);
+  opacity: 0.6;
+}
+
+.form-group small {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--ka-text-secondary);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* Guardian and Maiden Sections */
+.guardian-section,
+.maiden-section {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background: var(--ka-bg);
+  border-radius: 8px;
+  border-left: 3px solid var(--ka-accent);
+}
+
+/* Section Header with Button */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.section-header h3 {
+  margin-bottom: 0;
+}
+
+.btn-add {
+  background: var(--ka-accent);
+  color: var(--ka-bg);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+
+.btn-add:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--ka-accent-glow);
+}
+
+/* Witness and Evidence Cards */
+.witness-card,
+.evidence-card {
+  background: var(--ka-bg);
+  padding: 1.25rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1.5px solid var(--ka-border);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--ka-border);
+}
+
+.card-header h4 {
+  margin: 0;
+  color: var(--ka-text);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.btn-remove {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-remove:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+.empty-message {
+  text-align: center;
+  color: var(--ka-text-secondary);
+  padding: 2rem;
+  background: var(--ka-bg);
+  border-radius: 8px;
+  border: 2px dashed var(--ka-border);
+  font-size: 0.9rem;
+}
+
+/* Nepali Marker */
+.nepali-marker {
+  display: inline-block;
+  background: var(--ka-accent);
+  color: var(--ka-bg);
+  width: 26px;
+  height: 26px;
+  line-height: 26px;
+  text-align: center;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* Review Section */
+.petition-review {
+  background: var(--ka-bg-secondary);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1.5px solid var(--ka-border);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.petition-review h2 {
+  color: var(--ka-accent);
+  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.petition-review p {
+  color: var(--ka-text-secondary);
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
+
+.review-placeholder {
+  text-align: center;
+  padding: 3rem;
+  background: var(--ka-bg);
+  border-radius: 8px;
+  border: 2px dashed var(--ka-border);
+}
+
+.review-placeholder p {
+  color: var(--ka-text-secondary);
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Address Helper */
+.address-helper {
+  background: var(--ka-bg);
+  padding: 1.25rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--ka-border);
+  margin-top: 1rem;
+}
+
+.required {
+  color: #f87171;
+}
+
+/* Light Mode Form Support */
+.ka-page.light .form-section,
+.ka-page.light .petition-review {
+  background: #fafafa;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.ka-page.light .form-group input,
+.ka-page.light .form-group select,
+.ka-page.light .form-group textarea {
+  background: transparent !important;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.ka-page.light .form-group input:focus,
+.ka-page.light .form-group select:focus,
+.ka-page.light .form-group textarea:focus {
+  border-color: #c4956a;
+  box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.12);
+  background: transparent !important;
+}
+
+.ka-page.light .guardian-section,
+.ka-page.light .maiden-section,
+.ka-page.light .witness-card,
+.ka-page.light .evidence-card,
+.ka-page.light .address-helper,
+.ka-page.light .review-placeholder {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.ka-page.light .empty-message {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive Forms */
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-section {
+    padding: 1.25rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.875rem;
+  }
+
+  .btn-add {
+    width: 100%;
+  }
+  
+  .petition-review {
+    padding: 1.5rem;
+  }
+}
+
+/* AI Narrative Generator Styles */
+.ai-narrative-section {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%);
+  border: 2px solid var(--accent-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.ai-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.success-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #10b981;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+.streaming-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 0.5rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.ai-generate-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.ai-generate-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+}
+
+.ai-generate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.ai-generate-btn svg {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2) rotate(180deg);
+    opacity: 0.8;
+  }
+}
+
+.help-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+.section-description {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem;
+  background: var(--bg-secondary);
+  border-radius: 6px;
+  border-left: 3px solid var(--accent-color);
+}
+
+/* Light mode adjustments */
+.light .ai-narrative-section {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%);
+}
+
+.light .section-description {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* Compact Form Styles */
+.compact-form {
+  max-width: 800px;
+}
+
+.compact-form .form-description {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 1.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.compact-input {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.court-preview {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border-left: 3px solid var(--accent-color);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.preview-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.preview-value {
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* Light mode adjustments */
+.light .court-preview {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* 3-Column Grid Layout */
+.form-row-3 {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Divorce fields - equal width 3 columns */
+.form-row-3-divorce {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-row-3-divorce .form-group {
+  margin-bottom: 0;
+}
+
+.section-note {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  font-style: italic;
+}
+
+.guardian-section,
+.maiden-section {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--ka-border);
+}
+
+/* Remove label spacing when no labels */
+.compact-form .form-group {
+  margin-bottom: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-row-3 {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .form-row-3-divorce {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .form-row-3-divorce .form-group {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Split view for Step 5 - Form + Preview */
+.petition-step-with-preview {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.petition-form-column {
+  flex: 1;
+  min-width: 0;
+}
+
+.petition-preview-column {
+  flex: 1;
+  min-width: 0;
+  position: sticky;
+  top: 2rem;
+  align-self: flex-start;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+}
+
+/* Responsive - stack on smaller screens */
+@media (max-width: 1200px) {
+  .petition-step-with-preview {
+    flex-direction: column;
+  }
+  
+  .petition-preview-column {
+    position: static;
+    max-height: none;
+  }
+}
+
+/* Review Page Styling */
+.petition-review {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.review-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  margin-bottom: 2rem !important;
+  padding: 1.5rem !important;
+  background: var(--ka-surface) !important;
+  border-radius: 12px !important;
+  border: 1px solid var(--ka-border) !important;
+}
+
+.review-header h2 {
+  margin: 0 0 0.5rem 0 !important;
+  color: var(--ka-text) !important;
+  font-size: 1.75rem !important;
+}
+
+.review-header p {
+  margin: 0 !important;
+  color: var(--ka-text-secondary) !important;
+  font-size: 0.95rem !important;
+}
+
+.review-actions {
+  display: flex !important;
+  gap: 1rem !important;
+  flex-shrink: 0 !important;
+}
+
+.review-actions .petition-btn {
+  white-space: nowrap !important;
+  padding: 0.875rem 1.5rem !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+/* Responsive review header */
+@media (max-width: 768px) {
+  .review-header {
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+  }
+  
+  .review-actions {
+    width: 100% !important;
+  }
+  
+  .review-actions .petition-btn {
+    flex: 1 !important;
+  }
+}
+
+/* Step 6 Review - Full Screen Layout */
+.petition-review-fullscreen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.review-actions-bar {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: var(--ka-surface);
+  border-bottom: 1px solid var(--ka-border);
+  justify-content: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.review-document-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  background: var(--ka-bg);
+  display: flex;
+  justify-content: center;
+}
+
+.review-document-container .petition-preview-container {
+  max-width: 900px;
+  width: 100%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Hide preview header controls in Step 6 */
+.review-document-container .petition-preview-header {
+  display: none;
+}
+
+/* Make document editable in review */
+.review-document-container .petition-document {
+  background: white;
+  padding: 2rem;
+}
+
+.review-document-container .a4-page {
+  margin-bottom: 2rem;
+  page-break-after: always;
+}
+
+/* Print styles */
+@media print {
+  .review-actions-bar {
+    display: none !important;
+  }
+  
+  .review-document-container {
+    padding: 0 !important;
+    background: white !important;
+  }
+  
+  .petition-preview-container {
+    box-shadow: none !important;
+  }
+}
+
+/* Print Styles - Only show the document */
+@media print {
+  /* Hide everything */
+  body * {
+    visibility: hidden !important;
+  }
+  
+  /* Show only the petition document */
+  .petition-document,
+  .petition-document * {
+    visibility: visible !important;
+  }
+  
+  .a4-page,
+  .a4-page * {
+    visibility: visible !important;
+  }
+  
+  /* Position document at top left */
+  .petition-document {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* Hide all UI elements */
+  .petition-header,
+  .petition-progress-container,
+  .petition-nav-buttons,
+  .petition-preview-header,
+  .preview-controls,
+  .review-actions-bar,
+  button,
+  nav,
+  aside,
+  header,
+  .sidebar {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  
+  /* Ensure A4 pages print correctly */
+  .a4-page {
+    page-break-after: always !important;
+    margin: 0 !important;
+    padding: 2rem !important;
+    background: white !important;
+    box-shadow: none !important;
+  }
+  
+  /* Remove last page break */
+  .a4-page:last-child {
+    page-break-after: avoid !important;
+  }
+}

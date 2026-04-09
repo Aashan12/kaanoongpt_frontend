@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { MessageSquare, BarChart3, ChevronRight, Gavel, ArrowRight, CheckCircle, Volume2, VolumeX } from 'lucide-react';
+import { MessageSquare, BarChart3, ChevronRight, Gavel, ArrowRight, CheckCircle, Volume2, VolumeX, FileText } from 'lucide-react';
 import { useAuth } from './context/AuthContext';
 import './Home.css';
 
@@ -24,7 +24,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!loading && isAuthenticated) {
-      router.push('/dashboard');
+      router.push('/assistant');
     }
   }, [loading, isAuthenticated, router]);
 
@@ -181,19 +181,25 @@ export default function Home() {
               </ul>
             </Link>
 
-            {/* Case Predictor */}
-            <div 
-              className="feature-card feature-card-coming bento-card"
+            {/* Petition Maker */}
+            <Link 
+              href="/auth/login" 
+              className="feature-card bento-card"
               ref={(el) => (featureCardsRef.current[2] = el)}
               data-direction="left"
             >
               <div className="feature-icon-wrapper">
-                <BarChart3 size={32} />
+                <FileText size={32} />
               </div>
-              <h3>Case Predictor</h3>
-              <p>Get AI predictions of your winning chances based on historical precedents.</p>
-              <div className="coming-soon-badge">Coming Soon</div>
-            </div>
+              <h3>Petition Maker</h3>
+              <p className="feature-nepali">फिरादपत्र</p>
+              <p>Generate court-ready firad patra for civil cases in minutes.</p>
+              <ul className="feature-checklist">
+                <li>5 case types</li>
+                <li>Auto-translation</li>
+                <li>PDF download</li>
+              </ul>
+            </Link>
           </div>
         </div>
       </section>
@@ -242,9 +248,10 @@ export default function Home() {
               <div className="price">₹0<span>/month</span></div>
               <p className="price-desc">Perfect for getting started</p>
               <ul className="price-features">
-                <li><CheckCircle size={16} /> 10 questions/month</li>
+                <li><CheckCircle size={16} /> 50 credits on signup</li>
                 <li><CheckCircle size={16} /> Basic Ask the Law</li>
                 <li><CheckCircle size={16} /> 1 Courtroom Simulation</li>
+                <li><CheckCircle size={16} /> Community support</li>
               </ul>
               <Link href="/auth/signup" className="pricing-btn pricing-btn-secondary">
                 Get Started
@@ -255,33 +262,59 @@ export default function Home() {
             <div className="pricing-card pricing-card-featured">
               <div className="pricing-badge">Most Popular</div>
               <h3>Pro</h3>
-              <div className="price">₹299<span>/month</span></div>
+              <div className="price">₹299 <span className="price-alt">/ $2.99</span></div>
               <p className="price-desc">For serious legal needs</p>
               <ul className="price-features">
-                <li><CheckCircle size={16} /> Unlimited questions</li>
-                <li><CheckCircle size={16} /> Advanced Ask the Law</li>
+                <li><CheckCircle size={16} /> 1,000 credits</li>
+                <li><CheckCircle size={16} /> Unlimited Ask the Law</li>
                 <li><CheckCircle size={16} /> Unlimited Simulations</li>
                 <li><CheckCircle size={16} /> Priority support</li>
               </ul>
               <Link href="/auth/signup" className="pricing-btn pricing-btn-primary">
-                Start Free Trial
+                Buy Pro
               </Link>
             </div>
 
             {/* Enterprise */}
             <div className="pricing-card">
               <h3>Enterprise</h3>
-              <div className="price">Custom</div>
+              <div className="price">₹999 <span className="price-alt">/ $9.99</span></div>
               <p className="price-desc">For organizations & firms</p>
               <ul className="price-features">
+                <li><CheckCircle size={16} /> 2,000 credits</li>
                 <li><CheckCircle size={16} /> Everything in Pro</li>
                 <li><CheckCircle size={16} /> Team accounts</li>
-                <li><CheckCircle size={16} /> API access</li>
                 <li><CheckCircle size={16} /> Dedicated support</li>
               </ul>
-              <button className="pricing-btn pricing-btn-secondary">
-                Contact Sales
-              </button>
+              <Link href="/auth/signup" className="pricing-btn pricing-btn-secondary">
+                Buy Enterprise
+              </Link>
+            </div>
+          </div>
+
+          {/* Payment Methods */}
+          <div className="payment-methods">
+            <p className="payment-methods-title">Available Payment Methods</p>
+            <div className="payment-methods-row">
+              <div className="payment-method-item">
+                <div className="payment-method-circle">
+                  <img src="/esewa.jpg" alt="eSewa" className="payment-method-img" />
+                </div>
+                <span className="payment-method-label">eSewa (Nepal)</span>
+              </div>
+              <div className="payment-method-divider"></div>
+              <div className="payment-method-item">
+                <div className="payment-method-logo stripe-logo">Stripe</div>
+                <span className="payment-method-label">International</span>
+              </div>
+              <div className="payment-method-divider"></div>
+              <div className="payment-method-item">
+                <div className="payment-method-cards">
+                  <span className="card-badge visa">VISA</span>
+                  <span className="card-badge mastercard">MC</span>
+                </div>
+                <span className="payment-method-label">via Stripe</span>
+              </div>
             </div>
           </div>
         </div>

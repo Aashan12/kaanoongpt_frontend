@@ -66,8 +66,8 @@ export function AuthProvider({ children }) {
         setLoading(false);
         
         // Redirect after setting user
-        console.log('🚀 Redirecting to dashboard...');
-        router.push('/dashboard');
+        console.log('🚀 Redirecting to assistant...');
+        router.push('/assistant');
       } else {
         throw new Error('Failed to fetch user data');
       }

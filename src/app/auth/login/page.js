@@ -22,7 +22,7 @@ export default function Login() {
   useEffect(() => {
     if (isAuthenticated) {
       console.log('✅ Already authenticated, redirecting...');
-      router.push('/dashboard');
+      router.push('/assistant');
     }
   }, [isAuthenticated, router]);
 
@@ -66,8 +66,8 @@ export default function Login() {
       login(data.access_token, data.user);
 
       setTimeout(() => {
-        console.log('🚀 Redirecting to dashboard...');
-        router.push('/dashboard');
+        console.log('🚀 Redirecting to assistant...');
+        router.push('/assistant');
       }, 100);
 
     } catch (err) {
@@ -98,23 +98,13 @@ export default function Login() {
         background: '#0f172a',
         color: 'white'
       }}>
-        <p>Redirecting to dashboard...</p>
+        <p>Redirecting to assistant...</p>
       </div>
     );
   }
 
   return (
     <div className="login-wrapper split-layout">
-      {/* Global Brand Header */}
-      <nav className="master-auth-nav">
-        <div className="master-nav-content">
-          <Link href="/" className="master-logo-link">
-            <img src="/logo.jpeg" alt="KAANOONGPT" />
-            <span>KAANOONGPT</span>
-          </Link>
-        </div>
-      </nav>
-
       <div className="auth-split-container">
         {/* Cinematic Left Sidebar */}
         <aside className="login-sidebar">

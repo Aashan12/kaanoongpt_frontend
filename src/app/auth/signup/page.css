@@ -1,6 +1,6 @@
 /* Advanced Signup Layout - Dark Navy Premium Edition */
 :root {
-  --primary-navy: #0f172a;
+  --primary-navy: #0e2030;
   --secondary-navy: #1e293b;
   --primary-indigo: #4338ca;
   --accent-blue: #3b82f6;
@@ -18,43 +18,27 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #0f172a;
-  /* Midnight Fallback */
+  background: #0e2030;
   overflow: hidden;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  padding: 0;
 }
 
-/* Master Navigation - Full Width Top */
+/* Master Navigation - Removed */
 .master-auth-nav {
-  width: 100%;
-  height: 80px;
-  background: #0f172a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  z-index: 1000;
-  flex-shrink: 0;
+  display: none;
 }
 
 .master-logo-link {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-decoration: none;
+  display: none;
 }
 
 .master-logo-link img {
-  width: 40px;
-  height: 40px;
-  border-radius: 6px;
+  display: none;
 }
 
 .master-logo-link span {
-  color: white;
-  font-weight: 800;
-  font-size: 1.3rem;
-  letter-spacing: 1px;
+  display: none;
 }
 
 .auth-split-container {
@@ -62,19 +46,22 @@
   flex: 1;
   width: 100%;
   overflow: hidden;
+  height: 100vh;
 }
 
 /* Sidebar - Cinematic Left */
 .signup-sidebar {
   width: 50%;
-  position: relative;
-  height: calc(100vh - 80px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
   overflow: hidden;
   background: #000;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  z-index: 1;
 }
 
 .sidebar-back-btn {
@@ -82,25 +69,26 @@
   top: 2rem;
   left: 2rem;
   z-index: 10;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: white;
-  padding: 0.75rem 1.25rem;
-  border-radius: 12px;
+  padding: 0.7rem 1.2rem;
+  border-radius: 10px;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.6rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-size: 0.9rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .sidebar-back-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .sidebar-bg-video {
@@ -114,7 +102,7 @@
 .sidebar-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.7) 0%, rgba(15, 23, 42, 0.4) 100%);
+  background: linear-gradient(135deg, rgba(14, 32, 48, 0.75) 0%, rgba(14, 32, 48, 0.5) 50%, rgba(14, 32, 48, 0.75) 100%);
   z-index: 1;
 }
 
@@ -123,31 +111,35 @@
   z-index: 2;
   text-align: center;
   padding: 2rem;
+  max-width: 600px;
 }
 
 .sidebar-branding h1 {
   font-size: 3.5rem;
   font-weight: 900;
   color: white;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   letter-spacing: -2px;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  line-height: 1.1;
 }
 
 .sidebar-branding p {
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 500;
+  font-size: 1.15rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 400;
+  line-height: 1.6;
 }
 
 /* Main Area - Right Side Content (Pure Dark Edition) */
 .signup-main-area {
   flex: 1;
   width: 50%;
+  margin-left: 50%;
   display: flex;
   flex-direction: column;
-  background: #0f172a;
-  height: calc(100vh - 80px);
+  background: #0e2030;
+  height: 100vh;
   overflow-y: auto;
   position: relative;
   align-items: center;
@@ -181,11 +173,11 @@
 /* Mobile Back Button - Hidden on Desktop */
 .mobile-back-btn {
   display: none;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1rem;
   border-radius: 10px;
   align-items: center;
   gap: 0.5rem;
@@ -193,17 +185,17 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 600;
   font-size: 0.875rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   position: absolute;
-  top: 1.5rem;
+  top: 2rem;
   left: 2rem;
   z-index: 10;
 }
 
 .mobile-back-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 .wizard-logo-static {
@@ -1020,30 +1012,22 @@ textarea.input-field {
 
   .signup-main-area {
     width: 100%;
+    margin-left: 0;
   }
 
   /* Show mobile back button on tablet */
   .mobile-back-btn {
     display: flex;
-    top: 1.5rem;
+    top: 2rem;
     left: 2rem;
   }
 }
 
 @media (max-width: 768px) {
-  .master-auth-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1001;
-    height: 70px;
-  }
-
   .auth-split-container {
     flex-direction: column;
     overflow-y: auto;
-    margin-top: 70px;
+    height: 100vh;
   }
 
   .signup-sidebar {
@@ -1052,8 +1036,9 @@ textarea.input-field {
 
   .signup-main-area {
     width: 100%;
+    margin-left: 0;
     height: auto;
-    min-height: calc(100vh - 70px);
+    min-height: 100vh;
     padding: 0;
     justify-content: flex-start;
     padding-top: 0;
@@ -1064,11 +1049,11 @@ textarea.input-field {
   .mobile-back-btn {
     display: flex;
     position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
+    top: 1.5rem;
+    left: 1.5rem;
     z-index: 10;
-    padding: 0.35rem 0.75rem;
-    font-size: 0.8rem;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.85rem;
   }
 
   .wizard-content-flow {
@@ -1191,26 +1176,13 @@ textarea.input-field {
 }
 
 @media (max-width: 480px) {
-  .master-auth-nav {
-    height: 60px;
-  }
-
-  .master-logo-link img {
-    width: 32px;
-    height: 32px;
-  }
-
-  .master-logo-link span {
-    font-size: 1.05rem;
-  }
-
   .signup-main-area {
-    min-height: calc(100vh - 60px);
+    min-height: 100vh;
     padding: 1rem;
   }
 
   .mobile-back-btn {
-    padding: 0.45rem 0.875rem;
+    padding: 0.5rem 0.875rem;
     font-size: 0.85rem;
     gap: 0.4rem;
     top: 1rem;

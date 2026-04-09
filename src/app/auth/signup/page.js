@@ -546,16 +546,6 @@ export default function SignUp() {
 
   return (
     <div className="advanced-signup-layout">
-      {/* Global Brand Header */}
-      <nav className="master-auth-nav">
-        <div className="master-nav-content">
-          <Link href="/" className="master-logo-link">
-            <img src="/logo.jpeg" alt="KAANOONGPT" />
-            <span>KAANOONGPT</span>
-          </Link>
-        </div>
-      </nav>
-
       <div className="auth-split-container">
         {/* Cinematic Left Sidebar */}
         <aside className="signup-sidebar">

@@ -1,0 +1,494 @@
+/* Import Nepali-compatible font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap');
+
+/* ─── Preview Container ─── */
+.petition-preview-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--ka-bg-secondary);
+  border-left: 1px solid var(--ka-border);
+}
+
+.petition-preview-container-hidden {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--ka-bg-secondary);
+  border-left: 1px solid var(--ka-border);
+  padding: 0.5rem;
+}
+
+.petition-preview-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--ka-border);
+  background: var(--ka-bg);
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.petition-preview-header h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ka-text);
+  margin: 0;
+  flex: 1;
+}
+
+.petition-preview-header p {
+  font-size: 0.75rem;
+  color: var(--ka-text-secondary);
+  margin: 0;
+}
+
+.preview-controls {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-left: auto;
+}
+
+/* Preview Toggle Buttons */
+.preview-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.preview-toggle-btn.show {
+  position: fixed;
+  right: 2rem;
+  top: 8rem;
+  background: transparent;
+  color: var(--ka-accent);
+  padding: 0.875rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: 2px solid var(--ka-accent);
+  border-radius: 8px;
+  box-shadow: none;
+  z-index: 100;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.preview-toggle-btn.show:hover {
+  background: var(--ka-accent-glow);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--ka-accent-glow);
+}
+
+.preview-toggle-btn.hide {
+  background: transparent;
+  color: var(--ka-text-secondary);
+  border: 1.5px solid var(--ka-border);
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+.preview-toggle-btn.hide:hover {
+  background: var(--ka-bg-secondary);
+  border-color: var(--ka-accent);
+  color: var(--ka-accent);
+  transform: translateY(-1px);
+}
+
+.preview-toggle-btn.expand {
+  background: var(--ka-accent);
+  color: var(--ka-bg);
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+.preview-toggle-btn.expand:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--ka-accent-glow);
+}
+
+.page-counter {
+  font-size: 0.8rem;
+  color: var(--ka-text-secondary);
+  min-width: 80px;
+  text-align: center;
+  padding: 0 0.5rem;
+}
+
+/* ─── Document Preview ─── */
+.petition-document {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 2rem 0;
+  background: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.a4-page {
+  width: 210mm;
+  height: 297mm;
+  background: #ffffff;
+  color: #000000;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  line-height: 1.6;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 25mm;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  transform: scale(0.75);
+  transform-origin: top center;
+  margin-bottom: 2rem;
+  flex-shrink: 0;
+  font-feature-settings: 'locl' 1; /* Enable localized forms for Devanagari numerals */
+  -webkit-font-feature-settings: 'locl' 1;
+  -moz-font-feature-settings: 'locl' 1;
+}
+
+/* Custom Scrollbar */
+.petition-document::-webkit-scrollbar {
+  width: 6px;
+}
+
+.petition-document::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.petition-document::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.petition-document::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* ─── Document Header ─── */
+.petition-doc-header {
+  text-align: right;
+  margin-bottom: 1.5rem;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.registration-row {
+  margin-bottom: 0.35rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.blank-space {
+  display: inline-block;
+  width: 120px;
+  height: 1em;
+  border: none;
+}
+
+/* ─── Document Title ─── */
+.petition-doc-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.court-line {
+  margin-bottom: 0.75rem;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.petition-doc-title h2 {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0.5rem 0;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+/* ─── Party Sections (Plaintiff/Defendant) ─── */
+.petition-party-section {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: flex-start;
+}
+
+.party-label {
+  flex-shrink: 0;
+  text-align: right;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 1.3;
+  width: 60px;
+}
+
+.party-label p {
+  margin: 0;
+  font-size: 10px;
+}
+
+.party-details-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.party-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.party-details p {
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: justify;
+  margin: 0;
+  font-weight: 600;
+}
+
+.party-number {
+  text-align: right;
+  letter-spacing: 0.3em;
+  margin: 0;
+  font-size: 11px;
+  flex-shrink: 0;
+  width: 80px;
+}
+
+/* ─── Case Type ─── */
+.petition-case-type {
+  text-align: center;
+  margin: 1rem 0;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* ─── Case Facts ─── */
+.petition-facts {
+  margin: 1rem 0;
+  text-align: justify;
+}
+
+.petition-facts p {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+  font-size: 11px;
+}
+
+.petition-facts ol {
+  margin: 0.5rem 0;
+  padding-left: 1.2rem;
+}
+
+.petition-facts li {
+  margin-bottom: 0.3rem;
+  line-height: 1.4;
+  font-size: 10px;
+}
+
+.placeholder-text {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* ─── Legal Sections (3-10) ─── */
+.petition-section {
+  margin: 0.8rem 0;
+  text-align: justify;
+}
+
+.petition-section p {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* ─── Footer ─── */
+.petition-footer {
+  margin-top: 1.5rem;
+  text-align: right;
+  font-size: 11px;
+}
+
+.signature-line {
+  margin-bottom: 0.35rem;
+}
+
+.signature-name {
+  font-weight: 600;
+}
+
+/* ─── Expanded Fullscreen View ─── */
+.petition-preview-expanded {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;
+}
+
+.expanded-header {
+  padding: 1rem 1.5rem;
+  background: var(--ka-bg);
+  border-bottom: 1px solid var(--ka-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.expanded-header h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--ka-text);
+  margin: 0;
+}
+
+.close-expand-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--ka-text);
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.close-expand-btn:hover {
+  opacity: 0.7;
+}
+
+.expanded-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: #f5f5f5;
+}
+
+.expanded-content .a4-page {
+  transform: scale(1);
+  margin: 0 auto 2rem auto;
+}
+
+/* ─── Light Mode ─── */
+.ka-page.light .petition-preview-container {
+  background: #f5f5f5;
+  border-left-color: rgba(0, 0, 0, 0.1);
+}
+
+.ka-page.light .petition-preview-header {
+  background: #ffffff;
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+.ka-page.light .petition-document {
+  background: #e5e7eb;
+}
+
+.ka-page.light .expanded-content {
+  background: #e5e7eb;
+}
+
+.ka-page.light .preview-toggle-btn.show {
+  background: transparent;
+  color: #c4956a;
+  border-color: #c4956a;
+  box-shadow: none;
+}
+
+.ka-page.light .preview-toggle-btn.show:hover {
+  background: rgba(212, 165, 116, 0.08);
+  box-shadow: 0 4px 12px rgba(212, 165, 116, 0.2);
+}
+
+.ka-page.light .preview-toggle-btn.hide {
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #3d3d3d;
+}
+
+.ka-page.light .preview-toggle-btn.hide:hover {
+  background: rgba(212, 165, 116, 0.08);
+  border-color: #c4956a;
+  color: #c4956a;
+}
+
+.ka-page.light .preview-toggle-btn.expand {
+  background: #d4a574;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1024px) {
+  .petition-document {
+    padding: 1.25rem 1.5rem;
+    font-size: 11px;
+  }
+
+  .petition-party-section {
+    grid-template-columns: 90px 1fr;
+    gap: 1.5rem;
+  }
+  
+  .petition-doc-title h2 {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .petition-preview-container {
+    border-left: none;
+    border-top: 1px solid var(--ka-border);
+  }
+
+  .petition-document {
+    padding: 1rem 0.875rem;
+    margin: 0.75rem;
+    font-size: 11px;
+  }
+
+  .petition-party-section {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
+  .party-label {
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.35rem;
+  }
+  
+  .petition-doc-title h2 {
+    font-size: 16px;
+  }
+}
