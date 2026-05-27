@@ -5,18 +5,19 @@ import CitationsSidebar from './CitationsSidebar';
 import HumanInput from './HumanInput';
 
 const ROLE_META = {
-  plaintiff: { label: 'Plaintiff', color: '#3b82f6', bg: '#0d1f3c', border: '#3b82f6', align: 'flex-start' },
-  defendant: { label: 'Defendant', color: '#ef4444', bg: '#1f0d0d', border: '#ef4444', align: 'flex-end' },
-  judge:     { label: 'Judge',     color: '#f59e0b', bg: '#1a1500', border: '#f59e0b', align: 'center' },
-  human:     { label: 'You',       color: '#10b981', bg: '#0d2b1e', border: '#10b981', align: 'flex-start' },
+  plaintiff: { label: 'फिरादी पक्ष', color: '#7a4f25', bg: '#ffffff', border: '#d8c3ad', align: 'flex-start' },
+  defendant: { label: 'प्रतिवादी पक्ष', color: '#7a4f25', bg: '#ffffff', border: '#d8c3ad', align: 'flex-start' },
+  judge:     { label: 'श्रीमान्',     color: '#475569', bg: '#f8fafc', border: '#cbd5e1', align: 'flex-start' },
+  human:     { label: 'You',       color: '#111827', bg: '#f4eee7', border: '#d8c3ad', align: 'flex-end' },
 };
 
 const PHASE_LABELS = {
-  research: '🔍 Research Phase',
-  opening_statements: '📋 Opening Statements',
-  argument_rounds: '⚔️ Argument Rounds',
-  closing_statements: '🎤 Closing Statements',
-  verdict: '⚖️ Verdict',
+  document_review: 'Document Match Check',
+  research: 'Research Phase',
+  opening_statements: 'Opening Statements',
+  argument_rounds: 'Argument Rounds',
+  closing_statements: 'Closing Statements',
+  verdict: 'Judgment',
 };
 
 // Simple markdown → JSX (bold, italic, headers, bullets)
@@ -182,11 +183,139 @@ function MessageBubble({ msg, isLatest }) {
   );
 }
 
+function formatSessionDate(iso) {
+  if (!iso) return 'Not recorded';
+  return new Date(iso).toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
+function getResearchCounts(session) {
+  const results = session?.research_results || {};
+  const laws = Array.isArray(results.laws) ? results.laws.length : 0;
+  const cases = Array.isArray(results.cases) ? results.cases.length : 0;
+  return { laws, cases };
+}
+
+function formatSourceTitle(source) {
+  return source?.title || source?.name || source?.act_name || source?.case_name || 'Knowledge base source';
+}
+
+function SystemMessage({ content }) {
+  return (
+    <div className="system-message">
+      <div className="system-message__label">System</div>
+      <p>{content}</p>
+    </div>
+  );
+}
+
+function KnowledgeBaseCheck({ msg }) {
+  const laws = msg.laws || [];
+  const cases = msg.cases || [];
+  const verifiedSources = [...laws.slice(0, 4), ...cases.slice(0, 2)];
+
+  return (
+    <div className="kb-check-card">
+      <div className="kb-check-card__label">Knowledge Base Check</div>
+      {verifiedSources.length > 0 ? (
+        <ul>
+          {verifiedSources.map((source, index) => (
+            <li key={`${formatSourceTitle(source)}-${index}`}>
+              <span>{formatSourceTitle(source)}</span>
+              <strong>verified</strong>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>कुनै प्रमाणित कानून वा नजिर भेटिएन। एजेन्टले अपलोड गरिएको कागजातका तथ्यमा मात्र आधारित भएर काम गर्छ।</p>
+      )}
+    </div>
+  );
+}
+
+function CaseAnalysis({ msg }) {
+  const status = msg.matched ? 'Matched' : 'Mismatch';
+  const parties = msg.shared_parties?.length ? msg.shared_parties : ['पक्षहरू स्पष्ट रूपमा मिलेनन्'];
+  const issues = msg.issues?.length ? msg.issues : ['मुख्य प्रश्न कागजातबाट स्पष्ट भएन'];
+
+  return (
+    <div className={`case-analysis ${msg.matched ? 'case-analysis--matched' : 'case-analysis--mismatch'}`}>
+      <div className="case-analysis__label">Case Match Analysis</div>
+      <div className="case-analysis__summary">
+        <strong>{status}</strong>
+        <span>{msg.case_type || 'मुद्दाको प्रकार अज्ञात'}</span>
+      </div>
+      <div className="case-analysis__checks">
+        <span data-ok={msg.parties_matched ? 'true' : 'false'}>
+          पक्षहरू: {msg.parties_matched ? 'मिलेको' : 'नमिलेको'}
+        </span>
+        <span data-ok={msg.case_type_matched ? 'true' : 'false'}>
+          मुद्दा प्रकार: {msg.case_type_matched ? 'मिलेको' : 'नमिलेको'}
+        </span>
+      </div>
+      <div className="case-analysis__grid">
+        <div>
+          <span>मिलेका पक्षहरू</span>
+          <p>{parties.join(', ')}</p>
+        </div>
+        <div>
+          <span>मुख्य प्रश्नहरू</span>
+          <p>{issues.join(', ')}</p>
+        </div>
+      </div>
+      {msg.reason && <p className="case-analysis__reason">{msg.reason}</p>}
+    </div>
+  );
+}
+
+function CompletedEmptyState({ session }) {
+  const { laws, cases } = getResearchCounts(session);
+  const hasVerdict = Boolean(session?.verdict?.trim());
+
+  return (
+    <div className="completed-empty">
+      <div className="completed-empty__status">Session completed</div>
+      <h2>Transcript preview unavailable</h2>
+      <p>
+        This session is marked complete, but there are no saved courtroom messages
+        to display in the history view.
+      </p>
+
+      <div className="completed-empty__meta">
+        <div>
+          <span>Created</span>
+          <strong>{formatSessionDate(session?.created_at)}</strong>
+        </div>
+        <div>
+          <span>Rounds</span>
+          <strong>{session?.num_rounds || 0}</strong>
+        </div>
+        <div>
+          <span>Research</span>
+          <strong>{laws} laws / {cases} cases</strong>
+        </div>
+        <div>
+          <span>Winner</span>
+          <strong>{session?.winner || 'Not recorded'}</strong>
+        </div>
+      </div>
+
+      {hasVerdict && (
+        <div className="completed-empty__verdict">
+          <span>Saved verdict</span>
+          <p>{session.verdict}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function ChatView({
   session,
   messages,
-  subAgentStatus,
-  thinkingSteps,
   waitingForInput,
   trialComplete,
   error,
@@ -200,12 +329,23 @@ export default function ChatView({
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, subAgentStatus]);
+  }, [messages]);
 
   useEffect(() => {
-    const r = messages.find((m) => m.type === 'research_complete');
-    if (r) setResearchData({ laws: r.laws || [], cases: r.cases || [] });
-  }, [messages]);
+    const r = messages.find((m) => m.type === 'kb_check' || m.type === 'research_complete');
+    if (r) {
+      setResearchData({ laws: r.laws || [], cases: r.cases || [] });
+      return;
+    }
+
+    const savedResearch = session?.research_results;
+    if (savedResearch) {
+      setResearchData({
+        laws: savedResearch.laws || [],
+        cases: savedResearch.cases || [],
+      });
+    }
+  }, [messages, session]);
 
   function downloadTranscript() {
     const text = messages
@@ -216,7 +356,7 @@ export default function ChatView({
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${session?.case_name || 'trial'}-transcript.txt`;
+    a.download = `${session?.case_name || 'court-session'}-transcript.txt`;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -226,9 +366,13 @@ export default function ChatView({
     ['argument', 'evaluation', 'verdict'].includes(m.type)
   );
   const lastRenderableIdx = renderableMessages.length - 1;
+  const hasRenderableMessages = renderableMessages.length > 0;
+  const showCompletedEmptyState = trialComplete && !hasRenderableMessages && !error;
+  const isPaused = session?.status === 'paused';
+  const chatViewClassName = `chat-view ${showCompletedEmptyState ? 'chat-view--completed-empty' : ''}`;
 
   return (
-    <div className="chat-view">
+    <div className={chatViewClassName}>
       {/* Header */}
       <div className="chat-view__header">
         <div className="chat-header-left">
@@ -239,19 +383,23 @@ export default function ChatView({
         </div>
         <div className="chat-header-right">
           <button className="btn-citations" onClick={() => setCitationsOpen(true)}>📚 Citations</button>
-          {!trialComplete && onStop && (
-            <button className="btn-stop" onClick={onStop} title="Stop trial">
+          {!trialComplete && !isPaused && onStop && (
+            <button className="btn-stop" onClick={onStop} title="Stop session">
               ⏹ Stop
             </button>
           )}
           {trialComplete && (
-            <button className="btn-download" onClick={downloadTranscript}>⬇ Transcript</button>
+            <button
+              className="btn-download"
+              onClick={downloadTranscript}
+              disabled={!hasRenderableMessages}
+              title={hasRenderableMessages ? 'Download transcript' : 'No transcript messages saved'}
+            >
+              ⬇ Transcript
+            </button>
           )}
         </div>
       </div>
-
-      {/* Active sub-agent progress bar */}
-      <SubAgentProgress subAgentStatus={subAgentStatus} />
 
       {/* Messages */}
       <div className="chat-messages">
@@ -269,6 +417,18 @@ export default function ChatView({
                 📚 Research complete — {msg.laws_count} statutes · {msg.cases_count} cases
               </div>
             );
+          }
+          if (msg.type === 'system') {
+            return <SystemMessage key={i} content={msg.content} />;
+          }
+          if (msg.type === 'kb_check') {
+            return <KnowledgeBaseCheck key={i} msg={msg} />;
+          }
+          if (msg.type === 'case_analysis') {
+            return <CaseAnalysis key={i} msg={msg} />;
+          }
+          if (msg.type === 'agent_work') {
+            return <SubAgentProgress key={i} work={msg} />;
           }
           if (msg.type === 'sub_agent_error') {
             return (
@@ -290,17 +450,6 @@ export default function ChatView({
           return null;
         })}
 
-        {/* Active thinking while sub-agent runs */}
-        {subAgentStatus && (
-          <div className="msg-wrapper" style={{ alignSelf: 'center' }}>
-            <ThinkingBlock
-              steps={thinkingSteps}
-              agentName={`${subAgentStatus.pipeline} → ${subAgentStatus.agent_name}`}
-              isActive={true}
-            />
-          </div>
-        )}
-
         {error && (
           <div className="trial-error">
             ⚠️ {error}
@@ -309,7 +458,9 @@ export default function ChatView({
             )}
           </div>
         )}
-        {trialComplete && <div className="trial-complete-banner">✅ Trial Complete</div>}
+        {trialComplete && <div className="trial-complete-banner">✅ Session Complete</div>}
+        {isPaused && !trialComplete && <div className="session-paused-banner">⏸ Session Paused</div>}
+        {showCompletedEmptyState && <CompletedEmptyState session={session} />}
         <div ref={bottomRef} />
       </div>
 
