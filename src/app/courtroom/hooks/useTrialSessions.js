@@ -65,5 +65,18 @@ export function useTrialSessions() {
     setSessions((prev) => prev.filter((s) => s.id !== sessionId));
   }, []);
 
-  return { sessions, loading, error, fetchSessions, createSession, getSession, deleteSession };
+  const pauseSession = useCallback(async (sessionId) => {
+    const res = await fetch(`${API_URL}/api/courtroom/trial/sessions/${sessionId}/pause`, {
+      method: 'POST',
+      headers: authHeaders(),
+    });
+    if (!res.ok) throw new Error('Failed to pause session');
+    const updated = await res.json();
+    setSessions((prev) => prev.map((s) => (
+      s.id === sessionId ? { ...s, status: updated.status } : s
+    )));
+    return updated;
+  }, []);
+
+  return { sessions, loading, error, fetchSessions, createSession, getSession, deleteSession, pauseSession };
 }
