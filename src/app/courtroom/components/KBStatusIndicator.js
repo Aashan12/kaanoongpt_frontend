@@ -27,7 +27,7 @@ export default function KBStatusIndicator() {
           📚 KB: {status.laws_count} laws · {status.cases_count} cases ({status.country_code})
         </span>
       ) : (
-        <span>⚠️ No knowledge base data for your country. Trial may lack citations.</span>
+        <span>⚠️ No knowledge base data for your country. Session may lack citations.</span>
       )}
     </div>
   );

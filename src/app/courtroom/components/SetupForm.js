@@ -1,5 +1,6 @@
 'use client';
 import { useState, useRef } from 'react';
+import { CheckCircle2, FileText, Loader2, Play, Scale, UploadCloud, X, XCircle } from 'lucide-react';
 import KBStatusIndicator from './KBStatusIndicator';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -16,7 +17,7 @@ function DocumentUpload({ onFilesChange, setUploadingCount, label }) {
 
   async function processFile(file) {
     const ext = file.name.split('.').pop().toLowerCase();
-    if (!['pdf', 'txt'].includes(ext)) return;
+    if (!['pdf', 'docx', 'txt'].includes(ext)) return;
 
     setFiles((prev) => [...prev, { name: file.name, status: 'uploading', error: '' }]);
     setUploadingCount((c) => c + 1);
@@ -62,6 +63,12 @@ function DocumentUpload({ onFilesChange, setUploadingCount, label }) {
     setFiles((prev) => prev.filter((f) => f.name !== name));
   }
 
+  function renderFileIcon(status) {
+    if (status === 'uploading') return <Loader2 size={16} className="doc-file-spinner" />;
+    if (status === 'done') return <CheckCircle2 size={16} />;
+    return <XCircle size={16} />;
+  }
+
   return (
     <div className="doc-upload">
       <div
@@ -73,29 +80,31 @@ function DocumentUpload({ onFilesChange, setUploadingCount, label }) {
         <input
           ref={inputRef}
           type="file"
-          accept=".pdf,.txt"
+          accept=".pdf,.docx,.txt"
           multiple
           style={{ display: 'none' }}
           onChange={handleChange}
         />
-        <span className="doc-upload__hint">
-          Drop PDF or TXT files here, or click to upload
-          <br />
-          <small>Multiple files allowed</small>
-        </span>
+        <div className="doc-upload__content">
+          <UploadCloud size={22} />
+          <span className="doc-upload__hint">
+            Drop PDF, DOCX, or TXT files here, or click to upload
+            <small>{label} files can include multiple PDF, DOCX, or TXT documents</small>
+          </span>
+        </div>
       </div>
 
       {files.length > 0 && (
         <ul className="doc-file-list">
           {files.map((f) => (
             <li key={f.name} className={`doc-file-item doc-file-item--${f.status}`}>
-              <span className="doc-file-icon">
-                {f.status === 'uploading' ? '•••' : f.status === 'done' ? '✓' : '✕'}
-              </span>
+              <span className="doc-file-icon">{renderFileIcon(f.status)}</span>
               <span className="doc-file-name">{f.name}</span>
               {f.status === 'error' && <span className="doc-file-error">{f.error}</span>}
               {f.status !== 'uploading' && (
-                <button type="button" className="doc-file-remove" onClick={() => removeFile(f.name)}>×</button>
+                <button type="button" className="doc-file-remove" onClick={() => removeFile(f.name)} aria-label={`Remove ${f.name}`}>
+                  <X size={14} />
+                </button>
               )}
             </li>
           ))}
@@ -107,7 +116,7 @@ function DocumentUpload({ onFilesChange, setUploadingCount, label }) {
 
 export default function SetupForm({ onSubmit, loading }) {
   const [form, setForm] = useState({
-    case_name: 'Trial Session',
+    case_name: 'Court Session',
     case_type: 'general',
     court_type: 'district',
     court_type_name: 'District Court',
@@ -162,51 +171,72 @@ export default function SetupForm({ onSubmit, loading }) {
   return (
     <form className="setup-form" onSubmit={handleSubmit}>
       <div className="setup-form__header">
-        <h2>New Trial</h2>
+        <div className="setup-form__title">
+          <span className="setup-form__icon"><Scale size={22} /></span>
+          <div>
+            <h2>New Court Session</h2>
+            <span>3-round hearing</span>
+          </div>
+        </div>
         <KBStatusIndicator />
       </div>
 
-      <div className="form-group">
-        <label>Plaintiff's Petition <span className="label-required">*</span></label>
-        <DocumentUpload
-          onFilesChange={handlePlaintiffDoc}
-          setUploadingCount={setPlaintiffUploadCount}
-          label="Plaintiff"
-        />
-        {form.plaintiff_position && (
-          <textarea
-            rows={4}
-            value={form.plaintiff_position}
-            onChange={(e) => setForm((prev) => ({ ...prev, plaintiff_position: e.target.value }))}
-            className="doc-extracted-text"
-            placeholder="Extracted text will appear here..."
+      <div className="setup-doc-grid">
+        <div className="form-group form-group--plaintiff">
+          <div className="form-group__title">
+            <FileText size={17} />
+            <label>Plaintiff's Petition <span className="label-required">*</span></label>
+          </div>
+          <DocumentUpload
+            onFilesChange={handlePlaintiffDoc}
+            setUploadingCount={setPlaintiffUploadCount}
+            label="Plaintiff"
           />
-        )}
-        {errors.plaintiff_position && <span className="field-error">{errors.plaintiff_position}</span>}
+          {form.plaintiff_position && (
+            <textarea
+              rows={4}
+              value={form.plaintiff_position}
+              onChange={(e) => setForm((prev) => ({ ...prev, plaintiff_position: e.target.value }))}
+              className="doc-extracted-text"
+              placeholder="Extracted text will appear here..."
+            />
+          )}
+          {errors.plaintiff_position && <span className="field-error">{errors.plaintiff_position}</span>}
+        </div>
+
+        <div className="form-group form-group--defendant">
+          <div className="form-group__title">
+            <FileText size={17} />
+            <label>Defendant's Response <span className="label-required">*</span></label>
+          </div>
+          <DocumentUpload
+            onFilesChange={handleDefendantDoc}
+            setUploadingCount={setDefendantUploadCount}
+            label="Defendant"
+          />
+          {form.defendant_position && (
+            <textarea
+              rows={4}
+              value={form.defendant_position}
+              onChange={(e) => setForm((prev) => ({ ...prev, defendant_position: e.target.value }))}
+              className="doc-extracted-text"
+              placeholder="Extracted text will appear here..."
+            />
+          )}
+          {errors.defendant_position && <span className="field-error">{errors.defendant_position}</span>}
+        </div>
       </div>
 
-      <div className="form-group">
-        <label>Defendant's Response Document <span className="label-required">*</span></label>
-        <DocumentUpload
-          onFilesChange={handleDefendantDoc}
-          setUploadingCount={setDefendantUploadCount}
-          label="Defendant"
-        />
-        {form.defendant_position && (
-          <textarea
-            rows={4}
-            value={form.defendant_position}
-            onChange={(e) => setForm((prev) => ({ ...prev, defendant_position: e.target.value }))}
-            className="doc-extracted-text"
-            placeholder="Extracted text will appear here..."
-          />
-        )}
-        {errors.defendant_position && <span className="field-error">{errors.defendant_position}</span>}
+      <div className="setup-actions">
+        <div className="setup-actions__state">
+          <span className={form.plaintiff_position ? 'complete' : ''}>Plaintiff</span>
+          <span className={form.defendant_position ? 'complete' : ''}>Defendant</span>
+        </div>
+        <button type="submit" className="btn-start" disabled={loading || isUploading}>
+          <Play size={17} />
+          <span>{loading ? 'Starting...' : isUploading ? 'Processing...' : 'Start 3-Round Hearing'}</span>
+        </button>
       </div>
-
-      <button type="submit" className="btn-start" disabled={loading || isUploading}>
-        {loading ? 'Starting...' : isUploading ? 'Processing...' : 'Start Trial'}
-      </button>
     </form>
   );
 }

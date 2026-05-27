@@ -137,10 +137,7 @@ export default function AppSidebar({
       <div className="ka-feature-links">
         <button 
           className={`ka-feature-link ${isActive('dashboard') ? 'active' : ''}`}
-          onClick={() => {
-            onViewSwitch('dashboard');
-            if (sidebarOpen) onToggle();
-          }}
+          onClick={() => onViewSwitch('dashboard')}
         >
           <Home size={16} />
           <span>Dashboard</span>
@@ -154,10 +151,7 @@ export default function AppSidebar({
         </button>
         <button 
           className={`ka-feature-link ${isActive('courtroom') ? 'active' : ''}`}
-          onClick={() => {
-            onViewSwitch('courtroom');
-            if (sidebarOpen) onToggle();
-          }}
+          onClick={() => onViewSwitch('courtroom')}
         >
           <Scale size={16} />
           <span>Courtroom Simulator</span>

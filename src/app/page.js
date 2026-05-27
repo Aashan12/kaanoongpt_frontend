@@ -172,7 +172,7 @@ export default function Home() {
               <div className="feature-icon-wrapper">
                 <Gavel size={32} />
               </div>
-              <h3>Courtroom Simulator</h3>
+              <h3>Courtroom Simulator <span className="educational-badge">(Educational purpose only)</span></h3>
               <p>Watch AI lawyers debate your case and see how a judge would rule.</p>
               <ul className="feature-checklist">
                 <li>Real-time debates</li>
