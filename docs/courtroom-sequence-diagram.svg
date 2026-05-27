@@ -1,0 +1,185 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1050" viewBox="0 0 1600 1050" role="img" aria-labelledby="title desc">
+  <title id="title">Sequence Diagram of Agentic Courtroom Simulator</title>
+  <desc id="desc">Sequence diagram showing the courtroom simulator workflow from document upload through RAG retrieval, multi-agent simulation, verdict generation, storage, and frontend display.</desc>
+  <defs>
+    <style>
+      .bg { fill: #ffffff; }
+      .title { font: 700 26px Arial, sans-serif; fill: #111827; }
+      .lifebox { fill: #f8fbff; stroke: #1d4ed8; stroke-width: 2; }
+      .lifebox-alt { fill: #fff7ed; stroke: #f59e0b; stroke-width: 2; }
+      .lifebox-ai { fill: #fdf2f8; stroke: #be185d; stroke-width: 2; }
+      .lifebox-db { fill: #ecfdf5; stroke: #059669; stroke-width: 2; }
+      .life-text { font: 700 15px Arial, sans-serif; fill: #111827; }
+      .small { font: 600 13px Arial, sans-serif; fill: #374151; }
+      .life { stroke: #111827; stroke-width: 2; stroke-dasharray: 7 7; }
+      .activation { fill: #dbeafe; stroke: #2563eb; stroke-width: 1.5; }
+      .activation-ai { fill: #fce7f3; stroke: #be185d; stroke-width: 1.5; }
+      .activation-db { fill: #d1fae5; stroke: #059669; stroke-width: 1.5; }
+      .msg { stroke: #111827; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .return { stroke: #6b7280; stroke-width: 2; fill: none; stroke-dasharray: 7 6; marker-end: url(#arrow-gray); }
+      .loop { fill: none; stroke: #6b7280; stroke-width: 1.8; stroke-dasharray: 6 5; }
+      .loop-label { fill: #ffffff; stroke: #6b7280; stroke-width: 1.5; }
+      .label { font: 600 14px Arial, sans-serif; fill: #111827; }
+      .return-label { font: 600 13px Arial, sans-serif; fill: #4b5563; }
+      .note { fill: #eef6ff; stroke: #38aee2; stroke-width: 1.8; }
+      .note-text { font: 600 13px Arial, sans-serif; fill: #1e3a8a; }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#111827" />
+    </marker>
+    <marker id="arrow-gray" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#6b7280" />
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1600" height="1050" />
+  <text class="title" x="800" y="45" text-anchor="middle">Sequence Diagram: Agentic Courtroom Simulator System (ACSS)</text>
+
+  <!-- Lifeline headers -->
+  <rect class="lifebox" x="40" y="80" width="135" height="54" rx="5" />
+  <text class="life-text" x="107.5" y="113" text-anchor="middle">User</text>
+
+  <rect class="lifebox" x="225" y="80" width="145" height="54" rx="5" />
+  <text class="life-text" x="297.5" y="103" text-anchor="middle">Frontend</text>
+  <text class="small" x="297.5" y="122" text-anchor="middle">Next.js UI</text>
+
+  <rect class="lifebox-alt" x="420" y="80" width="145" height="54" rx="5" />
+  <text class="life-text" x="492.5" y="103" text-anchor="middle">Backend API</text>
+  <text class="small" x="492.5" y="122" text-anchor="middle">FastAPI</text>
+
+  <rect class="lifebox-alt" x="615" y="80" width="145" height="54" rx="5" />
+  <text class="life-text" x="687.5" y="103" text-anchor="middle">Document</text>
+  <text class="small" x="687.5" y="122" text-anchor="middle">Processor</text>
+
+  <rect class="lifebox-db" x="810" y="80" width="145" height="54" rx="5" />
+  <text class="life-text" x="882.5" y="103" text-anchor="middle">RAG /</text>
+  <text class="small" x="882.5" y="122" text-anchor="middle">ChromaDB</text>
+
+  <rect class="lifebox-ai" x="1005" y="80" width="160" height="54" rx="5" />
+  <text class="life-text" x="1085" y="103" text-anchor="middle">LangGraph</text>
+  <text class="small" x="1085" y="122" text-anchor="middle">Orchestrator</text>
+
+  <rect class="lifebox-ai" x="1215" y="80" width="145" height="54" rx="5" />
+  <text class="life-text" x="1287.5" y="103" text-anchor="middle">AI Agents</text>
+  <text class="small" x="1287.5" y="122" text-anchor="middle">Plaintiff/Def/Judge</text>
+
+  <rect class="lifebox-db" x="1410" y="80" width="145" height="54" rx="5" />
+  <text class="life-text" x="1482.5" y="103" text-anchor="middle">MongoDB</text>
+  <text class="small" x="1482.5" y="122" text-anchor="middle">Trial Storage</text>
+
+  <!-- Lifelines -->
+  <line class="life" x1="107.5" y1="134" x2="107.5" y2="990" />
+  <line class="life" x1="297.5" y1="134" x2="297.5" y2="990" />
+  <line class="life" x1="492.5" y1="134" x2="492.5" y2="990" />
+  <line class="life" x1="687.5" y1="134" x2="687.5" y2="990" />
+  <line class="life" x1="882.5" y1="134" x2="882.5" y2="990" />
+  <line class="life" x1="1085" y1="134" x2="1085" y2="990" />
+  <line class="life" x1="1287.5" y1="134" x2="1287.5" y2="990" />
+  <line class="life" x1="1482.5" y1="134" x2="1482.5" y2="990" />
+
+  <!-- Activations -->
+  <rect class="activation" x="290" y="178" width="15" height="730" />
+  <rect class="activation" x="485" y="225" width="15" height="665" />
+  <rect class="activation" x="680" y="282" width="15" height="86" />
+  <rect class="activation-db" x="875" y="430" width="15" height="85" />
+  <rect class="activation-ai" x="1077.5" y="530" width="15" height="305" />
+  <rect class="activation-ai" x="1280" y="610" width="15" height="185" />
+  <rect class="activation-db" x="1475" y="850" width="15" height="70" />
+
+  <!-- Messages -->
+  <path class="msg" d="M107.5 180 H290" />
+  <text class="label" x="198" y="171" text-anchor="middle">Open courtroom simulator</text>
+
+  <path class="msg" d="M107.5 230 H485" />
+  <text class="label" x="296" y="221" text-anchor="middle">Upload plaintiff petition and defendant response</text>
+
+  <path class="msg" d="M500 285 H680" />
+  <text class="label" x="590" y="276" text-anchor="middle">Send files for text extraction</text>
+
+  <path class="return" d="M680 365 H500" />
+  <text class="return-label" x="590" y="357" text-anchor="middle">Extracted petition and response text</text>
+
+  <path class="msg" d="M500 400 H1475" />
+  <text class="label" x="987" y="391" text-anchor="middle">Create trial session metadata</text>
+
+  <path class="return" d="M1475 425 H500" />
+  <text class="return-label" x="987" y="417" text-anchor="middle">Trial session ID</text>
+
+  <path class="msg" d="M500 455 H875" />
+  <text class="label" x="688" y="446" text-anchor="middle">Retrieve relevant legal context</text>
+
+  <path class="return" d="M875 515 H500" />
+  <text class="return-label" x="688" y="507" text-anchor="middle">Legal chunks, citations, and source metadata</text>
+
+  <path class="msg" d="M500 545 H1077.5" />
+  <text class="label" x="789" y="536" text-anchor="middle">Start simulation with documents and retrieved context</text>
+
+  <!-- Loop fragment -->
+  <rect class="loop" x="1018" y="560" width="350" height="255" rx="3" />
+  <rect class="loop-label" x="1018" y="560" width="76" height="28" rx="2" />
+  <text class="small" x="1056" y="580" text-anchor="middle">loop</text>
+  <text class="small" x="1210" y="581" text-anchor="middle">Argument rounds until judge completes trial</text>
+
+  <path class="msg" d="M1092.5 625 H1280" />
+  <text class="label" x="1186" y="616" text-anchor="middle">Generate plaintiff argument</text>
+
+  <path class="return" d="M1280 660 H1092.5" />
+  <text class="return-label" x="1186" y="652" text-anchor="middle">Plaintiff argument</text>
+
+  <path class="msg" d="M1092.5 695 H1280" />
+  <text class="label" x="1186" y="686" text-anchor="middle">Generate defendant counterargument</text>
+
+  <path class="return" d="M1280 730 H1092.5" />
+  <text class="return-label" x="1186" y="722" text-anchor="middle">Defendant argument</text>
+
+  <path class="msg" d="M1092.5 765 H1280" />
+  <text class="label" x="1186" y="756" text-anchor="middle">Evaluate arguments and decide next step</text>
+
+  <path class="return" d="M1280 795 H1092.5" />
+  <text class="return-label" x="1186" y="787" text-anchor="middle">Judge decision or final verdict</text>
+
+  <path class="msg" d="M1092.5 850 H1475" />
+  <text class="label" x="1284" y="841" text-anchor="middle">Save messages, citations, verdict, and transcript</text>
+
+  <path class="return" d="M1475 920 H1092.5" />
+  <text class="return-label" x="1284" y="912" text-anchor="middle">Saved trial record</text>
+
+  <path class="return" d="M1077.5 940 H500" />
+  <text class="return-label" x="789" y="932" text-anchor="middle">Simulation output with verdict, reasoning, citations, transcript</text>
+
+  <path class="return" d="M485 955 H305" />
+  <text class="return-label" x="395" y="947" text-anchor="middle">Stream/display trial updates</text>
+
+  <path class="return" d="M290 975 H107.5" />
+  <text class="return-label" x="199" y="967" text-anchor="middle">Show courtroom result to user</text>
+
+  <!-- Bottom repeated lifeline labels -->
+  <rect class="lifebox" x="40" y="990" width="135" height="44" rx="5" />
+  <text class="life-text" x="107.5" y="1017" text-anchor="middle">User</text>
+
+  <rect class="lifebox" x="225" y="990" width="145" height="44" rx="5" />
+  <text class="life-text" x="297.5" y="1017" text-anchor="middle">Frontend</text>
+
+  <rect class="lifebox-alt" x="420" y="990" width="145" height="44" rx="5" />
+  <text class="life-text" x="492.5" y="1017" text-anchor="middle">Backend API</text>
+
+  <rect class="lifebox-alt" x="615" y="990" width="145" height="44" rx="5" />
+  <text class="life-text" x="687.5" y="1017" text-anchor="middle">Processor</text>
+
+  <rect class="lifebox-db" x="810" y="990" width="145" height="44" rx="5" />
+  <text class="life-text" x="882.5" y="1017" text-anchor="middle">RAG/ChromaDB</text>
+
+  <rect class="lifebox-ai" x="1005" y="990" width="160" height="44" rx="5" />
+  <text class="life-text" x="1085" y="1017" text-anchor="middle">LangGraph</text>
+
+  <rect class="lifebox-ai" x="1215" y="990" width="145" height="44" rx="5" />
+  <text class="life-text" x="1287.5" y="1017" text-anchor="middle">AI Agents</text>
+
+  <rect class="lifebox-db" x="1410" y="990" width="145" height="44" rx="5" />
+  <text class="life-text" x="1482.5" y="1017" text-anchor="middle">MongoDB</text>
+
+  <!-- Note -->
+  <rect class="note" x="620" y="150" width="360" height="70" rx="6" />
+  <text class="note-text" x="800" y="176" text-anchor="middle">The classifier/router in a simple diagram is represented here by</text>
+  <text class="note-text" x="800" y="196" text-anchor="middle">FastAPI plus LangGraph orchestration, which is closer to this project.</text>
+</svg>

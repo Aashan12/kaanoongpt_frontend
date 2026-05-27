@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="950" viewBox="0 0 1500 950" role="img" aria-labelledby="title desc">
+  <title id="title">KaanoonGPT System Workflow</title>
+  <desc id="desc">Clean workflow diagram showing authentication, user input, three feature workflows, shared backend services, storage, monitoring, and frontend output.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .panel { fill: #ffffff; stroke: #d9e2ef; stroke-width: 2; }
+      .box { fill: #ffffff; stroke: #b8c7dc; stroke-width: 2; }
+      .blue { fill: #eef6ff; stroke: #5b9df8; }
+      .green { fill: #ecfdf5; stroke: #34c38f; }
+      .purple { fill: #f5f0ff; stroke: #9b7cff; }
+      .amber { fill: #fff8e6; stroke: #f4b942; }
+      .rose { fill: #fff1f2; stroke: #fb7185; }
+      .gray { fill: #f8fafc; stroke: #cbd5e1; }
+      .title { font: 700 34px Arial, sans-serif; fill: #102033; }
+      .subtitle { font: 400 17px Arial, sans-serif; fill: #5b6b80; }
+      .label { font: 700 17px Arial, sans-serif; fill: #0f172a; }
+      .small { font: 400 13.5px Arial, sans-serif; fill: #475569; }
+      .tiny { font: 400 12px Arial, sans-serif; fill: #64748b; }
+      .lane { font: 700 15px Arial, sans-serif; fill: #334155; letter-spacing: .7px; }
+      .arrow { stroke: #64748b; stroke-width: 2.4; fill: none; marker-end: url(#arrowhead); }
+      .dash { stroke-dasharray: 7 7; }
+    </style>
+    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#64748b" />
+    </marker>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <rect class="bg" width="1500" height="950" />
+
+  <text class="title" x="70" y="72">KaanoonGPT System Workflow</text>
+  <text class="subtitle" x="70" y="104">Overall workflow covering legal Q&amp;A, Firad Patra Maker, and Agentic Courtroom Simulation</text>
+
+  <rect class="panel" x="50" y="140" width="1400" height="755" rx="22" filter="url(#shadow)" />
+
+  <!-- Top shared entry flow -->
+  <text class="lane" x="90" y="182">USER ACCESS AND INPUT</text>
+
+  <rect class="box blue" x="90" y="205" width="230" height="100" rx="16" />
+  <text class="label" x="120" y="241">Authenticated User</text>
+  <text class="small" x="120" y="268">Login, JWT/session,</text>
+  <text class="small" x="120" y="290">protected access</text>
+
+  <rect class="box blue" x="390" y="205" width="250" height="100" rx="16" />
+  <text class="label" x="420" y="241">Frontend Interface</text>
+  <text class="small" x="420" y="268">Next.js web UI for query,</text>
+  <text class="small" x="420" y="290">petition, or courtroom flow</text>
+
+  <rect class="box blue" x="710" y="205" width="250" height="100" rx="16" />
+  <text class="label" x="740" y="241">FastAPI Backend</text>
+  <text class="small" x="740" y="268">API routing, validation,</text>
+  <text class="small" x="740" y="290">document extraction</text>
+
+  <rect class="box gray" x="1030" y="205" width="280" height="100" rx="16" />
+  <text class="label" x="1060" y="241">Workflow Selection</text>
+  <text class="small" x="1060" y="268">Ask the Law, Firad Patra,</text>
+  <text class="small" x="1060" y="290">or Courtroom Simulator</text>
+
+  <path class="arrow" d="M320 255 H380" />
+  <path class="arrow" d="M640 255 H700" />
+  <path class="arrow" d="M960 255 H1020" />
+
+  <!-- Three workflow lanes -->
+  <text class="lane" x="90" y="365">CORE FEATURE WORKFLOWS</text>
+
+  <rect class="box green" x="90" y="395" width="360" height="150" rx="18" />
+  <text class="label" x="125" y="432">Legal Q&amp;A / Ask the Law</text>
+  <text class="small" x="125" y="462">User submits legal query</text>
+  <text class="small" x="125" y="486">Query is embedded and matched</text>
+  <text class="small" x="125" y="510">against legal chunks in ChromaDB</text>
+
+  <rect class="box amber" x="570" y="395" width="360" height="150" rx="18" />
+  <text class="label" x="605" y="432">Firad Patra / Petition Maker</text>
+  <text class="small" x="605" y="462">Collects party details, facts,</text>
+  <text class="small" x="605" y="486">claims, jurisdiction, and relief</text>
+  <text class="small" x="605" y="510">Generates structured petition draft</text>
+
+  <rect class="box purple" x="1050" y="395" width="320" height="150" rx="18" />
+  <text class="label" x="1085" y="432">Courtroom Simulator</text>
+  <text class="small" x="1085" y="462">Plaintiff and defendant documents</text>
+  <text class="small" x="1085" y="486">are used by courtroom agents</text>
+  <text class="small" x="1085" y="510">Judge agent evaluates and decides</text>
+
+  <path class="arrow" d="M1170 305 V360" />
+  <path class="arrow" d="M1170 360 H270 V385" />
+  <path class="arrow" d="M1170 360 H750 V385" />
+  <path class="arrow" d="M1170 360 H1210 V385" />
+
+  <!-- Shared AI and data layer -->
+  <text class="lane" x="90" y="622">SHARED AI, DATA, AND MONITORING LAYER</text>
+
+  <rect class="box green" x="90" y="650" width="235" height="105" rx="16" />
+  <text class="label" x="120" y="688">ChromaDB</text>
+  <text class="small" x="120" y="716">Vector storage and</text>
+  <text class="small" x="120" y="738">semantic retrieval</text>
+
+  <rect class="box purple" x="380" y="650" width="235" height="105" rx="16" />
+  <text class="label" x="410" y="688">LangChain / LangGraph</text>
+  <text class="small" x="410" y="716">Prompt handling, RAG flow,</text>
+  <text class="small" x="410" y="738">agent orchestration</text>
+
+  <rect class="box rose" x="670" y="650" width="235" height="105" rx="16" />
+  <text class="label" x="700" y="688">Language Models</text>
+  <text class="small" x="700" y="716">Legal reasoning, drafting,</text>
+  <text class="small" x="700" y="738">arguments, verdicts</text>
+
+  <rect class="box amber" x="960" y="650" width="235" height="105" rx="16" />
+  <text class="label" x="990" y="688">LangSmith</text>
+  <text class="small" x="990" y="716">Tracing, monitoring,</text>
+  <text class="small" x="990" y="738">evaluation support</text>
+
+  <rect class="box gray" x="1250" y="650" width="120" height="105" rx="16" />
+  <text class="label" x="1275" y="688">MongoDB</text>
+  <text class="small" x="1275" y="716">Users, chats,</text>
+  <text class="small" x="1275" y="738">trials, drafts</text>
+
+  <path class="arrow dash" d="M270 545 V640" />
+  <path class="arrow dash" d="M750 545 V640" />
+  <path class="arrow dash" d="M1210 545 V640" />
+  <path class="arrow" d="M325 703 H370" />
+  <path class="arrow" d="M615 703 H660" />
+  <path class="arrow" d="M905 703 H950" />
+  <path class="arrow" d="M1195 703 H1240" />
+
+  <!-- Output -->
+  <text class="lane" x="90" y="817">OUTPUT TO USER</text>
+
+  <rect class="box blue" x="310" y="835" width="270" height="70" rx="16" />
+  <text class="label" x="340" y="867">Citation-backed Answer</text>
+  <text class="small" x="340" y="890">Legal guidance with references</text>
+
+  <rect class="box amber" x="615" y="835" width="270" height="70" rx="16" />
+  <text class="label" x="645" y="867">Generated Petition</text>
+  <text class="small" x="645" y="890">Editable/exportable draft</text>
+
+  <rect class="box purple" x="920" y="835" width="270" height="70" rx="16" />
+  <text class="label" x="950" y="867">Courtroom Verdict</text>
+  <text class="small" x="950" y="890">Arguments, verdict, transcript</text>
+
+  <path class="arrow" d="M497 755 C497 790 445 800 445 825" />
+  <path class="arrow" d="M787 755 C787 790 750 800 750 825" />
+  <path class="arrow" d="M1077 755 C1077 790 1055 800 1055 825" />
+</svg>

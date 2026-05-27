@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">Agentic Courtroom Simulation Workflow</title>
+  <desc id="desc">Workflow diagram showing user input, document extraction, RAG and LangChain context retrieval, multi-agent courtroom reasoning, judge verdict, and saved outputs.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .panel { fill: #ffffff; stroke: #d9e2ef; stroke-width: 2; }
+      .box { fill: #ffffff; stroke: #b8c7dc; stroke-width: 2; }
+      .box-blue { fill: #eef6ff; stroke: #5b9df8; }
+      .box-green { fill: #ecfdf5; stroke: #34c38f; }
+      .box-amber { fill: #fff8e6; stroke: #f4b942; }
+      .box-purple { fill: #f5f0ff; stroke: #9b7cff; }
+      .box-red { fill: #fff1f2; stroke: #fb7185; }
+      .title { font: 700 34px Arial, sans-serif; fill: #102033; }
+      .subtitle { font: 400 17px Arial, sans-serif; fill: #5b6b80; }
+      .section { font: 700 18px Arial, sans-serif; fill: #334155; letter-spacing: .4px; }
+      .label { font: 700 18px Arial, sans-serif; fill: #0f172a; }
+      .small { font: 400 14px Arial, sans-serif; fill: #475569; }
+      .tiny { font: 400 12px Arial, sans-serif; fill: #64748b; }
+      .arrow { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrowhead); }
+      .dash { stroke-dasharray: 7 7; }
+      .lane-title { font: 700 15px Arial, sans-serif; fill: #475569; text-transform: uppercase; letter-spacing: .8px; }
+    </style>
+    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#64748b" />
+    </marker>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1400" height="900" />
+
+  <text class="title" x="70" y="72">Agentic Courtroom Simulation Workflow</text>
+  <text class="subtitle" x="70" y="104">RAG-supported multi-agent workflow for legal argument generation, courtroom reasoning, and verdict production</text>
+
+  <rect class="panel" x="50" y="140" width="1300" height="690" rx="22" filter="url(#shadow)" />
+
+  <text class="lane-title" x="90" y="182">Input and preprocessing</text>
+  <text class="lane-title" x="90" y="392">RAG and legal context</text>
+  <text class="lane-title" x="90" y="602">Agentic courtroom reasoning</text>
+
+  <!-- Input lane -->
+  <rect class="box box-blue" x="90" y="205" width="250" height="110" rx="16" />
+  <text class="label" x="120" y="242">User Provides Case</text>
+  <text class="small" x="120" y="270">Petition, response, facts,</text>
+  <text class="small" x="120" y="292">documents, or legal arguments</text>
+
+  <rect class="box box-blue" x="415" y="205" width="250" height="110" rx="16" />
+  <text class="label" x="445" y="242">Document Processing</text>
+  <text class="small" x="445" y="270">PDF/TXT extraction and</text>
+  <text class="small" x="445" y="292">case text preparation</text>
+
+  <rect class="box box-blue" x="740" y="205" width="250" height="110" rx="16" />
+  <text class="label" x="770" y="242">Trial Session Setup</text>
+  <text class="small" x="770" y="270">Case metadata, parties,</text>
+  <text class="small" x="770" y="292">rounds, and court context</text>
+
+  <!-- RAG lane -->
+  <rect class="box box-green" x="90" y="415" width="250" height="110" rx="16" />
+  <text class="label" x="120" y="452">Legal Knowledge Base</text>
+  <text class="small" x="120" y="480">Statutes, legal provisions,</text>
+  <text class="small" x="120" y="502">cases, and references</text>
+
+  <rect class="box box-green" x="415" y="415" width="250" height="110" rx="16" />
+  <text class="label" x="445" y="452">Retriever / Vector Search</text>
+  <text class="small" x="445" y="480">Finds relevant legal context</text>
+  <text class="small" x="445" y="502">for the given case</text>
+
+  <rect class="box box-purple" x="740" y="415" width="250" height="110" rx="16" />
+  <text class="label" x="770" y="452">LangChain Support</text>
+  <text class="small" x="770" y="480">Prompt construction, context</text>
+  <text class="small" x="770" y="502">assembly, LLM reasoning</text>
+
+  <rect class="box box-purple" x="1065" y="415" width="230" height="110" rx="16" />
+  <text class="label" x="1095" y="452">Grounded Context</text>
+  <text class="small" x="1095" y="480">Retrieved laws and cases</text>
+  <text class="small" x="1095" y="502">passed to AI agents</text>
+
+  <!-- Agent lane -->
+  <rect class="box box-amber" x="90" y="625" width="250" height="120" rx="16" />
+  <text class="label" x="120" y="662">Plaintiff Agent</text>
+  <text class="small" x="120" y="690">Generates supporting</text>
+  <text class="small" x="120" y="712">arguments using case facts</text>
+
+  <rect class="box box-red" x="415" y="625" width="250" height="120" rx="16" />
+  <text class="label" x="445" y="662">Defendant Agent</text>
+  <text class="small" x="445" y="690">Generates opposing</text>
+  <text class="small" x="445" y="712">arguments and counterpoints</text>
+
+  <rect class="box box-amber" x="740" y="625" width="250" height="120" rx="16" />
+  <text class="label" x="770" y="662">Judge Agent</text>
+  <text class="small" x="770" y="690">Evaluates both sides and</text>
+  <text class="small" x="770" y="712">applies legal reasoning</text>
+
+  <rect class="box box-green" x="1065" y="625" width="230" height="120" rx="16" />
+  <text class="label" x="1095" y="662">Verdict and Output</text>
+  <text class="small" x="1095" y="690">Reasoned verdict, citations,</text>
+  <text class="small" x="1095" y="712">transcript, and session history</text>
+
+  <!-- Main arrows -->
+  <path class="arrow" d="M340 260 H405" />
+  <path class="arrow" d="M665 260 H730" />
+  <path class="arrow" d="M865 315 V405" />
+  <path class="arrow" d="M340 470 H405" />
+  <path class="arrow" d="M665 470 H730" />
+  <path class="arrow" d="M990 470 H1055" />
+  <path class="arrow" d="M1180 525 V615" />
+  <path class="arrow" d="M340 685 H405" />
+  <path class="arrow" d="M665 685 H730" />
+  <path class="arrow" d="M990 685 H1055" />
+
+  <!-- Cross-lane context flow -->
+  <path class="arrow dash" d="M865 525 V615" />
+  <path class="arrow dash" d="M1180 525 V615" />
+  <text class="tiny" x="900" y="570">Retrieved legal context guides agent reasoning</text>
+
+  <!-- Note -->
+  <rect class="box" x="90" y="785" width="1205" height="26" rx="13" />
+  <text class="tiny" x="115" y="803">Note: LangChain is described as a supporting framework for retrieval, prompt/context preparation, and LLM interaction. The overall architecture is a RAG-supported multi-agent courtroom simulation.</text>
+</svg>

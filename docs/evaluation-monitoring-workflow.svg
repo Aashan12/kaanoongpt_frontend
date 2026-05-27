@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">Evaluation and Monitoring Workflow</title>
+  <desc id="desc">Workflow diagram showing test inputs, RAG retrieval, AI response generation, LangSmith monitoring, evaluation criteria, and iterative system refinement.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .panel { fill: #ffffff; stroke: #d9e2ef; stroke-width: 2; }
+      .box { fill: #ffffff; stroke: #b8c7dc; stroke-width: 2; }
+      .blue { fill: #eef6ff; stroke: #5b9df8; }
+      .green { fill: #ecfdf5; stroke: #34c38f; }
+      .purple { fill: #f5f0ff; stroke: #9b7cff; }
+      .amber { fill: #fff8e6; stroke: #f4b942; }
+      .red { fill: #fff1f2; stroke: #fb7185; }
+      .title { font: 700 34px Arial, sans-serif; fill: #102033; }
+      .subtitle { font: 400 17px Arial, sans-serif; fill: #5b6b80; }
+      .label { font: 700 18px Arial, sans-serif; fill: #0f172a; }
+      .small { font: 400 14px Arial, sans-serif; fill: #475569; }
+      .tiny { font: 400 12px Arial, sans-serif; fill: #64748b; }
+      .criteria { font: 700 15px Arial, sans-serif; fill: #334155; }
+      .arrow { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrowhead); }
+      .loop { stroke: #7c8da6; stroke-width: 2.5; fill: none; stroke-dasharray: 8 7; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#64748b" />
+    </marker>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <rect class="bg" width="1400" height="900" />
+
+  <text class="title" x="70" y="72">Evaluation and Monitoring Workflow</text>
+  <text class="subtitle" x="70" y="104">Testing, tracing, and refinement process for the RAG pipeline and agentic courtroom simulation</text>
+
+  <rect class="panel" x="50" y="140" width="1300" height="690" rx="22" filter="url(#shadow)" />
+
+  <!-- Main pipeline -->
+  <rect class="box blue" x="90" y="220" width="230" height="115" rx="16" />
+  <text class="label" x="120" y="258">Test Inputs</text>
+  <text class="small" x="120" y="286">Legal queries, case files,</text>
+  <text class="small" x="120" y="308">petitions, and scenarios</text>
+
+  <rect class="box green" x="385" y="220" width="230" height="115" rx="16" />
+  <text class="label" x="415" y="258">RAG Retrieval</text>
+  <text class="small" x="415" y="286">Retrieve laws, cases,</text>
+  <text class="small" x="415" y="308">and legal references</text>
+
+  <rect class="box purple" x="680" y="220" width="230" height="115" rx="16" />
+  <text class="label" x="710" y="258">AI Workflow</text>
+  <text class="small" x="710" y="286">Prompt execution, LLM calls,</text>
+  <text class="small" x="710" y="308">and agent interactions</text>
+
+  <rect class="box amber" x="975" y="220" width="270" height="115" rx="16" />
+  <text class="label" x="1005" y="258">Generated Output</text>
+  <text class="small" x="1005" y="286">Legal answer, courtroom</text>
+  <text class="small" x="1005" y="308">arguments, or verdict</text>
+
+  <path class="arrow" d="M320 278 H375" />
+  <path class="arrow" d="M615 278 H670" />
+  <path class="arrow" d="M910 278 H965" />
+
+  <!-- Monitoring -->
+  <rect class="box purple" x="270" y="420" width="360" height="130" rx="18" />
+  <text class="label" x="305" y="458">LangSmith Monitoring</text>
+  <text class="small" x="305" y="488">Trace prompt flows, LLM calls,</text>
+  <text class="small" x="305" y="510">agent reasoning, response generation,</text>
+  <text class="small" x="305" y="532">and development-time workflow behavior</text>
+
+  <rect class="box green" x="760" y="420" width="360" height="130" rx="18" />
+  <text class="label" x="795" y="458">Evaluation Criteria</text>
+  <text class="criteria" x="795" y="488">Retrieval relevance</text>
+  <text class="criteria" x="795" y="512">Citation grounding</text>
+  <text class="criteria" x="795" y="536">Response consistency and legal reasoning quality</text>
+
+  <path class="arrow" d="M795 335 C795 380 630 385 520 413" />
+  <path class="arrow" d="M1110 335 C1110 385 1045 392 980 413" />
+  <path class="arrow" d="M630 485 H750" />
+
+  <!-- Issues and refinement -->
+  <rect class="box red" x="180" y="640" width="360" height="110" rx="16" />
+  <text class="label" x="215" y="678">Issue Identification</text>
+  <text class="small" x="215" y="706">Hallucinations, incomplete reasoning,</text>
+  <text class="small" x="215" y="728">weak citations, retrieval mismatches</text>
+
+  <rect class="box blue" x="700" y="640" width="390" height="110" rx="16" />
+  <text class="label" x="735" y="678">System Refinement</text>
+  <text class="small" x="735" y="706">Improve prompts, retrieval settings,</text>
+  <text class="small" x="735" y="728">knowledge base quality, and agent workflow</text>
+
+  <path class="arrow" d="M450 550 C440 595 405 610 365 633" />
+  <path class="arrow" d="M940 550 C930 595 905 610 895 633" />
+  <path class="arrow" d="M540 695 H690" />
+
+  <!-- Iteration loop -->
+  <path class="loop" d="M895 640 C1015 575 1175 510 1190 390 C1210 210 260 160 205 210" />
+  <text class="tiny" x="1020" y="585">Iterative testing and improvement</text>
+
+  <rect class="box" x="90" y="785" width="1205" height="26" rx="13" />
+  <text class="tiny" x="115" y="803">Note: This workflow supports continuous evaluation of legal retrieval, citation grounding, multi-agent interaction quality, and generated legal reasoning.</text>
+</svg>

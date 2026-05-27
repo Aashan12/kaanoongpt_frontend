@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1050" viewBox="0 0 1600 1050" role="img" aria-labelledby="title desc">
+  <title id="title">Sequence Diagram of Admin and Knowledge Management System</title>
+  <desc id="desc">Sequence diagram showing admin authentication, law or case upload, storage, metadata persistence, background extraction, chunking, embedding, vector indexing, and status monitoring.</desc>
+  <defs><style>
+    .bg{fill:#fff}.title{font:700 26px Arial,sans-serif;fill:#111827}.head{fill:#f8fbff;stroke:#1d4ed8;stroke-width:2}.alt{fill:#fff7ed;stroke:#f59e0b;stroke-width:2}.db{fill:#ecfdf5;stroke:#059669;stroke-width:2}.ai{fill:#fdf2f8;stroke:#be185d;stroke-width:2}
+    .txt{font:700 15px Arial,sans-serif;fill:#111827}.small{font:600 13px Arial,sans-serif;fill:#374151}.life{stroke:#111827;stroke-width:2;stroke-dasharray:7 7}.act{fill:#dbeafe;stroke:#2563eb}.actdb{fill:#d1fae5;stroke:#059669}.actai{fill:#fce7f3;stroke:#be185d}
+    .msg{stroke:#111827;stroke-width:2;fill:none;marker-end:url(#a)}.ret{stroke:#6b7280;stroke-width:2;fill:none;stroke-dasharray:7 6;marker-end:url(#g)}.label{font:600 14px Arial,sans-serif;fill:#111827}.rlabel{font:600 13px Arial,sans-serif;fill:#4b5563}.frame{fill:none;stroke:#6b7280;stroke-width:1.8;stroke-dasharray:6 5}
+  </style><marker id="a" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#111827"/></marker><marker id="g" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#6b7280"/></marker></defs>
+  <rect class="bg" width="1600" height="1050"/><text class="title" x="800" y="45" text-anchor="middle">Sequence Diagram: Admin and Knowledge Management System</text>
+  <rect class="head" x="40" y="80" width="125" height="52" rx="5"/><text class="txt" x="103" y="112" text-anchor="middle">Admin</text>
+  <rect class="head" x="215" y="80" width="145" height="52" rx="5"/><text class="txt" x="288" y="103" text-anchor="middle">Admin UI</text><text class="small" x="288" y="122" text-anchor="middle">Frontend</text>
+  <rect class="alt" x="410" y="80" width="145" height="52" rx="5"/><text class="txt" x="483" y="103" text-anchor="middle">Admin API</text><text class="small" x="483" y="122" text-anchor="middle">FastAPI</text>
+  <rect class="db" x="605" y="80" width="145" height="52" rx="5"/><text class="txt" x="678" y="103" text-anchor="middle">Cloudinary</text><text class="small" x="678" y="122" text-anchor="middle">files</text>
+  <rect class="db" x="800" y="80" width="145" height="52" rx="5"/><text class="txt" x="873" y="103" text-anchor="middle">MongoDB</text><text class="small" x="873" y="122" text-anchor="middle">metadata</text>
+  <rect class="ai" x="995" y="80" width="155" height="52" rx="5"/><text class="txt" x="1073" y="103" text-anchor="middle">Processor</text><text class="small" x="1073" y="122" text-anchor="middle">extract/chunk</text>
+  <rect class="ai" x="1205" y="80" width="145" height="52" rx="5"/><text class="txt" x="1278" y="103" text-anchor="middle">Embedding</text><text class="small" x="1278" y="122" text-anchor="middle">model</text>
+  <rect class="db" x="1405" y="80" width="145" height="52" rx="5"/><text class="txt" x="1478" y="103" text-anchor="middle">Vector DB</text><text class="small" x="1478" y="122" text-anchor="middle">Chroma/Mongo</text>
+  <line class="life" x1="103" y1="132" x2="103" y2="980"/><line class="life" x1="288" y1="132" x2="288" y2="980"/><line class="life" x1="483" y1="132" x2="483" y2="980"/><line class="life" x1="678" y1="132" x2="678" y2="980"/><line class="life" x1="873" y1="132" x2="873" y2="980"/><line class="life" x1="1073" y1="132" x2="1073" y2="980"/><line class="life" x1="1278" y1="132" x2="1278" y2="980"/><line class="life" x1="1478" y1="132" x2="1478" y2="980"/>
+  <rect class="act" x="280" y="170" width="16" height="755"/><rect class="act" x="475" y="230" width="16" height="660"/><rect class="actdb" x="670" y="315" width="16" height="65"/><rect class="actdb" x="865" y="400" width="16" height="455"/><rect class="actai" x="1065" y="515" width="16" height="210"/><rect class="actai" x="1270" y="640" width="16" height="60"/><rect class="actdb" x="1470" y="715" width="16" height="80"/>
+  <path class="msg" d="M103 180 H280"/><text class="label" x="192" y="171" text-anchor="middle">Open admin dashboard</text>
+  <path class="msg" d="M296 235 H475"/><text class="label" x="386" y="226" text-anchor="middle">Validate admin token</text>
+  <path class="ret" d="M475 280 H296"/><text class="rlabel" x="386" y="272" text-anchor="middle">Authorized dashboard</text>
+  <path class="msg" d="M103 320 H280"/><text class="label" x="192" y="311" text-anchor="middle">Submit law/case document and metadata</text>
+  <path class="msg" d="M296 350 H475"/><text class="label" x="386" y="341" text-anchor="middle">POST /admin/kb/upload</text>
+  <path class="msg" d="M491 350 H670"/><text class="label" x="581" y="341" text-anchor="middle">Upload source PDF</text>
+  <path class="ret" d="M670 385 H491"/><text class="rlabel" x="581" y="377" text-anchor="middle">file_url, public_id</text>
+  <path class="msg" d="M491 420 H865"/><text class="label" x="678" y="411" text-anchor="middle">Create Law / Case metadata record</text>
+  <path class="ret" d="M865 455 H491"/><text class="rlabel" x="678" y="447" text-anchor="middle">document_id, status=pending</text>
+  <path class="ret" d="M475 485 H296"/><text class="rlabel" x="386" y="477" text-anchor="middle">Upload accepted, processing queued</text>
+
+  <rect class="frame" x="445" y="505" width="1065" height="325" rx="3"/><text class="small" x="510" y="527">background task: document processing and indexing</text>
+  <path class="msg" d="M491 545 H1065"/><text class="label" x="778" y="536" text-anchor="middle">Start embedding task</text>
+  <path class="msg" d="M1081 585 H865"/><text class="label" x="973" y="576" text-anchor="middle">Download file / load metadata</text>
+  <path class="msg" d="M1081 625 H1081"/><text class="label" x="1165" y="616" text-anchor="middle">Extract text with pages</text>
+  <path class="msg" d="M1081 665 H1270"/><text class="label" x="1175" y="656" text-anchor="middle">Generate embeddings</text>
+  <path class="ret" d="M1270 700 H1081"/><text class="rlabel" x="1175" y="692" text-anchor="middle">embedding vectors</text>
+  <path class="msg" d="M1081 735 H1470"/><text class="label" x="1275" y="726" text-anchor="middle">Add chunks to country/source collection</text>
+  <path class="ret" d="M1470 795 H1081"/><text class="rlabel" x="1275" y="787" text-anchor="middle">indexed chunk count</text>
+  <path class="msg" d="M1081 820 H865"/><text class="label" x="973" y="811" text-anchor="middle">Update status, chunks, logs</text>
+
+  <path class="msg" d="M103 875 H280"/><text class="label" x="192" y="866" text-anchor="middle">Request KB statistics</text>
+  <path class="msg" d="M296 900 H475"/><text class="label" x="386" y="891" text-anchor="middle">GET /admin/kb/stats</text>
+  <path class="msg" d="M491 925 H865"/><text class="label" x="678" y="916" text-anchor="middle">Count laws, cases, statuses</text>
+  <path class="msg" d="M491 950 H1470"/><text class="label" x="980" y="941" text-anchor="middle">Count vector chunks</text>
+  <path class="ret" d="M475 975 H296"/><text class="rlabel" x="386" y="967" text-anchor="middle">Dashboard stats and monitoring data</text>
+</svg>

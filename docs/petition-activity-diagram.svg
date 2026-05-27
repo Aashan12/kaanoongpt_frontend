@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1450" viewBox="0 0 1200 1450" role="img" aria-labelledby="title desc">
+  <title id="title">Activity Diagram of Petition and Legal Document Generation System</title>
+  <desc id="desc">Activity diagram showing the petition generation workflow from case type selection to AI-assisted drafting, review, PDF export, and storage.</desc>
+  <defs><style>
+    .bg{fill:#fff}.node{fill:#fff;stroke:#1f2937;stroke-width:2.2}.decision{fill:#fff;stroke:#1f2937;stroke-width:2.2}.start{fill:#111827;stroke:#111827}
+    .label{font:600 18px Arial,sans-serif;fill:#111827}.small{font:600 14px Arial,sans-serif;fill:#374151}.arrow{stroke:#111827;stroke-width:2.4;fill:none;marker-end:url(#arrow)}
+    .note{fill:#eef6ff;stroke:#38aee2;stroke-width:1.8}.note-text{font:600 13px Arial,sans-serif;fill:#1e3a8a}
+  </style><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#111827"/></marker></defs>
+  <rect class="bg" width="1200" height="1450"/>
+  <circle class="start" cx="600" cy="50" r="18"/><path class="arrow" d="M600 68 V100"/>
+  <rect class="node" x="405" y="100" width="390" height="58" rx="4"/><text class="label" x="600" y="136" text-anchor="middle">Open Petition Maker</text><path class="arrow" d="M600 158 V195"/>
+  <rect class="node" x="370" y="195" width="460" height="58" rx="4"/><text class="label" x="600" y="231" text-anchor="middle">Select Case Type</text><path class="arrow" d="M600 253 V290"/>
+  <rect class="node" x="330" y="290" width="540" height="70" rx="4"/><text class="label" x="600" y="319" text-anchor="middle">Enter Court, Plaintiff, Defendant,</text><text class="label" x="600" y="344" text-anchor="middle">Case Details, Evidence and Witnesses</text><path class="arrow" d="M600 360 V400"/>
+  <rect class="node" x="360" y="400" width="480" height="58" rx="4"/><text class="label" x="600" y="436" text-anchor="middle">Validate Required Information</text><path class="arrow" d="M600 458 V500"/>
+  <path class="decision" d="M600 500 L735 580 L600 660 L465 580 Z"/><text class="label" x="600" y="575" text-anchor="middle">Need AI</text><text class="label" x="600" y="600" text-anchor="middle">Assistance?</text>
+  <path class="arrow" d="M465 580 H225 V705 H325"/><text class="small" x="285" y="562">No</text>
+  <path class="arrow" d="M735 580 H940 V700 H820"/><text class="small" x="905" y="562">Yes</text>
+  <rect class="node" x="325" y="680" width="340" height="58" rx="4"/><text class="label" x="495" y="716" text-anchor="middle">Build Petition Preview</text>
+  <rect class="node" x="820" y="680" width="300" height="58" rx="4"/><text class="label" x="970" y="716" text-anchor="middle">Ask Guided Questions</text><path class="arrow" d="M970 738 V775"/>
+  <rect class="node" x="780" y="775" width="380" height="70" rx="4"/><text class="label" x="970" y="804" text-anchor="middle">Retrieve Legal Context</text><text class="label" x="970" y="829" text-anchor="middle">from RAG / ChromaDB</text><path class="arrow" d="M970 845 V885"/>
+  <rect class="node" x="780" y="885" width="380" height="70" rx="4"/><text class="label" x="970" y="914" text-anchor="middle">Generate Nepali Petition</text><text class="label" x="970" y="939" text-anchor="middle">Content with Citations</text><path class="arrow" d="M970 955 V995"/>
+  <path class="decision" d="M970 995 L1090 1065 L970 1135 L850 1065 Z"/><text class="label" x="970" y="1060" text-anchor="middle">User</text><text class="label" x="970" y="1084" text-anchor="middle">Accepts?</text>
+  <path class="arrow" d="M850 1065 H725 V920 H780"/><text class="small" x="755" y="1048">Regenerate</text>
+  <path class="arrow" d="M970 1135 V1190 H665 V738"/><text class="small" x="985" y="1164">Accept</text>
+  <path class="arrow" d="M495 738 V800"/>
+  <rect class="node" x="325" y="800" width="340" height="58" rx="4"/><text class="label" x="495" y="836" text-anchor="middle">Review and Edit Petition</text><path class="arrow" d="M495 858 V900"/>
+  <rect class="node" x="325" y="900" width="340" height="58" rx="4"/><text class="label" x="495" y="936" text-anchor="middle">Generate PDF Document</text><path class="arrow" d="M495 958 V1000"/>
+  <path class="decision" d="M495 1000 L625 1075 L495 1150 L365 1075 Z"/><text class="label" x="495" y="1070" text-anchor="middle">Save to</text><text class="label" x="495" y="1094" text-anchor="middle">Account?</text>
+  <path class="arrow" d="M625 1075 H805 V1180"/><text class="small" x="695" y="1058">Yes</text>
+  <rect class="node" x="665" y="1180" width="280" height="58" rx="4"/><text class="label" x="805" y="1216" text-anchor="middle">Store PDF and Metadata</text><path class="arrow" d="M805 1238 V1290 H600"/>
+  <path class="arrow" d="M495 1150 V1290"/><text class="small" x="510" y="1185">No</text>
+  <rect class="node" x="420" y="1290" width="360" height="58" rx="4"/><text class="label" x="600" y="1326" text-anchor="middle">Download or Display Petition</text><path class="arrow" d="M600 1348 V1390"/>
+  <circle class="start" cx="600" cy="1410" r="18"/>
+  <rect class="note" x="70" y="1180" width="300" height="76" rx="6"/><text class="note-text" x="220" y="1206" text-anchor="middle">The form-based flow can generate</text><text class="note-text" x="220" y="1226" text-anchor="middle">a PDF directly, while agentic mode</text><text class="note-text" x="220" y="1246" text-anchor="middle">adds RAG-assisted drafting.</text>
+</svg>

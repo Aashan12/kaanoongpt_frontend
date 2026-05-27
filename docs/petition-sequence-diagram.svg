@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1050" viewBox="0 0 1600 1050" role="img" aria-labelledby="title desc">
+  <title id="title">Sequence Diagram of Petition and Legal Document Generation System</title>
+  <desc id="desc">Sequence diagram showing form entry, optional RAG-assisted content generation, PDF creation, saving, and displaying petition output.</desc>
+  <defs><style>
+    .bg{fill:#fff}.title{font:700 26px Arial,sans-serif;fill:#111827}.head{fill:#f8fbff;stroke:#1d4ed8;stroke-width:2}.ai{fill:#fdf2f8;stroke:#be185d;stroke-width:2}.db{fill:#ecfdf5;stroke:#059669;stroke-width:2}.alt{fill:#fff7ed;stroke:#f59e0b;stroke-width:2}
+    .txt{font:700 15px Arial,sans-serif;fill:#111827}.small{font:600 13px Arial,sans-serif;fill:#374151}.life{stroke:#111827;stroke-width:2;stroke-dasharray:7 7}.act{fill:#dbeafe;stroke:#2563eb}.actai{fill:#fce7f3;stroke:#be185d}.actdb{fill:#d1fae5;stroke:#059669}
+    .msg{stroke:#111827;stroke-width:2;fill:none;marker-end:url(#a)}.ret{stroke:#6b7280;stroke-width:2;fill:none;stroke-dasharray:7 6;marker-end:url(#g)}.label{font:600 14px Arial,sans-serif;fill:#111827}.rlabel{font:600 13px Arial,sans-serif;fill:#4b5563}.frame{fill:none;stroke:#6b7280;stroke-width:1.8;stroke-dasharray:6 5}
+  </style><marker id="a" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#111827"/></marker><marker id="g" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#6b7280"/></marker></defs>
+  <rect class="bg" width="1600" height="1050"/><text class="title" x="800" y="45" text-anchor="middle">Sequence Diagram: Petition and Legal Document Generation System</text>
+  <rect class="head" x="50" y="80" width="130" height="52" rx="5"/><text class="txt" x="115" y="112" text-anchor="middle">User</text>
+  <rect class="head" x="245" y="80" width="150" height="52" rx="5"/><text class="txt" x="320" y="103" text-anchor="middle">Frontend</text><text class="small" x="320" y="122" text-anchor="middle">Next.js</text>
+  <rect class="alt" x="460" y="80" width="150" height="52" rx="5"/><text class="txt" x="535" y="103" text-anchor="middle">FastAPI</text><text class="small" x="535" y="122" text-anchor="middle">Petition API</text>
+  <rect class="ai" x="675" y="80" width="160" height="52" rx="5"/><text class="txt" x="755" y="103" text-anchor="middle">Agentic Flow</text><text class="small" x="755" y="122" text-anchor="middle">session/questions</text>
+  <rect class="db" x="900" y="80" width="150" height="52" rx="5"/><text class="txt" x="975" y="103" text-anchor="middle">RAG</text><text class="small" x="975" y="122" text-anchor="middle">ChromaDB</text>
+  <rect class="ai" x="1115" y="80" width="150" height="52" rx="5"/><text class="txt" x="1190" y="103" text-anchor="middle">LLM</text><text class="small" x="1190" y="122" text-anchor="middle">draft content</text>
+  <rect class="alt" x="1330" y="80" width="150" height="52" rx="5"/><text class="txt" x="1405" y="103" text-anchor="middle">PDF Service</text><text class="small" x="1405" y="122" text-anchor="middle">ReportLab</text>
+  <line class="life" x1="115" y1="132" x2="115" y2="980"/><line class="life" x1="320" y1="132" x2="320" y2="980"/><line class="life" x1="535" y1="132" x2="535" y2="980"/><line class="life" x1="755" y1="132" x2="755" y2="980"/><line class="life" x1="975" y1="132" x2="975" y2="980"/><line class="life" x1="1190" y1="132" x2="1190" y2="980"/><line class="life" x1="1405" y1="132" x2="1405" y2="980"/>
+  <rect class="act" x="312" y="170" width="16" height="750"/><rect class="act" x="527" y="300" width="16" height="590"/><rect class="actai" x="747" y="370" width="16" height="285"/><rect class="actdb" x="967" y="440" width="16" height="70"/><rect class="actai" x="1182" y="525" width="16" height="95"/><rect class="act" x="1397" y="705" width="16" height="85"/>
+  <path class="msg" d="M115 175 H312"/><text class="label" x="215" y="166" text-anchor="middle">Open petition maker</text>
+  <path class="msg" d="M115 230 H312"/><text class="label" x="215" y="221" text-anchor="middle">Select case type</text>
+  <path class="msg" d="M115 285 H312"/><text class="label" x="215" y="276" text-anchor="middle">Enter court, party, case, evidence and witness details</text>
+  <path class="msg" d="M328 315 H527"/><text class="label" x="428" y="306" text-anchor="middle">Validate form data</text>
+  <path class="ret" d="M527 350 H328"/><text class="rlabel" x="428" y="342" text-anchor="middle">Validation result</text>
+  <rect class="frame" x="655" y="360" width="575" height="300" rx="3"/><text class="small" x="705" y="382" text-anchor="middle">opt</text><text class="small" x="945" y="382" text-anchor="middle">AI-assisted drafting / guided conversation</text>
+  <path class="msg" d="M328 395 H747"/><text class="label" x="538" y="386" text-anchor="middle">Start conversation or send user answer</text>
+  <path class="msg" d="M763 455 H967"/><text class="label" x="865" y="446" text-anchor="middle">Query civil law context</text>
+  <path class="ret" d="M967 510 H763"/><text class="rlabel" x="865" y="502" text-anchor="middle">Relevant law chunks and citations</text>
+  <path class="msg" d="M763 545 H1182"/><text class="label" x="973" y="536" text-anchor="middle">Generate structured Nepali legal content</text>
+  <path class="ret" d="M1182 620 H763"/><text class="rlabel" x="973" y="612" text-anchor="middle">Generated draft section</text>
+  <path class="ret" d="M747 655 H328"/><text class="rlabel" x="538" y="647" text-anchor="middle">Question / generated content / citations</text>
+  <path class="msg" d="M115 680 H312"/><text class="label" x="215" y="671" text-anchor="middle">Review, edit, accept or regenerate content</text>
+  <path class="msg" d="M328 725 H1397"/><text class="label" x="862" y="716" text-anchor="middle">Generate PDF from completed petition data</text>
+  <path class="ret" d="M1397 790 H328"/><text class="rlabel" x="862" y="782" text-anchor="middle">PDF blob / firadpatra.pdf</text>
+  <path class="msg" d="M328 835 H527"/><text class="label" x="428" y="826" text-anchor="middle">Optional save petition with PDF</text>
+  <path class="ret" d="M527 890 H328"/><text class="rlabel" x="428" y="882" text-anchor="middle">petition_id and pdf_url</text>
+  <path class="ret" d="M312 935 H115"/><text class="rlabel" x="215" y="927" text-anchor="middle">Display final draft and download PDF</text>
+</svg>

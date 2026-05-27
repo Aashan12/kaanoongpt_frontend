@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1000" viewBox="0 0 1500 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Use Case Diagram of Authentication and User Management System</title>
+  <desc id="desc">Use case diagram showing registration, OTP verification, login, JWT validation, protected access, profile management, and logout.</desc>
+  <defs><style>
+    .bg{fill:#fff}.title{font:700 25px Arial,sans-serif;fill:#111827}.boundary{fill:#fbfdff;stroke:#2563eb;stroke-width:2.4}
+    .actor{stroke:#111827;stroke-width:2.5;fill:none;stroke-linecap:round}.atext{font:700 17px Arial,sans-serif;fill:#111827}
+    .uc{fill:#fff;stroke:#1d4ed8;stroke-width:2.1}.int{fill:#fdf2f8;stroke:#be185d;stroke-width:2}.ext{fill:#eef6ff;stroke:#38aee2;stroke-width:2}
+    .label{font:600 15px Arial,sans-serif;fill:#111827}.small{font:600 13px Arial,sans-serif;fill:#4b5563}.assoc{stroke:#111827;stroke-width:2;fill:none}.inc{stroke:#6b7280;stroke-width:2;fill:none;stroke-dasharray:7 6;marker-end:url(#arr)}
+  </style><marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#6b7280"/></marker></defs>
+  <rect class="bg" width="1500" height="1000"/><text class="title" x="750" y="45" text-anchor="middle">Use Case Diagram: Authentication and User Management System (AUMS)</text>
+  <rect class="boundary" x="250" y="80" width="980" height="850" rx="8"/><text class="atext" x="740" y="112" text-anchor="middle">Authentication and User Management System</text>
+  <circle class="actor" cx="105" cy="215" r="23"/><path class="actor" d="M105 238 V310 M62 270 H148 M105 310 L65 370 M105 310 L145 370"/><text class="atext" x="105" y="405" text-anchor="middle">User</text>
+  <rect class="ext" x="1290" y="160" width="160" height="64" rx="5"/><text class="atext" x="1370" y="187" text-anchor="middle">Email / OTP</text><text class="atext" x="1370" y="209" text-anchor="middle">Service</text>
+  <rect class="ext" x="1290" y="415" width="160" height="64" rx="5"/><text class="atext" x="1370" y="442" text-anchor="middle">JWT</text><text class="atext" x="1370" y="464" text-anchor="middle">Service</text>
+  <rect class="ext" x="1290" y="700" width="160" height="64" rx="5"/><text class="atext" x="1370" y="727" text-anchor="middle">MongoDB</text><text class="atext" x="1370" y="749" text-anchor="middle">Database</text>
+
+  <ellipse class="uc" cx="430" cy="165" rx="130" ry="33"/><text class="label" x="430" y="171" text-anchor="middle">Register Account</text>
+  <ellipse class="uc" cx="430" cy="245" rx="130" ry="33"/><text class="label" x="430" y="251" text-anchor="middle">Verify Email OTP</text>
+  <ellipse class="uc" cx="430" cy="325" rx="130" ry="33"/><text class="label" x="430" y="331" text-anchor="middle">Resend OTP</text>
+  <ellipse class="uc" cx="430" cy="405" rx="130" ry="33"/><text class="label" x="430" y="411" text-anchor="middle">Login</text>
+  <ellipse class="uc" cx="430" cy="485" rx="130" ry="33"/><text class="label" x="430" y="491" text-anchor="middle">Access Dashboard</text>
+  <ellipse class="uc" cx="430" cy="565" rx="145" ry="33"/><text class="label" x="430" y="571" text-anchor="middle">Access Protected APIs</text>
+  <ellipse class="uc" cx="430" cy="645" rx="135" ry="33"/><text class="label" x="430" y="651" text-anchor="middle">View Profile</text>
+  <ellipse class="uc" cx="430" cy="725" rx="135" ry="33"/><text class="label" x="430" y="731" text-anchor="middle">Update Profile</text>
+  <ellipse class="uc" cx="430" cy="805" rx="125" ry="33"/><text class="label" x="430" y="811" text-anchor="middle">Logout</text>
+
+  <ellipse class="int" cx="815" cy="165" rx="145" ry="33"/><text class="label" x="815" y="171" text-anchor="middle">Hash Password</text>
+  <ellipse class="int" cx="815" cy="245" rx="155" ry="33"/><text class="label" x="815" y="251" text-anchor="middle">Create Pending User</text>
+  <ellipse class="int" cx="815" cy="325" rx="145" ry="33"/><text class="label" x="815" y="331" text-anchor="middle">Create User Record</text>
+  <ellipse class="int" cx="815" cy="405" rx="145" ry="33"/><text class="label" x="815" y="411" text-anchor="middle">Verify Password</text>
+  <ellipse class="int" cx="815" cy="485" rx="145" ry="33"/><text class="label" x="815" y="491" text-anchor="middle">Issue JWT Token</text>
+  <ellipse class="int" cx="815" cy="565" rx="145" ry="33"/><text class="label" x="815" y="571" text-anchor="middle">Validate JWT Token</text>
+  <ellipse class="int" cx="815" cy="645" rx="145" ry="33"/><text class="label" x="815" y="651" text-anchor="middle">Load User Context</text>
+  <ellipse class="int" cx="815" cy="725" rx="150" ry="33"/><text class="label" x="815" y="731" text-anchor="middle">Manage User Data</text>
+
+  <path class="assoc" d="M150 230 L300 165"/><path class="assoc" d="M153 250 L300 245"/><path class="assoc" d="M150 275 L300 325"/><path class="assoc" d="M145 305 L300 405"/><path class="assoc" d="M135 335 L300 485"/><path class="assoc" d="M120 360 L290 565"/><path class="assoc" d="M102 370 L300 645"/><path class="assoc" d="M82 360 L300 725"/><path class="assoc" d="M64 342 L305 805"/>
+  <path class="inc" d="M555 165 H670"/><path class="inc" d="M555 185 C615 205 650 225 675 240"/><path class="inc" d="M555 245 C625 260 660 295 680 318"/>
+  <path class="inc" d="M555 405 H670"/><path class="inc" d="M555 425 C625 445 660 468 675 480"/><path class="inc" d="M575 565 H670"/><path class="inc" d="M555 645 H670"/><path class="inc" d="M555 725 H665"/>
+  <path class="assoc" d="M1290 192 H960"/><path class="assoc" d="M1290 447 H960"/><path class="assoc" d="M1290 732 H960"/><path class="assoc" d="M1290 732 C1120 690 1010 655 955 645"/>
+  <text class="small" x="600" y="155">&lt;&lt;include&gt;&gt;</text><text class="small" x="600" y="390">&lt;&lt;include&gt;&gt;</text><text class="small" x="600" y="552">&lt;&lt;include&gt;&gt;</text>
+</svg>

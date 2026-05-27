@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1500" viewBox="0 0 1200 1500" role="img" aria-labelledby="title desc">
+  <title id="title">Activity Diagram of Agentic Courtroom Simulator</title>
+  <desc id="desc">Activity diagram showing upload, extraction, RAG retrieval, courtroom simulation rounds, judge verdict, storage, and result display.</desc>
+  <defs>
+    <style>
+      .bg { fill: #ffffff; }
+      .node { fill: #ffffff; stroke: #1f2937; stroke-width: 2.2; }
+      .startend { fill: #111827; stroke: #111827; stroke-width: 2; }
+      .decision { fill: #ffffff; stroke: #1f2937; stroke-width: 2.2; }
+      .label { font: 500 18px Arial, sans-serif; fill: #1f2937; }
+      .small { font: 500 15px Arial, sans-serif; fill: #374151; }
+      .edge-label { font: 500 15px Arial, sans-serif; fill: #374151; }
+      .arrow { stroke: #111827; stroke-width: 2.4; fill: none; marker-end: url(#arrowhead); }
+      .line { stroke: #111827; stroke-width: 2.4; fill: none; }
+      .note { fill: #eef6ff; stroke: #60a5fa; stroke-width: 1.8; }
+      .note-text { font: 500 14px Arial, sans-serif; fill: #1e3a8a; }
+    </style>
+    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#111827" />
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1200" height="1500" />
+
+  <!-- Start -->
+  <circle class="startend" cx="600" cy="55" r="18" />
+  <path class="arrow" d="M600 73 V105" />
+
+  <!-- Main vertical flow -->
+  <rect class="node" x="410" y="105" width="380" height="58" rx="4" />
+  <text class="label" x="600" y="141" text-anchor="middle">Open Courtroom Simulator</text>
+  <path class="arrow" d="M600 163 V200" />
+
+  <rect class="node" x="350" y="200" width="500" height="70" rx="4" />
+  <text class="label" x="600" y="229" text-anchor="middle">Upload Plaintiff Petition</text>
+  <text class="label" x="600" y="253" text-anchor="middle">and Defendant Response</text>
+  <path class="arrow" d="M600 270 V310" />
+
+  <rect class="node" x="380" y="310" width="440" height="58" rx="4" />
+  <text class="label" x="600" y="346" text-anchor="middle">Extract Text from Documents</text>
+  <path class="arrow" d="M600 368 V405" />
+
+  <rect class="node" x="405" y="405" width="390" height="58" rx="4" />
+  <text class="label" x="600" y="441" text-anchor="middle">Create Trial Session</text>
+  <path class="arrow" d="M600 463 V500" />
+
+  <rect class="node" x="340" y="500" width="520" height="70" rx="4" />
+  <text class="label" x="600" y="529" text-anchor="middle">Retrieve Relevant Laws and Cases</text>
+  <text class="label" x="600" y="553" text-anchor="middle">from Knowledge Base / RAG Pipeline</text>
+  <path class="arrow" d="M600 570 V610" />
+
+  <rect class="node" x="400" y="610" width="400" height="58" rx="4" />
+  <text class="label" x="600" y="646" text-anchor="middle">Start Courtroom Simulation</text>
+  <path class="arrow" d="M600 668 V705" />
+
+  <rect class="node" x="390" y="705" width="420" height="58" rx="4" />
+  <text class="label" x="600" y="741" text-anchor="middle">Plaintiff Agent Generates Argument</text>
+  <path class="arrow" d="M600 763 V800" />
+
+  <rect class="node" x="370" y="800" width="460" height="58" rx="4" />
+  <text class="label" x="600" y="836" text-anchor="middle">Defendant Agent Generates Counterargument</text>
+  <path class="arrow" d="M600 858 V895" />
+
+  <rect class="node" x="390" y="895" width="420" height="58" rx="4" />
+  <text class="label" x="600" y="931" text-anchor="middle">Judge Agent Evaluates Arguments</text>
+  <path class="arrow" d="M600 953 V995" />
+
+  <!-- Decision -->
+  <path class="decision" d="M600 995 L730 1075 L600 1155 L470 1075 Z" />
+  <text class="label" x="600" y="1067" text-anchor="middle">More Argument</text>
+  <text class="label" x="600" y="1091" text-anchor="middle">Rounds?</text>
+
+  <!-- Yes loop -->
+  <path class="line" d="M470 1075 H225 V734 H380" />
+  <path class="arrow" d="M380 734 H390" />
+  <text class="edge-label" x="270" y="1058">Yes</text>
+  <text class="small" x="235" y="705">Continue next round</text>
+
+  <!-- No down -->
+  <path class="arrow" d="M600 1155 V1200" />
+  <text class="edge-label" x="625" y="1183">No</text>
+
+  <rect class="node" x="385" y="1200" width="430" height="58" rx="4" />
+  <text class="label" x="600" y="1236" text-anchor="middle">Judge Generates Final Verdict</text>
+  <path class="arrow" d="M600 1258 V1295" />
+
+  <rect class="node" x="335" y="1295" width="530" height="70" rx="4" />
+  <text class="label" x="600" y="1324" text-anchor="middle">Save Trial Messages, Citations, Verdict,</text>
+  <text class="label" x="600" y="1348" text-anchor="middle">Transcript, and Session History</text>
+  <path class="arrow" d="M600 1365 V1400" />
+
+  <rect class="node" x="370" y="1400" width="460" height="58" rx="4" />
+  <text class="label" x="600" y="1436" text-anchor="middle">Display Verdict and Transcript to User</text>
+  <path class="arrow" d="M600 1458 V1480" />
+
+  <!-- End -->
+  <circle class="startend" cx="600" cy="1492" r="16" />
+
+  <!-- Side notes -->
+  <rect class="note" x="875" y="505" width="250" height="82" rx="10" />
+  <text class="note-text" x="1000" y="532" text-anchor="middle">Retrieved legal context</text>
+  <text class="note-text" x="1000" y="554" text-anchor="middle">grounds agent arguments</text>
+  <text class="note-text" x="1000" y="576" text-anchor="middle">and judge reasoning</text>
+
+  <rect class="note" x="875" y="705" width="250" height="82" rx="10" />
+  <text class="note-text" x="1000" y="732" text-anchor="middle">WebSocket streams</text>
+  <text class="note-text" x="1000" y="754" text-anchor="middle">agent progress and</text>
+  <text class="note-text" x="1000" y="776" text-anchor="middle">trial messages live</text>
+</svg>

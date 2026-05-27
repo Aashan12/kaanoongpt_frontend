@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1000" viewBox="0 0 1500 1000" role="img" aria-labelledby="title desc">
+  <title id="title">KaanoonGPT High-Level System Architecture</title>
+  <desc id="desc">Layered architecture diagram showing frontend, backend, core application systems, AI framework and model layer, database layer, and monitoring layer.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .panel { fill: #ffffff; stroke: #d9e2ef; stroke-width: 2; }
+      .layer { fill: #ffffff; stroke: #d9e2ef; stroke-width: 2; }
+      .frontend { fill: #eef6ff; stroke: #5b9df8; }
+      .backend { fill: #ecfdf5; stroke: #34c38f; }
+      .core { fill: #fff8e6; stroke: #f4b942; }
+      .ai { fill: #f5f0ff; stroke: #9b7cff; }
+      .data { fill: #fff1f2; stroke: #fb7185; }
+      .monitor { fill: #f8fafc; stroke: #94a3b8; }
+      .title { font: 700 34px Arial, sans-serif; fill: #102033; }
+      .subtitle { font: 400 17px Arial, sans-serif; fill: #5b6b80; }
+      .layer-title { font: 700 19px Arial, sans-serif; fill: #0f172a; }
+      .tag { font: 700 14px Arial, sans-serif; fill: #334155; }
+      .small { font: 400 13px Arial, sans-serif; fill: #475569; }
+      .note { font: 400 12px Arial, sans-serif; fill: #64748b; }
+      .arrow { stroke: #64748b; stroke-width: 2.4; fill: none; marker-end: url(#arrowhead); }
+      .dash { stroke-dasharray: 7 7; }
+    </style>
+    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#64748b" />
+    </marker>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <rect class="bg" width="1500" height="1000" />
+
+  <text class="title" x="70" y="72">KaanoonGPT High-Level System Architecture</text>
+  <text class="subtitle" x="70" y="104">Layered architecture for legal retrieval, petition generation, courtroom simulation, storage, and monitoring</text>
+
+  <rect class="panel" x="50" y="140" width="1400" height="805" rx="22" filter="url(#shadow)" />
+
+  <!-- Frontend layer -->
+  <rect class="layer frontend" x="90" y="180" width="1320" height="110" rx="18" />
+  <text class="layer-title" x="125" y="222">Frontend Layer</text>
+  <rect class="layer" x="350" y="205" width="145" height="58" rx="12" />
+  <text class="tag" x="390" y="239">Next.js</text>
+  <rect class="layer" x="525" y="205" width="145" height="58" rx="12" />
+  <text class="tag" x="578" y="239">React</text>
+  <rect class="layer" x="700" y="205" width="155" height="58" rx="12" />
+  <text class="tag" x="735" y="239">Tailwind CSS</text>
+  <rect class="layer" x="885" y="205" width="190" height="58" rx="12" />
+  <text class="tag" x="920" y="239">Custom CSS / UI</text>
+  <rect class="layer" x="1105" y="205" width="180" height="58" rx="12" />
+  <text class="tag" x="1140" y="239">Web Interface</text>
+
+  <!-- Backend layer -->
+  <rect class="layer backend" x="90" y="320" width="1320" height="110" rx="18" />
+  <text class="layer-title" x="125" y="362">Backend Layer</text>
+  <rect class="layer" x="330" y="345" width="145" height="58" rx="12" />
+  <text class="tag" x="382" y="379">FastAPI</text>
+  <rect class="layer" x="505" y="345" width="145" height="58" rx="12" />
+  <text class="tag" x="548" y="379">REST APIs</text>
+  <rect class="layer" x="680" y="345" width="145" height="58" rx="12" />
+  <text class="tag" x="720" y="379">WebSocket</text>
+  <rect class="layer" x="855" y="345" width="170" height="58" rx="12" />
+  <text class="tag" x="893" y="379">Auth / JWT</text>
+  <rect class="layer" x="1055" y="345" width="205" height="58" rx="12" />
+  <text class="tag" x="1085" y="379">Document Processing</text>
+
+  <!-- Core systems -->
+  <rect class="layer core" x="90" y="460" width="1320" height="130" rx="18" />
+  <text class="layer-title" x="125" y="508">Core Systems</text>
+  <rect class="layer" x="330" y="488" width="205" height="72" rx="12" />
+  <text class="tag" x="358" y="518">Legal Q&amp;A / RAG</text>
+  <text class="small" x="365" y="540">Ask the Law</text>
+  <rect class="layer" x="565" y="488" width="220" height="72" rx="12" />
+  <text class="tag" x="590" y="518">Courtroom Simulator</text>
+  <text class="small" x="620" y="540">ACSS</text>
+  <rect class="layer" x="815" y="488" width="220" height="72" rx="12" />
+  <text class="tag" x="848" y="518">Firad Patra Maker</text>
+  <text class="small" x="865" y="540">Petition generation</text>
+  <rect class="layer" x="1065" y="488" width="220" height="72" rx="12" />
+  <text class="tag" x="1094" y="518">Admin System</text>
+  <text class="small" x="1092" y="540">Knowledge base control</text>
+
+  <!-- AI layer -->
+  <rect class="layer ai" x="90" y="620" width="1320" height="110" rx="18" />
+  <text class="layer-title" x="125" y="662">AI and Model Layer</text>
+  <rect class="layer" x="330" y="645" width="160" height="58" rx="12" />
+  <text class="tag" x="372" y="679">LangChain</text>
+  <rect class="layer" x="520" y="645" width="160" height="58" rx="12" />
+  <text class="tag" x="562" y="679">LangGraph</text>
+  <rect class="layer" x="710" y="645" width="190" height="58" rx="12" />
+  <text class="tag" x="748" y="679">Embedding Models</text>
+  <rect class="layer" x="930" y="645" width="180" height="58" rx="12" />
+  <text class="tag" x="960" y="679">Frontier LLM APIs</text>
+  <rect class="layer" x="1140" y="645" width="185" height="58" rx="12" />
+  <text class="tag" x="1166" y="679">Open Source LLMs</text>
+
+  <!-- Data layer -->
+  <rect class="layer data" x="90" y="760" width="930" height="110" rx="18" />
+  <text class="layer-title" x="125" y="802">Data Layer</text>
+  <rect class="layer" x="350" y="785" width="190" height="58" rx="12" />
+  <text class="tag" x="408" y="812">MongoDB</text>
+  <text class="small" x="378" y="832">users, chats, trials</text>
+  <rect class="layer" x="585" y="785" width="190" height="58" rx="12" />
+  <text class="tag" x="642" y="812">ChromaDB</text>
+  <text class="small" x="606" y="832">vectors, legal chunks</text>
+  <rect class="layer" x="820" y="785" width="160" height="58" rx="12" />
+  <text class="tag" x="855" y="812">File Data</text>
+  <text class="small" x="847" y="832">PDF/TXT input</text>
+
+  <!-- Monitoring layer -->
+  <rect class="layer monitor" x="1050" y="760" width="360" height="110" rx="18" />
+  <text class="layer-title" x="1085" y="802">Monitoring Layer</text>
+  <rect class="layer" x="1085" y="823" width="135" height="38" rx="10" />
+  <text class="tag" x="1123" y="848">LangSmith</text>
+  <rect class="layer" x="1240" y="823" width="135" height="38" rx="10" />
+  <text class="tag" x="1267" y="848">Agent Traces</text>
+
+  <!-- Layer flow arrows -->
+  <path class="arrow" d="M750 290 V312" />
+  <path class="arrow" d="M750 430 V452" />
+  <path class="arrow" d="M750 590 V612" />
+  <path class="arrow" d="M600 730 V752" />
+  <path class="arrow dash" d="M1015 730 V752 C1015 775 1050 775 1050 815" />
+
+  <rect class="layer" x="90" y="900" width="1320" height="26" rx="13" />
+  <text class="note" x="115" y="918">The architecture separates frontend interaction, backend orchestration, core AI workflows, model frameworks, persistent storage, vector retrieval, and monitoring services.</text>
+</svg>

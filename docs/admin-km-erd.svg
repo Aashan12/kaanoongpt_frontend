@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1450" height="950" viewBox="0 0 1450 950" role="img" aria-labelledby="title desc">
+  <title id="title">ERD of Admin and Knowledge Management System</title>
+  <desc id="desc">Clean entity relationship diagram showing admin profiles, catalog items, laws, cases, vector chunks, setup metadata, model settings, file storage, ingestion jobs, and audit logs.</desc>
+  <defs><style>
+    .bg{fill:#fff}.title{font:700 26px Arial,sans-serif;fill:#111827}.ent{fill:#fff;stroke:#1d4ed8;stroke-width:2}.kb{fill:#ecfdf5;stroke:#059669;stroke-width:2}.cat{fill:#fff7ed;stroke:#f59e0b;stroke-width:2}.sys{fill:#fdf2f8;stroke:#be185d;stroke-width:2}
+    .h{font:700 16px Arial,sans-serif;fill:#111827}.t{font:600 13px Arial,sans-serif;fill:#374151}.rel{stroke:#111827;stroke-width:2;fill:none}.card{font:700 14px Arial,sans-serif;fill:#111827}
+  </style></defs>
+  <rect class="bg" width="1450" height="950"/>
+  <text class="title" x="725" y="45" text-anchor="middle">Entity Relationship Diagram: Admin and Knowledge Management System</text>
+
+  <g><rect class="ent" x="70" y="105" width="255" height="180" rx="4"/><text class="h" x="198" y="132" text-anchor="middle">AdminProfile</text><line x1="70" y1="145" x2="325" y2="145" stroke="#1d4ed8"/><text class="t" x="88" y="169">PK admin_id</text><text class="t" x="88" y="191">email</text><text class="t" x="88" y="213">full_name</text><text class="t" x="88" y="235">hashed_password</text><text class="t" x="88" y="257">role, status</text></g>
+
+  <g><rect class="cat" x="420" y="95" width="285" height="220" rx="4"/><text class="h" x="563" y="122" text-anchor="middle">LawCatalogItem</text><line x1="420" y1="135" x2="705" y2="135" stroke="#f59e0b"/><text class="t" x="438" y="159">PK catalog_id</text><text class="t" x="438" y="181">title, description</text><text class="t" x="438" y="203">source_url, source_type</text><text class="t" x="438" y="225">category, country_code</text><text class="t" x="438" y="247">status</text><text class="t" x="438" y="269">section_count, chunk_count</text><text class="t" x="438" y="291">ingested_at, error_message</text></g>
+
+  <g><rect class="kb" x="805" y="95" width="270" height="220" rx="4"/><text class="h" x="940" y="122" text-anchor="middle">Law</text><line x1="805" y1="135" x2="1075" y2="135" stroke="#059669"/><text class="t" x="823" y="159">PK law_id</text><text class="t" x="823" y="181">title, law_number</text><text class="t" x="823" y="203">category, country_code</text><text class="t" x="823" y="225">file_url, public_id</text><text class="t" x="823" y="247">embedding_status</text><text class="t" x="823" y="269">chunk_count, error_log</text><text class="t" x="823" y="291">keywords</text></g>
+
+  <g><rect class="kb" x="1115" y="95" width="270" height="220" rx="4"/><text class="h" x="1250" y="122" text-anchor="middle">Case</text><line x1="1115" y1="135" x2="1385" y2="135" stroke="#059669"/><text class="t" x="1133" y="159">PK case_id</text><text class="t" x="1133" y="181">case_title, citation</text><text class="t" x="1133" y="203">court_name</text><text class="t" x="1133" y="225">precedent_level</text><text class="t" x="1133" y="247">country_code, case_types</text><text class="t" x="1133" y="269">embedding_status</text><text class="t" x="1133" y="291">fact_summary, holding</text></g>
+
+  <g><rect class="kb" x="100" y="420" width="270" height="200" rx="4"/><text class="h" x="235" y="447" text-anchor="middle">VectorChunk</text><line x1="100" y1="460" x2="370" y2="460" stroke="#059669"/><text class="t" x="118" y="484">PK chunk_id</text><text class="t" x="118" y="506">FK source_doc_id</text><text class="t" x="118" y="528">source_type: law/case</text><text class="t" x="118" y="550">collection_name</text><text class="t" x="118" y="572">content</text><text class="t" x="118" y="594">metadata, embedding</text></g>
+
+  <g><rect class="sys" x="420" y="420" width="270" height="200" rx="4"/><text class="h" x="555" y="447" text-anchor="middle">SystemSetup</text><line x1="420" y1="460" x2="690" y2="460" stroke="#be185d"/><text class="t" x="438" y="484">PK setup_id</text><text class="t" x="438" y="506">entity_type</text><text class="t" x="438" y="528">country/state/city</text><text class="t" x="438" y="550">court_type</text><text class="t" x="438" y="572">case_type</text><text class="t" x="438" y="594">law_category</text></g>
+
+  <g><rect class="sys" x="740" y="420" width="270" height="200" rx="4"/><text class="h" x="875" y="447" text-anchor="middle">LLMModel</text><line x1="740" y1="460" x2="1010" y2="460" stroke="#be185d"/><text class="t" x="758" y="484">PK model_id</text><text class="t" x="758" y="506">model_type</text><text class="t" x="758" y="528">provider</text><text class="t" x="758" y="550">model_name</text><text class="t" x="758" y="572">status</text><text class="t" x="758" y="594">cost / token settings</text></g>
+
+  <g><rect class="cat" x="1060" y="420" width="270" height="200" rx="4"/><text class="h" x="1195" y="447" text-anchor="middle">IngestionJob</text><line x1="1060" y1="460" x2="1330" y2="460" stroke="#f59e0b"/><text class="t" x="1078" y="484">PK job_id</text><text class="t" x="1078" y="506">source_id</text><text class="t" x="1078" y="528">job_type</text><text class="t" x="1078" y="550">status</text><text class="t" x="1078" y="572">progress</text><text class="t" x="1078" y="594">error_log</text></g>
+
+  <g><rect class="ent" x="420" y="750" width="270" height="145" rx="4"/><text class="h" x="555" y="777" text-anchor="middle">CloudinaryFile</text><line x1="420" y1="790" x2="690" y2="790" stroke="#1d4ed8"/><text class="t" x="438" y="814">PK public_id</text><text class="t" x="438" y="836">file_url</text><text class="t" x="438" y="858">folder</text><text class="t" x="438" y="880">uploaded_at</text></g>
+
+  <g><rect class="ent" x="740" y="750" width="270" height="145" rx="4"/><text class="h" x="875" y="777" text-anchor="middle">AdminAuditLog</text><line x1="740" y1="790" x2="1010" y2="790" stroke="#1d4ed8"/><text class="t" x="758" y="814">PK log_id</text><text class="t" x="758" y="836">FK admin_id</text><text class="t" x="758" y="858">action, target_type</text><text class="t" x="758" y="880">timestamp</text></g>
+
+  <!-- Clean relationship bus -->
+  <path class="rel" d="M705 205 H805"/><text class="card" x="725" y="195">1</text><text class="card" x="780" y="195">N</text>
+  <path class="rel" d="M940 315 V365 H235 V420"/><text class="card" x="955" y="350">1</text><text class="card" x="245" y="410">N</text>
+  <path class="rel" d="M1250 315 V365 H235"/><text class="card" x="1265" y="350">1</text>
+  <path class="rel" d="M940 315 V390 H555 V420"/><text class="card" x="590" y="382">categorized by</text>
+  <path class="rel" d="M940 315 V720 H555 V750"/><text class="card" x="585" y="710">stored file</text>
+  <path class="rel" d="M875 620 V750"/><text class="card" x="890" y="695">admin model setting</text>
+  <path class="rel" d="M1195 420 V360 H563 V315"/><text class="card" x="940" y="350">tracks ingestion</text>
+  <path class="rel" d="M198 285 V720 H875 V750"/><text class="card" x="230" y="710">admin actions</text>
+</svg>

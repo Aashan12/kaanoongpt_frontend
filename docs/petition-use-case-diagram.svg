@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1000" viewBox="0 0 1500 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Use Case Diagram of Petition and Legal Document Generation System</title>
+  <desc id="desc">Use case diagram showing user, RAG, LLM, PDF service, cloud storage, and database interactions in the petition maker.</desc>
+  <defs><style>
+    .bg{fill:#fff}.boundary{fill:#fbfdff;stroke:#2563eb;stroke-width:2.4}.actor{stroke:#111827;stroke-width:2.5;fill:none;stroke-linecap:round}.atext{font:700 17px Arial,sans-serif;fill:#111827}
+    .uc{fill:#fff;stroke:#1d4ed8;stroke-width:2.1}.int{fill:#fdf2f8;stroke:#be185d;stroke-width:2}.ext{fill:#eef6ff;stroke:#38aee2;stroke-width:2}
+    .label{font:600 15px Arial,sans-serif;fill:#111827}.small{font:600 13px Arial,sans-serif;fill:#4b5563}.assoc{stroke:#111827;stroke-width:2;fill:none}.inc{stroke:#6b7280;stroke-width:2;fill:none;stroke-dasharray:7 6;marker-end:url(#arr)}
+    .title{font:700 25px Arial,sans-serif;fill:#111827}
+  </style><marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#6b7280"/></marker></defs>
+  <rect class="bg" width="1500" height="1000"/><text class="title" x="750" y="45" text-anchor="middle">Use Case Diagram: Petition and Legal Document Generation System</text>
+  <rect class="boundary" x="250" y="80" width="980" height="850" rx="8"/><text class="atext" x="740" y="112" text-anchor="middle">Petition and Legal Document Generation System</text>
+  <circle class="actor" cx="105" cy="205" r="23"/><path class="actor" d="M105 228 V300 M62 260 H148 M105 300 L65 360 M105 300 L145 360"/><text class="atext" x="105" y="395" text-anchor="middle">User</text>
+  <rect class="ext" x="1290" y="145" width="160" height="64" rx="5"/><text class="atext" x="1370" y="172" text-anchor="middle">RAG /</text><text class="atext" x="1370" y="194" text-anchor="middle">ChromaDB</text>
+  <rect class="ext" x="1290" y="355" width="160" height="64" rx="5"/><text class="atext" x="1370" y="382" text-anchor="middle">Language</text><text class="atext" x="1370" y="404" text-anchor="middle">Model</text>
+  <rect class="ext" x="1290" y="565" width="160" height="64" rx="5"/><text class="atext" x="1370" y="592" text-anchor="middle">PDF</text><text class="atext" x="1370" y="614" text-anchor="middle">Generator</text>
+  <rect class="ext" x="1290" y="775" width="160" height="64" rx="5"/><text class="atext" x="1370" y="802" text-anchor="middle">MongoDB /</text><text class="atext" x="1370" y="824" text-anchor="middle">Cloudinary</text>
+  <ellipse class="uc" cx="430" cy="165" rx="130" ry="33"/><text class="label" x="430" y="171" text-anchor="middle">Open Petition Maker</text>
+  <ellipse class="uc" cx="430" cy="245" rx="130" ry="33"/><text class="label" x="430" y="251" text-anchor="middle">Select Case Type</text>
+  <ellipse class="uc" cx="430" cy="325" rx="145" ry="33"/><text class="label" x="430" y="331" text-anchor="middle">Enter Petition Details</text>
+  <ellipse class="uc" cx="430" cy="405" rx="145" ry="33"/><text class="label" x="430" y="411" text-anchor="middle">Review Live Draft</text>
+  <ellipse class="uc" cx="430" cy="485" rx="140" ry="33"/><text class="label" x="430" y="491" text-anchor="middle">Edit Petition Draft</text>
+  <ellipse class="uc" cx="430" cy="565" rx="140" ry="33"/><text class="label" x="430" y="571" text-anchor="middle">Generate PDF</text>
+  <ellipse class="uc" cx="430" cy="645" rx="140" ry="33"/><text class="label" x="430" y="651" text-anchor="middle">Save Petition</text>
+  <ellipse class="uc" cx="430" cy="725" rx="140" ry="33"/><text class="label" x="430" y="731" text-anchor="middle">View Petition History</text>
+  <ellipse class="uc" cx="430" cy="805" rx="140" ry="33"/><text class="label" x="430" y="811" text-anchor="middle">Delete Petition</text>
+  <ellipse class="int" cx="815" cy="245" rx="150" ry="33"/><text class="label" x="815" y="251" text-anchor="middle">Ask Guided Questions</text>
+  <ellipse class="int" cx="815" cy="335" rx="150" ry="33"/><text class="label" x="815" y="341" text-anchor="middle">Retrieve Legal Context</text>
+  <ellipse class="int" cx="815" cy="425" rx="160" ry="33"/><text class="label" x="815" y="431" text-anchor="middle">Generate Legal Content</text>
+  <ellipse class="int" cx="815" cy="515" rx="150" ry="33"/><text class="label" x="815" y="521" text-anchor="middle">Accept / Regenerate</text>
+  <ellipse class="int" cx="815" cy="605" rx="150" ry="33"/><text class="label" x="815" y="611" text-anchor="middle">Render PDF Document</text>
+  <ellipse class="int" cx="815" cy="695" rx="150" ry="33"/><text class="label" x="815" y="701" text-anchor="middle">Store PDF and Metadata</text>
+  <path class="assoc" d="M150 220 L300 165"/><path class="assoc" d="M153 245 H300"/><path class="assoc" d="M150 275 L292 325"/><path class="assoc" d="M145 305 L295 405"/><path class="assoc" d="M135 335 L300 485"/><path class="assoc" d="M124 360 L300 565"/><path class="assoc" d="M104 362 L300 645"/><path class="assoc" d="M82 355 L295 725"/><path class="assoc" d="M65 342 L300 805"/>
+  <path class="inc" d="M560 325 C620 300 650 270 675 250"/><text class="small" x="603" y="292">&lt;&lt;extend&gt;&gt;</text>
+  <path class="inc" d="M560 405 C635 390 675 360 690 343"/><text class="small" x="620" y="374">&lt;&lt;include&gt;&gt;</text>
+  <path class="inc" d="M955 335 H1290"/><path class="assoc" d="M1290 387 C1170 395 1040 410 970 423"/><path class="assoc" d="M1290 597 C1140 600 1010 603 965 605"/><path class="assoc" d="M1290 807 C1110 795 980 730 940 705"/>
+  <path class="inc" d="M570 485 C645 500 680 510 667 515"/><path class="inc" d="M570 565 H665"/><path class="inc" d="M570 645 C635 660 680 680 690 692"/><path class="inc" d="M570 725 C650 720 685 705 700 697"/>
+</svg>

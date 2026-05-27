@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1450" height="950" viewBox="0 0 1450 950" role="img" aria-labelledby="title desc">
+  <title id="title">ERD of Authentication and User Management System</title>
+  <desc id="desc">Entity relationship diagram showing users, pending users, conversations, trial sessions, petitions, token wallets, and law firm registrations.</desc>
+  <defs><style>
+    .bg{fill:#fff}.title{font:700 26px Arial,sans-serif;fill:#111827}.ent{fill:#fff;stroke:#1d4ed8;stroke-width:2}.tmp{fill:#fff7ed;stroke:#f59e0b;stroke-width:2}.res{fill:#ecfdf5;stroke:#059669;stroke-width:2}.admin{fill:#fdf2f8;stroke:#be185d;stroke-width:2}
+    .h{font:700 16px Arial,sans-serif;fill:#111827}.t{font:600 13px Arial,sans-serif;fill:#374151}.rel{stroke:#111827;stroke-width:2;fill:none}.card{font:700 14px Arial,sans-serif;fill:#111827}
+  </style></defs>
+  <rect class="bg" width="1450" height="950"/><text class="title" x="725" y="45" text-anchor="middle">Entity Relationship Diagram: Authentication and User Management System (AUMS)</text>
+  <g><rect class="ent" x="80" y="105" width="285" height="245" rx="4"/><text class="h" x="223" y="132" text-anchor="middle">User</text><line x1="80" y1="145" x2="365" y2="145" stroke="#1d4ed8"/><text class="t" x="98" y="169">PK user_id</text><text class="t" x="98" y="191">email</text><text class="t" x="98" y="213">full_name</text><text class="t" x="98" y="235">organization_type</text><text class="t" x="98" y="257">hashed_password</text><text class="t" x="98" y="279">is_email_verified</text><text class="t" x="98" y="301">is_active, is_superuser</text><text class="t" x="98" y="323">created_at, updated_at</text></g>
+  <g><rect class="tmp" x="505" y="105" width="285" height="245" rx="4"/><text class="h" x="648" y="132" text-anchor="middle">PendingUser</text><line x1="505" y1="145" x2="790" y2="145" stroke="#f59e0b"/><text class="t" x="523" y="169">PK pending_user_id</text><text class="t" x="523" y="191">email</text><text class="t" x="523" y="213">signup profile data</text><text class="t" x="523" y="235">hashed_password</text><text class="t" x="523" y="257">otp_code</text><text class="t" x="523" y="279">otp_created_at</text><text class="t" x="523" y="301">otp_attempts</text><text class="t" x="523" y="323">created_at</text></g>
+  <g><rect class="admin" x="970" y="105" width="285" height="190" rx="4"/><text class="h" x="1113" y="132" text-anchor="middle">LawFirmRegistration</text><line x1="970" y1="145" x2="1255" y2="145" stroke="#be185d"/><text class="t" x="988" y="169">PK registration_id</text><text class="t" x="988" y="191">admin_email / firm_email</text><text class="t" x="988" y="213">firm_name</text><text class="t" x="988" y="235">country_id, state_id</text><text class="t" x="988" y="257">status</text></g>
+  <g><rect class="res" x="70" y="465" width="260" height="185" rx="4"/><text class="h" x="200" y="492" text-anchor="middle">Conversation</text><line x1="70" y1="505" x2="330" y2="505" stroke="#059669"/><text class="t" x="88" y="529">PK conversation_id</text><text class="t" x="88" y="551">FK user_id</text><text class="t" x="88" y="573">title</text><text class="t" x="88" y="595">messages</text><text class="t" x="88" y="617">created_at, updated_at</text></g>
+  <g><rect class="res" x="390" y="465" width="260" height="185" rx="4"/><text class="h" x="520" y="492" text-anchor="middle">TrialSession</text><line x1="390" y1="505" x2="650" y2="505" stroke="#059669"/><text class="t" x="408" y="529">PK session_id</text><text class="t" x="408" y="551">FK user_id</text><text class="t" x="408" y="573">case_name, status</text><text class="t" x="408" y="595">messages, verdict</text><text class="t" x="408" y="617">created_at, updated_at</text></g>
+  <g><rect class="res" x="710" y="465" width="260" height="185" rx="4"/><text class="h" x="840" y="492" text-anchor="middle">Petition</text><line x1="710" y1="505" x2="970" y2="505" stroke="#059669"/><text class="t" x="728" y="529">PK petition_id</text><text class="t" x="728" y="551">FK user_id</text><text class="t" x="728" y="573">case_type</text><text class="t" x="728" y="595">petition_data</text><text class="t" x="728" y="617">pdf_url, status</text></g>
+  <g><rect class="res" x="1030" y="465" width="260" height="185" rx="4"/><text class="h" x="1160" y="492" text-anchor="middle">TokenWallet</text><line x1="1030" y1="505" x2="1290" y2="505" stroke="#059669"/><text class="t" x="1048" y="529">PK wallet_id</text><text class="t" x="1048" y="551">FK user_id</text><text class="t" x="1048" y="573">balance</text><text class="t" x="1048" y="595">plan</text><text class="t" x="1048" y="617">updated_at</text></g>
+  <g><rect class="res" x="390" y="755" width="260" height="145" rx="4"/><text class="h" x="520" y="782" text-anchor="middle">Auth Token</text><line x1="390" y1="795" x2="650" y2="795" stroke="#059669"/><text class="t" x="408" y="819">Not stored as DB row</text><text class="t" x="408" y="841">JWT payload: sub, user_id</text><text class="t" x="408" y="863">exp</text><text class="t" x="408" y="885">Stored client-side</text></g>
+  <g><rect class="res" x="710" y="755" width="260" height="145" rx="4"/><text class="h" x="840" y="782" text-anchor="middle">User Activity Data</text><line x1="710" y1="795" x2="970" y2="795" stroke="#059669"/><text class="t" x="728" y="819">Retrieved through user_id</text><text class="t" x="728" y="841">RAG conversations</text><text class="t" x="728" y="863">courtroom sessions</text><text class="t" x="728" y="885">petition records</text></g>
+  <!-- Registration and verification relationships -->
+  <path class="rel" d="M365 228 H505"/>
+  <text class="card" x="388" y="218">verified from</text>
+  <path class="rel" d="M790 205 H970"/>
+  <text class="card" x="830" y="194">law-firm signup</text>
+
+  <!-- User-owned resource relationships use a single clean bus -->
+  <path class="rel" d="M223 350 V405 H1160 V465"/>
+  <path class="rel" d="M200 405 V465"/>
+  <path class="rel" d="M520 405 V465"/>
+  <path class="rel" d="M840 405 V465"/>
+  <text class="card" x="236" y="390">1</text>
+  <text class="card" x="202" y="455">N</text>
+  <text class="card" x="522" y="455">N</text>
+  <text class="card" x="842" y="455">N</text>
+  <text class="card" x="1165" y="455">0..1</text>
+
+  <!-- Logical notes -->
+  <path class="rel" d="M520 650 V755"/>
+  <text class="card" x="535" y="695">JWT issued after login</text>
+  <path class="rel" d="M840 650 V755"/>
+  <text class="card" x="855" y="695">1:N resources</text>
+</svg>

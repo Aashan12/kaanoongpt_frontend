@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1000" viewBox="0 0 1500 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Use Case Diagram of Admin and Knowledge Management System</title>
+  <desc id="desc">Use case diagram showing administrator interactions with legal document upload, catalog ingestion, document processing, vector indexing, system setup, and monitoring.</desc>
+  <defs><style>
+    .bg{fill:#fff}.title{font:700 25px Arial,sans-serif;fill:#111827}.boundary{fill:#fbfdff;stroke:#2563eb;stroke-width:2.4}
+    .actor{stroke:#111827;stroke-width:2.5;fill:none;stroke-linecap:round}.atext{font:700 17px Arial,sans-serif;fill:#111827}
+    .uc{fill:#fff;stroke:#1d4ed8;stroke-width:2.1}.int{fill:#fdf2f8;stroke:#be185d;stroke-width:2}.ext{fill:#eef6ff;stroke:#38aee2;stroke-width:2}
+    .label{font:600 15px Arial,sans-serif;fill:#111827}.small{font:600 13px Arial,sans-serif;fill:#4b5563}.assoc{stroke:#111827;stroke-width:2;fill:none}.inc{stroke:#6b7280;stroke-width:2;fill:none;stroke-dasharray:7 6;marker-end:url(#arr)}
+  </style><marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#6b7280"/></marker></defs>
+  <rect class="bg" width="1500" height="1000"/><text class="title" x="750" y="45" text-anchor="middle">Use Case Diagram: Admin and Knowledge Management System</text>
+  <rect class="boundary" x="250" y="80" width="980" height="850" rx="8"/><text class="atext" x="740" y="112" text-anchor="middle">Admin and Knowledge Management System</text>
+  <circle class="actor" cx="105" cy="215" r="23"/><path class="actor" d="M105 238 V310 M62 270 H148 M105 310 L65 370 M105 310 L145 370"/><text class="atext" x="105" y="405" text-anchor="middle">Administrator</text>
+  <rect class="ext" x="1290" y="160" width="160" height="64" rx="5"/><text class="atext" x="1370" y="187" text-anchor="middle">Cloudinary</text><text class="atext" x="1370" y="209" text-anchor="middle">Storage</text>
+  <rect class="ext" x="1290" y="405" width="160" height="64" rx="5"/><text class="atext" x="1370" y="432" text-anchor="middle">MongoDB</text><text class="atext" x="1370" y="454" text-anchor="middle">Metadata</text>
+  <rect class="ext" x="1290" y="650" width="160" height="64" rx="5"/><text class="atext" x="1370" y="677" text-anchor="middle">ChromaDB /</text><text class="atext" x="1370" y="699" text-anchor="middle">Vector Store</text>
+
+  <ellipse class="uc" cx="430" cy="160" rx="135" ry="33"/><text class="label" x="430" y="166" text-anchor="middle">Login as Admin</text>
+  <ellipse class="uc" cx="430" cy="240" rx="150" ry="33"/><text class="label" x="430" y="246" text-anchor="middle">Upload Law Document</text>
+  <ellipse class="uc" cx="430" cy="320" rx="150" ry="33"/><text class="label" x="430" y="326" text-anchor="middle">Upload Case Document</text>
+  <ellipse class="uc" cx="430" cy="400" rx="145" ry="33"/><text class="label" x="430" y="406" text-anchor="middle">Browse Law Catalog</text>
+  <ellipse class="uc" cx="430" cy="480" rx="145" ry="33"/><text class="label" x="430" y="486" text-anchor="middle">Ingest Catalog Item</text>
+  <ellipse class="uc" cx="430" cy="560" rx="145" ry="33"/><text class="label" x="430" y="566" text-anchor="middle">Monitor KB Stats</text>
+  <ellipse class="uc" cx="430" cy="640" rx="145" ry="33"/><text class="label" x="430" y="646" text-anchor="middle">Retry Failed Items</text>
+  <ellipse class="uc" cx="430" cy="720" rx="145" ry="33"/><text class="label" x="430" y="726" text-anchor="middle">Delete KB Document</text>
+  <ellipse class="uc" cx="430" cy="800" rx="155" ry="33"/><text class="label" x="430" y="806" text-anchor="middle">Manage System Setup</text>
+
+  <ellipse class="int" cx="815" cy="220" rx="145" ry="33"/><text class="label" x="815" y="226" text-anchor="middle">Store Source File</text>
+  <ellipse class="int" cx="815" cy="310" rx="160" ry="33"/><text class="label" x="815" y="316" text-anchor="middle">Save Metadata Record</text>
+  <ellipse class="int" cx="815" cy="400" rx="150" ry="33"/><text class="label" x="815" y="406" text-anchor="middle">Extract Document Text</text>
+  <ellipse class="int" cx="815" cy="490" rx="150" ry="33"/><text class="label" x="815" y="496" text-anchor="middle">Chunk Document</text>
+  <ellipse class="int" cx="815" cy="580" rx="150" ry="33"/><text class="label" x="815" y="586" text-anchor="middle">Generate Embeddings</text>
+  <ellipse class="int" cx="815" cy="670" rx="150" ry="33"/><text class="label" x="815" y="676" text-anchor="middle">Index Vector Chunks</text>
+  <ellipse class="int" cx="815" cy="760" rx="155" ry="33"/><text class="label" x="815" y="766" text-anchor="middle">Update Status and Logs</text>
+
+  <path class="assoc" d="M150 230 L300 160"/><path class="assoc" d="M153 250 L285 240"/><path class="assoc" d="M150 275 L285 320"/><path class="assoc" d="M145 305 L300 400"/><path class="assoc" d="M135 335 L300 480"/><path class="assoc" d="M120 360 L300 560"/><path class="assoc" d="M102 370 L295 640"/><path class="assoc" d="M82 360 L295 720"/><path class="assoc" d="M64 342 L290 800"/>
+  <path class="inc" d="M570 240 H675"/><path class="inc" d="M570 320 C625 302 650 302 675 305"/><path class="inc" d="M575 480 C625 420 665 400 675 400"/><path class="inc" d="M575 480 C635 490 660 490 665 490"/><path class="inc" d="M575 560 C650 590 665 642 675 670"/><path class="inc" d="M575 720 C650 765 675 760 665 760"/>
+  <path class="inc" d="M960 220 H1290"/><path class="assoc" d="M975 310 H1290"/><path class="assoc" d="M965 670 H1290"/><path class="assoc" d="M1290 437 C1150 455 1030 520 960 580"/>
+</svg>
