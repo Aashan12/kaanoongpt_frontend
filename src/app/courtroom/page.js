@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '../context/ThemeContext';
@@ -16,12 +16,13 @@ export default function CourtroomPage() {
   const router = useRouter();
   const { theme } = useTheme();
 
-  const { sessions, loading: sessionsLoading, fetchSessions, createSession, getSession, deleteSession } = useTrialSessions();
-  const { connected, messages, subAgentStatus, thinkingSteps, waitingForInput, trialComplete, error, connect, sendMessage, disconnect } = useTrialWebSocket();
+  const { sessions, loading: sessionsLoading, fetchSessions, createSession, getSession, deleteSession, pauseSession } = useTrialSessions();
+  const { messages, waitingForInput, trialComplete, error, connect, sendMessage, disconnect, stopSession } = useTrialWebSocket();
 
   const [view, setView] = useState('setup'); // 'setup' | 'trial'
   const [activeSession, setActiveSession] = useState(null);
   const [formLoading, setFormLoading] = useState(false);
+  const syncedCompletionRef = useRef(null);
 
   useEffect(() => {
     if (!authLoading && !user) router.push('/auth/login');
@@ -31,6 +32,17 @@ export default function CourtroomPage() {
     if (user) fetchSessions();
   }, [user]);
 
+  useEffect(() => {
+    if (!trialComplete || !activeSession?.id || syncedCompletionRef.current === activeSession.id) return;
+
+    syncedCompletionRef.current = activeSession.id;
+    (async () => {
+      const full = await getSession(activeSession.id).catch(() => null);
+      if (full) setActiveSession(full);
+      await fetchSessions();
+    })();
+  }, [trialComplete, activeSession?.id, getSession, fetchSessions]);
+
   async function handleSetupSubmit(formData) {
     setFormLoading(true);
     try {
@@ -39,7 +51,7 @@ export default function CourtroomPage() {
       setView('trial');
       connect(session.id);
     } catch (e) {
-      alert(e.message || 'Failed to start trial');
+      alert(e.message || 'Failed to start session');
     } finally {
       setFormLoading(false);
     }
@@ -54,7 +66,7 @@ export default function CourtroomPage() {
       if (full.status === 'in_progress') {
         connect(full.id);
       } else {
-        // Completed trial — disconnect any active WS so hook messages stay empty
+        // Completed session — disconnect any active WS so hook messages stay empty
         disconnect();
       }
     } catch (e) {
@@ -91,12 +103,13 @@ export default function CourtroomPage() {
   }
 
   async function handleStopTrial() {
-    disconnect();
-    // Refresh sessions so sidebar shows updated status
-    await fetchSessions();
+    stopSession();
     if (activeSession) {
       setActiveSession(prev => prev ? { ...prev, status: 'paused' } : prev);
+      await pauseSession(activeSession.id).catch(() => null);
     }
+    // Refresh sessions so sidebar shows updated status
+    await fetchSessions();
   }
 
   async function handleRetryTrial() {
@@ -108,7 +121,7 @@ export default function CourtroomPage() {
   }
 
   async function handleDeleteSession(id) {
-    if (!confirm('Delete this trial?')) return;
+    if (!confirm('Delete this session?')) return;
     await deleteSession(id);
     if (activeSession?.id === id) handleNewTrial();
   }
@@ -138,12 +151,9 @@ export default function CourtroomPage() {
           <ChatView
             session={activeSession}
             messages={messages.length > 0 ? messages : normalizeStoredMessages(activeSession.messages)}
-            subAgentStatus={subAgentStatus}
-            thinkingSteps={thinkingSteps}
             waitingForInput={waitingForInput}
             trialComplete={trialComplete || activeSession.status === 'completed'}
             error={error}
-            connected={connected}
             onSendArgument={sendMessage}
             onStop={handleStopTrial}
             onRetry={error ? handleRetryTrial : undefined}
