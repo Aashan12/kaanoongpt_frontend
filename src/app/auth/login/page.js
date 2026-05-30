@@ -35,7 +35,7 @@ export default function Login() {
       console.log('🔐 Starting email/password login...');
       console.log('📧 Email:', email);
 
-      const response = await fetch(`${API_URL}/auth/login`, {
+      const response = await fetch(`${API_URL}/api/kanoongpt/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -34,7 +34,7 @@ export function AuthProvider({ children }) {
 
     try {
       console.log('🔍 Checking authentication...');
-      const response = await fetch(`${API_URL}/auth/me`, {
+      const response = await fetch(`${API_URL}/api/kanoongpt/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -59,14 +59,20 @@ export function AuthProvider({ children }) {
   }, []); // ✅ Empty deps - function never changes
 
   // ✅ Memoized login function
-  const login = useCallback(async (token) => {
+  const login = useCallback(async (token, providedUser = null) => {
     console.log('🔐 AuthContext: login called');
     localStorage.setItem('access_token', token);
+    if (providedUser) {
+      setUser(providedUser);
+      setLoading(false);
+      router.push('/assistant');
+      return;
+    }
     console.log('💾 Token saved to localStorage');
     
     try {
       // Fetch user data immediately
-      const response = await fetch(`${API_URL}/auth/me`, {
+      const response = await fetch(`${API_URL}/api/kanoongpt/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
