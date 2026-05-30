@@ -21,6 +21,7 @@ function appendAgentWork(prev, event) {
       phase: event.phase,
       round: event.round,
       thinking_steps: event.thinking_steps || [],
+      thinking_results: event.thinking_results || [],
       started_at: Date.now(),
     },
   ];
@@ -50,15 +51,108 @@ function stopRunningAgentWork(prev) {
   ));
 }
 
+function streamingArgumentFromEvent(event, content = '') {
+  return {
+    type: 'argument',
+    role: event.agent || event.pipeline,
+    phase: event.phase,
+    round: event.round,
+    content,
+    stream_id: event.stream_id,
+    streaming: true,
+    streamed: true,
+  };
+}
+
+function findStreamingArgumentIndex(messages, streamId) {
+  if (!streamId) return -1;
+  return messages.findIndex((m) => m.type === 'argument' && m.stream_id === streamId);
+}
+
+function startStreamingArgument(prev, event) {
+  const index = findStreamingArgumentIndex(prev, event.stream_id);
+  if (index !== -1) {
+    const next = [...prev];
+    next[index] = { ...next[index], streaming: true, streamed: true };
+    return next;
+  }
+  return [...prev, streamingArgumentFromEvent(event)];
+}
+
+function appendArgumentDelta(prev, event) {
+  const delta = event.delta || '';
+  if (!event.stream_id || !delta) return prev;
+  const index = findStreamingArgumentIndex(prev, event.stream_id);
+  if (index === -1) return [...prev, streamingArgumentFromEvent(event, delta)];
+
+  const next = [...prev];
+  next[index] = {
+    ...next[index],
+    content: `${next[index].content || ''}${delta}`,
+    streaming: true,
+    streamed: true,
+  };
+  return next;
+}
+
+function completeStreamingArgument(prev, event) {
+  const index = findStreamingArgumentIndex(prev, event.stream_id);
+  if (index === -1) {
+    return [...prev, {
+      ...streamingArgumentFromEvent(event, event.content || ''),
+      streaming: false,
+    }];
+  }
+
+  const next = [...prev];
+  next[index] = {
+    ...next[index],
+    content: event.content || next[index].content || '',
+    streaming: false,
+    streamed: true,
+  };
+  return next;
+}
+
+function finalizeArgument(prev, event) {
+  if (event.stream_id) {
+    const index = findStreamingArgumentIndex(prev, event.stream_id);
+    if (index !== -1) {
+      const next = [...prev];
+      next[index] = {
+        ...next[index],
+        role: event.agent,
+        phase: event.phase,
+        round: event.round,
+        content: event.content,
+        streaming: false,
+        streamed: true,
+      };
+      return next;
+    }
+  }
+
+  return [...prev, {
+    type: 'argument',
+    role: event.agent,
+    phase: event.phase,
+    round: event.round,
+    content: event.content,
+    stream_id: event.stream_id,
+  }];
+}
+
 export function useTrialWebSocket() {
   const [connected, setConnected] = useState(false);
   const [messages, setMessages] = useState([]);
-  const [waitingForInput, setWaitingForInput] = useState(null); // { phase, round, research_refs }
+  const [waitingForInput, setWaitingForInput] = useState(null);
   const [trialComplete, setTrialComplete] = useState(false);
   const [error, setError] = useState(null);
+  const [currentSessionId, setCurrentSessionId] = useState(null);
   const wsRef = useRef(null);
 
   const connect = useCallback((sessionId) => {
+    setCurrentSessionId(sessionId);
     const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : '';
     const ws = new WebSocket(`${WS_URL}/api/courtroom/ws/trial?token=${token}`);
     wsRef.current = ws;
@@ -68,7 +162,6 @@ export function useTrialWebSocket() {
       setMessages([]);
       setTrialComplete(false);
       setError(null);
-      // Send session config
       ws.send(JSON.stringify({ session_id: sessionId }));
     };
 
@@ -87,16 +180,16 @@ export function useTrialWebSocket() {
     if (type === 'sub_agent_start') {
       setMessages((prev) => appendAgentWork(prev, event));
     } else if (type === 'trial_started') {
-      const rounds = event.num_rounds || 3;
       setMessages((prev) => [...prev, {
-        type: 'system',
-        content: `${rounds} चरणको सुनुवाइका लागि कागजात समीक्षा सुरु भयो।`,
+        type: 'status',
+        content: 'Courtroom simulation started. Reviewing documents for opening, counter exchange, closing, and verdict.',
       }]);
     } else if (type === 'sub_agent_complete') {
       setMessages((prev) => updateRunningAgentWork(prev, event, {
         status: 'complete',
         output_summary: event.output_summary,
         duration_ms: event.duration_ms,
+        thinking_results: event.thinking_results || [],
       }));
     } else if (type === 'sub_agent_error') {
       setMessages((prev) => {
@@ -115,6 +208,7 @@ export function useTrialWebSocket() {
           phase: event.phase,
           round: event.round,
           thinking_steps: [],
+          thinking_results: [],
           error: event.error,
         }];
       });
@@ -132,38 +226,35 @@ export function useTrialWebSocket() {
           event.step_text,
         ],
       }));
+    } else if (type === 'argument_stream_start') {
+      setMessages((prev) => startStreamingArgument(prev, event));
+    } else if (type === 'argument_delta') {
+      setMessages((prev) => appendArgumentDelta(prev, event));
+    } else if (type === 'argument_stream_complete') {
+      setMessages((prev) => completeStreamingArgument(prev, event));
     } else if (type === 'argument') {
-      setMessages((prev) => [...prev, { type: 'argument', role: event.agent, phase: event.phase, round: event.round, content: event.content }]);
+      setMessages((prev) => finalizeArgument(prev, event));
     } else if (type === 'evaluation') {
       setMessages((prev) => [...prev, { type: 'evaluation', role: 'judge', phase: event.phase, round: event.round, content: event.content }]);
     } else if (type === 'verdict') {
       setMessages((prev) => [...prev, { type: 'verdict', role: 'judge', content: event.content, winner: event.winner }]);
     } else if (type === 'phase_start') {
-      setMessages((prev) => {
-        const next = [...prev, { type: 'phase_start', phase: event.phase, content: event.content }];
-        if (event.phase === 'research') {
-          next.push({
-            type: 'agent_work',
-            status: 'running',
-            pipeline: 'system',
-            agent_name: 'Research Agent',
-            phase: 'research',
-            round: 0,
-            thinking_steps: [
-              'फिरादपत्र र प्रतिउत्तरपत्र पढ्दै...',
-              'मुद्दाको प्रकार पहिचान गर्दै...',
-              'सम्बन्धित कानून ज्ञानभण्डारमा खोज्दै...',
-            ],
-            started_at: Date.now(),
-          });
-        }
-        return next;
-      });
+      setMessages((prev) => [...prev, {
+        type: 'phase_start',
+        phase: event.phase,
+        round: event.round,
+        content: event.content,
+      }]);
     } else if (type === 'research_complete') {
       setMessages((prev) => {
         const updated = updateRunningAgentWork(prev, RESEARCH_WORK_EVENT, {
           status: 'complete',
           output_summary: `Knowledge base found ${event.laws_count || 0} laws and ${event.cases_count || 0} cases.`,
+          thinking_results: [
+            'दुवै कागजातबाट सम्बन्ध विच्छेद तथा भरणपोषण विवाद पुष्टि भयो।',
+            'मुद्दा: सम्बन्ध विच्छेद तथा भरणपोषण',
+            `प्रमाणित स्रोत: ${event.laws_count || 0} statutes · ${event.cases_count || 0} cases`,
+          ],
         });
 
         return [
@@ -200,7 +291,7 @@ export function useTrialWebSocket() {
       setMessages((prev) => stopRunningAgentWork(prev));
     } else if (type === 'trial_error') {
       setError(event.content);
-      setTrialComplete(true); // stop the trial
+      setTrialComplete(true);
       setWaitingForInput(null);
     } else if (type === 'error') {
       setError(event.content);
@@ -218,6 +309,8 @@ export function useTrialWebSocket() {
   const disconnect = useCallback(() => {
     wsRef.current?.close();
     setConnected(false);
+    setCurrentSessionId(null);
+    setMessages([]);
   }, []);
 
   const stopSession = useCallback(() => {
@@ -226,17 +319,19 @@ export function useTrialWebSocket() {
       try {
         ws.send(JSON.stringify({ type: 'stop_trial' }));
       } catch {
-        // Ignore send errors; close below still tears down the client side.
+        // Closing below still tears down the client side.
       }
     }
     ws?.close(1000, 'Session paused by user');
     setWaitingForInput(null);
     setConnected(false);
-    setMessages((prev) => stopRunningAgentWork(prev));
+    setCurrentSessionId(null);
+    setMessages([]);
   }, []);
 
   return {
     connected,
+    currentSessionId,
     messages,
     waitingForInput,
     trialComplete,

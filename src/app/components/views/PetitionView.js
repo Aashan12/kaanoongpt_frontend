@@ -262,22 +262,12 @@ export default function PetitionView() {
             )}
 
             {currentStep === 6 && (
-              <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <div className="petition-review-fullscreen">
                 {/* Action Buttons */}
-                <div style={{
-                  display: 'flex',
-                  gap: '1rem',
-                  justifyContent: 'center',
-                  padding: '1.5rem',
-                  background: 'var(--ka-surface)',
-                  borderRadius: '12px',
-                  marginBottom: '1.5rem',
-                  border: '1px solid var(--ka-border)'
-                }}>
+                <div className="review-actions-bar">
                   <button 
                     className="petition-btn petition-btn-secondary"
                     onClick={() => setCurrentStep(1)}
-                    style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.875rem 1.5rem' }}
                   >
                     ✏️ Edit Petition
                   </button>
@@ -286,10 +276,6 @@ export default function PetitionView() {
                     onClick={handleSavePetition}
                     disabled={isSaving}
                     style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: '0.5rem', 
-                      padding: '0.875rem 1.5rem',
                       opacity: isSaving ? 0.7 : 1,
                       cursor: isSaving ? 'wait' : 'pointer',
                       background: '#10b981'
@@ -302,10 +288,6 @@ export default function PetitionView() {
                     onClick={handleDownloadPDF}
                     disabled={isGeneratingPDF}
                     style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: '0.5rem', 
-                      padding: '0.875rem 1.5rem',
                       opacity: isGeneratingPDF ? 0.7 : 1,
                       cursor: isGeneratingPDF ? 'wait' : 'pointer'
                     }}
@@ -315,13 +297,7 @@ export default function PetitionView() {
                 </div>
                 
                 {/* Full Document - Scrollable */}
-                <div style={{
-                  flex: 1,
-                  overflow: 'auto',
-                  background: '#f5f5f5',
-                  padding: '2rem',
-                  borderRadius: '12px'
-                }}>
+                <div className="review-document-container">
                   <PetitionPreview 
                     formData={formData}
                     selectedCaseType={getSelectedCaseTypeObject()}

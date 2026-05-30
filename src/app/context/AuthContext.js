@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 import { useRouter } from 'next/navigation';
 import { apiRequest, API_URL } from '../lib/api';
 const AuthContext = createContext();
+const AUTH_MOCK_MODE = process.env.NEXT_PUBLIC_AUTH_MOCK_MODE === 'true';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -12,6 +13,18 @@ export function AuthProvider({ children }) {
 
   // ✅ Memoized checkAuth to prevent infinite loops
   const checkAuth = useCallback(async () => {
+    if (AUTH_MOCK_MODE) {
+      setUser({
+        id: 'mock-user',
+        email: 'ui-preview@kanoongpt.local',
+        full_name: 'UI Preview',
+        name: 'UI Preview',
+        country: 'NP',
+      });
+      setLoading(false);
+      return;
+    }
+
     const token = localStorage.getItem('access_token');
     
     if (!token) {

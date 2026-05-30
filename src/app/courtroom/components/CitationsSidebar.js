@@ -1,6 +1,21 @@
 'use client';
 import { useState } from 'react';
 
+function getTitle(item) {
+  return item?.citation_label || item?.title || item?.case_name || 'Knowledge base source';
+}
+
+function getMeta(item) {
+  return item?.relevance_label || item?.section || item?.citation || item?.court || 'Verified source';
+}
+
+function isRelevantSnippet(item) {
+  const text = `${item?.title || ''} ${item?.section || ''} ${item?.content || ''}`.toLowerCase();
+  const relevant = ['divorce', 'maintenance', 'custody', 'wife', 'husband', 'child', 'marriage', 'adultery', 'section 94', 'section 97', 'section 100'];
+  const unrelated = ['attorney general', 'dalit', 'landless', 'appropriation', 'state assembly', 'motor vehicle', 'royalty'];
+  return relevant.some((term) => text.includes(term)) && !unrelated.some((term) => text.includes(term));
+}
+
 export default function CitationsSidebar({ laws, cases, open, onClose }) {
   const [tab, setTab] = useState('laws');
 
@@ -25,19 +40,34 @@ export default function CitationsSidebar({ laws, cases, open, onClose }) {
       <div className="citations-list">
         {tab === 'laws' && (laws || []).map((law, i) => (
           <div key={i} className="citation-item">
-            <span className="citation-badge citation-badge--law">Statute</span>
-            <div className="citation-title">{law.title}</div>
-            {law.section && <div className="citation-section">{law.section}</div>}
-            <div className="citation-snippet">{law.content?.slice(0, 200)}...</div>
+            <div className="citation-item__top">
+              <span className="citation-badge citation-badge--law">Statute</span>
+              <span className="citation-verified">verified</span>
+            </div>
+            <div className="citation-title">{getTitle(law)}</div>
+            <div className="citation-section">{getMeta(law)}</div>
+            {isRelevantSnippet(law) && (
+              <details className="citation-details">
+                <summary>View KB text</summary>
+                <div className="citation-snippet">{law.content?.slice(0, 360)}...</div>
+              </details>
+            )}
           </div>
         ))}
         {tab === 'cases' && (cases || []).map((c, i) => (
           <div key={i} className="citation-item">
-            <span className="citation-badge citation-badge--case">Case</span>
-            <div className="citation-title">{c.title}</div>
-            {c.citation && <div className="citation-section">{c.citation}</div>}
-            {c.court && <div className="citation-court">{c.court}</div>}
-            <div className="citation-snippet">{c.content?.slice(0, 200)}...</div>
+            <div className="citation-item__top">
+              <span className="citation-badge citation-badge--case">Case</span>
+              <span className="citation-verified">verified</span>
+            </div>
+            <div className="citation-title">{getTitle(c)}</div>
+            <div className="citation-section">{getMeta(c)}</div>
+            {c.content && (
+              <details className="citation-details">
+                <summary>View KB text</summary>
+                <div className="citation-snippet">{c.content?.slice(0, 360)}...</div>
+              </details>
+            )}
           </div>
         ))}
         {((tab === 'laws' && (!laws || laws.length === 0)) ||

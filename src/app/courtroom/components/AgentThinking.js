@@ -13,9 +13,9 @@ export default function AgentThinking({ steps, agentName, isActive }) {
         onClick={() => setExpanded((v) => !v)}
         aria-expanded={expanded}
       >
-        <span className="thinking-icon">{isActive ? '🧠' : '💭'}</span>
-        <span>{isActive ? `${agentName || 'Agent'} is thinking...` : `${agentName || 'Agent'} reasoning`}</span>
-        <span className="toggle-arrow">{expanded ? '▲' : '▼'}</span>
+        <img className="thinking-logo" src="/logo.png" alt="" />
+        <span>{isActive ? `${agentName || 'Agent'} काम गर्दै...` : `${agentName || 'Agent'}को सोचाइ`}</span>
+        <span className="toggle-arrow">{expanded ? '⌃' : '⌄'}</span>
       </button>
 
       {expanded && steps && steps.length > 0 && (

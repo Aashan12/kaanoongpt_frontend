@@ -1,6 +1,37 @@
 /* ─── Petition Maker Reset ─── */
+.petition-maker,
+.petition-view {
+  --ka-bg: #0e2030;
+  --ka-bg-secondary: #0d1b2a;
+  --ka-bg-tertiary: #1b2d45;
+  --ka-bg-hover: #243b5a;
+  --ka-surface: #101827;
+  --ka-border: rgba(148, 163, 184, 0.18);
+  --ka-text: #e0e0e0;
+  --ka-text-secondary: #94a3b8;
+  --ka-text-muted: #64748b;
+  --ka-accent: #d4a574;
+  --ka-accent-glow: rgba(212, 165, 116, 0.18);
+}
+
+[data-theme="light"] .petition-maker,
+.ka-page.light .petition-view {
+  --ka-bg: #ffffff;
+  --ka-bg-secondary: #fafafa;
+  --ka-bg-tertiary: #f5f5f5;
+  --ka-bg-hover: #ebebeb;
+  --ka-surface: #ffffff;
+  --ka-border: rgba(0, 0, 0, 0.1);
+  --ka-text: #202020;
+  --ka-text-secondary: #5f6368;
+  --ka-text-muted: #7c7c7c;
+  --ka-accent: #c4956a;
+  --ka-accent-glow: rgba(212, 165, 116, 0.14);
+}
+
 .petition-maker {
   min-height: 100vh;
+  min-height: 100dvh;
   background: var(--ka-bg);
   color: var(--ka-text);
 }
@@ -21,11 +52,70 @@
 /* ─── Petition View Container ─── */
 .petition-view {
   height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   background: var(--ka-bg);
   overflow: hidden;
   position: relative;
+  min-width: 0;
+}
+
+.petition-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: var(--ka-bg);
+  border-bottom: 1px solid var(--ka-border);
+  flex-shrink: 0;
+}
+
+.petition-header-left,
+.petition-header-center,
+.petition-header-right {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.petition-header-center {
+  flex-direction: column;
+  text-align: center;
+}
+
+.petition-header-right {
+  justify-content: flex-end;
+}
+
+.petition-back-btn,
+.petition-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 38px;
+  padding: 0.55rem 0.85rem;
+  border: 1.5px solid var(--ka-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ka-text-secondary);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 650;
+}
+
+.petition-back-btn:hover,
+.petition-theme-toggle:hover {
+  border-color: var(--ka-accent);
+  color: var(--ka-accent);
+  background: var(--ka-accent-glow);
+}
+
+.petition-theme-toggle {
+  width: 38px;
+  padding: 0;
 }
 
 /* ─── Compact Header ─── */
@@ -1479,6 +1569,213 @@
 .review-document-container .a4-page {
   margin-bottom: 2rem;
   page-break-after: always;
+}
+
+/* Mobile app and small-screen polish */
+@media (max-width: 768px) {
+  .petition-maker,
+  .petition-view {
+    min-height: 100dvh;
+  }
+
+  .petition-header {
+    grid-template-columns: auto 1fr auto;
+    gap: 0.75rem;
+    padding: calc(0.75rem + env(safe-area-inset-top)) 0.875rem 0.75rem;
+  }
+
+  .petition-header-center {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .petition-back-btn {
+    width: 38px;
+    padding: 0;
+  }
+
+  .petition-back-btn span {
+    display: none;
+  }
+
+  .petition-title {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    font-size: 1.1rem;
+    line-height: 1.25;
+  }
+
+  .petition-subtitle {
+    display: none;
+  }
+
+  .petition-progress-container {
+    min-height: 74px;
+    padding: 0.75rem 0.875rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .progress-bar {
+    min-width: 440px;
+  }
+
+  .preview-toggle-btn-header {
+    position: static;
+    transform: none;
+    margin-left: auto;
+    padding: 0.45rem 0.75rem;
+    min-height: 34px;
+  }
+
+  .preview-toggle-btn-header:hover {
+    transform: none;
+  }
+
+  .petition-main {
+    min-height: 0;
+  }
+
+  .petition-content-wrapper,
+  .petition-content-wrapper.split-view,
+  .petition-content-wrapper.full-width {
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .petition-content-wrapper.full-width .petition-content {
+    max-width: none;
+  }
+
+  .petition-content {
+    height: auto;
+    max-height: none;
+    overflow: visible !important;
+    padding: 1rem 0.875rem;
+  }
+
+  .case-type-selector {
+    max-width: none;
+  }
+
+  .case-type-header {
+    margin-bottom: 1rem;
+  }
+
+  .case-type-card {
+    min-height: 0;
+    padding: 1rem;
+  }
+
+  .form-section,
+  .petition-review {
+    padding: 1rem;
+    border-radius: 10px;
+  }
+
+  .form-section h3 {
+    font-size: 1.18rem;
+  }
+
+  .section-description {
+    margin-bottom: 1.25rem;
+    padding: 0.75rem;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea,
+  .compact-input {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .witness-card,
+  .evidence-card,
+  .guardian-section,
+  .maiden-section,
+  .address-helper {
+    padding: 1rem;
+  }
+
+  .petition-step-with-preview {
+    display: block;
+  }
+
+  .petition-preview-column {
+    position: static;
+    max-height: none;
+    margin-top: 1rem;
+  }
+
+  .review-header {
+    padding: 1rem !important;
+  }
+
+  .review-actions {
+    flex-direction: column;
+  }
+
+  .review-actions-bar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .review-actions .petition-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .review-document-container {
+    padding: 1rem 0.75rem;
+    justify-content: flex-start;
+  }
+
+  .petition-nav-buttons {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    padding: 0.75rem 0.875rem calc(0.75rem + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--ka-border);
+    flex-direction: row;
+  }
+
+  .petition-btn {
+    min-height: 44px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .petition-progress-container {
+    min-height: 58px;
+  }
+
+  .progress-bar {
+    min-width: 330px;
+  }
+
+  .progress-step-label {
+    display: none;
+  }
+
+  .progress-step-line {
+    margin-bottom: 0;
+  }
+
+  .petition-btn {
+    width: 100%;
+    padding: 0.7rem 1rem;
+  }
 }
 
 /* Print styles */

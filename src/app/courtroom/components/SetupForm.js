@@ -1,9 +1,21 @@
 'use client';
 import { useState, useRef } from 'react';
-import { CheckCircle2, FileText, Loader2, Play, Scale, UploadCloud, X, XCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, FileText, Loader2, Play, Scale, UploadCloud, X, XCircle } from 'lucide-react';
 import KBStatusIndicator from './KBStatusIndicator';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+const SAMPLE_PLAINTIFF_TEXT = `[ui-preview-firadpatra.txt]
+फिरादी: २८ वर्ष पुगेकी सीता श्रेष्ठ
+प्रतिवादी: ३० वर्ष पुगेका आशान नगरकोटी
+मुद्दा: सम्बन्ध विच्छेद तथा भरणपोषण
+फिरादीले प्रतिवादीबाट घरेलु हिंसा, आर्थिक बेवास्ता, मानसिक यातना र मदिरा सेवनपछि कुटपिट भएको जिकिर गरेकी छन्। सन्तानको सर्वोत्तम हितका लागि बाल संरक्षण र उचित भरणपोषण माग गरिएको छ।`;
+
+const SAMPLE_DEFENDANT_TEXT = `[ui-preview-pratiuttar.txt]
+फिरादी: २८ वर्ष पुगेकी सीता श्रेष्ठ
+प्रतिवादी: ३० वर्ष पुगेका आशान नगरकोटी
+मुद्दा: सम्बन्ध विच्छेद
+प्रतिवादीले वैवाहिक सम्बन्ध बिग्रिएको कुरा आंशिक रूपमा स्वीकार गरे पनि हिंसा र आर्थिक बेवास्ताका आरोप अस्वीकार गरेका छन्। प्रतिवादीले वादी आर्थिक रूपमा सक्षम रहेको र विवाहबाह्य सम्बन्धको प्रतिआरोप प्रस्तुत गरेका छन्।`;
 
 function authHeaders() {
   const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : '';
@@ -11,7 +23,7 @@ function authHeaders() {
 }
 
 // Simplified document upload without document type selection
-function DocumentUpload({ onFilesChange, setUploadingCount, label }) {
+function DocumentUpload({ onFilesChange, setUploadingCount, label, disabled = true }) {
   const inputRef = useRef(null);
   const [files, setFiles] = useState([]);
 
@@ -19,7 +31,11 @@ function DocumentUpload({ onFilesChange, setUploadingCount, label }) {
     const ext = file.name.split('.').pop().toLowerCase();
     if (!['pdf', 'docx', 'txt'].includes(ext)) return;
 
-    setFiles((prev) => [...prev, { name: file.name, status: 'uploading', error: '' }]);
+    const uploadMessage = ext === 'pdf'
+      ? 'Nepali OCR चल्दैछ। PDF image पढ्दा केही समय लाग्न सक्छ...'
+      : 'Document text निकाल्दै...';
+
+    setFiles((prev) => [...prev, { name: file.name, status: 'uploading', error: '', progress: uploadMessage }]);
     setUploadingCount((c) => c + 1);
 
     const formData = new FormData();
@@ -36,17 +52,32 @@ function DocumentUpload({ onFilesChange, setUploadingCount, label }) {
         throw new Error(err.detail || 'Extraction failed');
       }
       const data = await res.json();
-      setFiles((prev) => prev.map((f) => f.name === file.name ? { ...f, status: 'done' } : f));
+      if (data.manual_required) {
+        setFiles((prev) => prev.map((f) => f.name === file.name
+          ? { ...f, status: 'manual', error: data.message || 'Upload DOCX/TXT or paste the correct text below.' }
+          : f));
+        return;
+      }
+      setFiles((prev) => prev.map((f) => f.name === file.name
+        ? { ...f, status: 'done', warning: data.warning || '' }
+        : f));
       onFilesChange(data.text, file.name);
     } catch (e) {
-      setFiles((prev) => prev.map((f) => f.name === file.name ? { ...f, status: 'error', error: e.message } : f));
+      const message = e.message?.includes('text layer')
+        ? 'यो PDF को Nepali text layer बिग्रिएको छ। DOCX/TXT upload गर्नुहोस् वा तल सही text paste गर्नुहोस्।'
+        : e.message;
+      setFiles((prev) => prev.map((f) => f.name === file.name ? { ...f, status: 'error', error: message } : f));
     } finally {
       setUploadingCount((c) => c - 1);
     }
   }
 
   function handleFiles(fileList) {
-    Array.from(fileList).forEach(processFile);
+    if (disabled) return;
+    Array.from(fileList).reduce(
+      (chain, file) => chain.then(() => processFile(file)),
+      Promise.resolve()
+    );
   }
 
   function handleDrop(e) {
@@ -66,6 +97,7 @@ function DocumentUpload({ onFilesChange, setUploadingCount, label }) {
   function renderFileIcon(status) {
     if (status === 'uploading') return <Loader2 size={16} className="doc-file-spinner" />;
     if (status === 'done') return <CheckCircle2 size={16} />;
+    if (status === 'manual') return <AlertTriangle size={16} />;
     return <XCircle size={16} />;
   }
 
@@ -76,6 +108,7 @@ function DocumentUpload({ onFilesChange, setUploadingCount, label }) {
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
         onClick={() => inputRef.current?.click()}
+        aria-disabled={disabled}
       >
         <input
           ref={inputRef}
@@ -88,8 +121,8 @@ function DocumentUpload({ onFilesChange, setUploadingCount, label }) {
         <div className="doc-upload__content">
           <UploadCloud size={22} />
           <span className="doc-upload__hint">
-            Drop PDF, DOCX, or TXT files here, or click to upload
-            <small>{label} files can include multiple PDF, DOCX, or TXT documents</small>
+            {disabled ? 'Mock mode: paste text below, uploads are disabled' : 'Drop PDF, DOCX, or TXT files here, or click to upload'}
+            <small>{disabled ? `${label} upload is skipped in frontend mock mode` : `${label} files can include multiple PDF, DOCX, or TXT documents`}</small>
           </span>
         </div>
       </div>
@@ -100,7 +133,9 @@ function DocumentUpload({ onFilesChange, setUploadingCount, label }) {
             <li key={f.name} className={`doc-file-item doc-file-item--${f.status}`}>
               <span className="doc-file-icon">{renderFileIcon(f.status)}</span>
               <span className="doc-file-name">{f.name}</span>
-              {f.status === 'error' && <span className="doc-file-error">{f.error}</span>}
+              {f.status === 'uploading' && <span className="doc-file-progress">{f.progress}</span>}
+              {(f.status === 'error' || f.status === 'manual') && <span className="doc-file-error">{f.error}</span>}
+              {f.status === 'done' && f.warning && <span className="doc-file-warning">{f.warning}</span>}
               {f.status !== 'uploading' && (
                 <button type="button" className="doc-file-remove" onClick={() => removeFile(f.name)} aria-label={`Remove ${f.name}`}>
                   <X size={14} />
@@ -110,11 +145,14 @@ function DocumentUpload({ onFilesChange, setUploadingCount, label }) {
           ))}
         </ul>
       )}
+      <p className="doc-upload-note">
+        Nepali PDF बिग्रिएमा trial सुरु नगर्नुहोस्; सही text तल paste गर्नुहोस् वा DOCX/TXT upload गर्नुहोस्।
+      </p>
     </div>
   );
 }
 
-export default function SetupForm({ onSubmit, loading }) {
+export default function SetupForm({ onSubmit, loading, mockMode = false }) {
   const [form, setForm] = useState({
     case_name: 'Court Session',
     case_type: 'general',
@@ -123,8 +161,8 @@ export default function SetupForm({ onSubmit, loading }) {
     plaintiff_position: '',
     defendant_position: '',
     mode: 'agent_vs_agent',
-    num_rounds: 3,
-    model_id: 'default',
+    num_rounds: 1,
+    model_id: '',
   });
   const [errors, setErrors] = useState({});
   const [plaintiffUploadCount, setPlaintiffUploadCount] = useState(0);
@@ -154,19 +192,30 @@ export default function SetupForm({ onSubmit, loading }) {
 
   function validate() {
     const e = {};
-    if (!form.plaintiff_position.trim()) e.plaintiff_position = 'Upload at least one plaintiff document';
-    if (!form.defendant_position.trim()) e.defendant_position = 'Upload at least one defendant document';
+    if (!form.plaintiff_position.trim()) e.plaintiff_position = 'Upload or paste at least one plaintiff document';
+    if (!form.defendant_position.trim()) e.defendant_position = 'Upload or paste at least one defendant document';
     return e;
   }
 
   function handleSubmit(e) {
     e.preventDefault();
-    const errs = validate();
-    if (Object.keys(errs).length) { setErrors(errs); return; }
-    onSubmit(form);
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length) {
+      setErrors(validationErrors);
+      return;
+    }
+    const payload = {
+      ...form,
+      num_rounds: 1,
+      plaintiff_position: form.plaintiff_position.trim(),
+      defendant_position: form.defendant_position.trim(),
+    };
+    setErrors({});
+    onSubmit(payload);
   }
 
   const isUploading = plaintiffUploadCount > 0 || defendantUploadCount > 0;
+  const hasRequiredDocs = Boolean(form.plaintiff_position.trim() && form.defendant_position.trim());
 
   return (
     <form className="setup-form" onSubmit={handleSubmit}>
@@ -175,10 +224,10 @@ export default function SetupForm({ onSubmit, loading }) {
           <span className="setup-form__icon"><Scale size={22} /></span>
           <div>
             <h2>New Court Session</h2>
-            <span>3-round hearing</span>
+            <span>Opening, counter exchange, closing, verdict</span>
           </div>
         </div>
-        <KBStatusIndicator />
+        {mockMode ? <span className="mock-mode-badge">Frontend mock mode</span> : <KBStatusIndicator />}
       </div>
 
       <div className="setup-doc-grid">
@@ -191,16 +240,15 @@ export default function SetupForm({ onSubmit, loading }) {
             onFilesChange={handlePlaintiffDoc}
             setUploadingCount={setPlaintiffUploadCount}
             label="Plaintiff"
+            disabled={mockMode}
           />
-          {form.plaintiff_position && (
-            <textarea
-              rows={4}
-              value={form.plaintiff_position}
-              onChange={(e) => setForm((prev) => ({ ...prev, plaintiff_position: e.target.value }))}
-              className="doc-extracted-text"
-              placeholder="Extracted text will appear here..."
-            />
-          )}
+          <textarea
+            rows={5}
+            value={form.plaintiff_position}
+            onChange={(e) => setForm((prev) => ({ ...prev, plaintiff_position: e.target.value }))}
+            className="doc-extracted-text"
+            placeholder={mockMode ? 'UI preview mode: leave empty to use sample फिरादपत्र text.' : 'Extracted text will appear here. If Nepali PDF extraction fails, paste the correct फिरादपत्र text manually or upload DOCX/TXT.'}
+          />
           {errors.plaintiff_position && <span className="field-error">{errors.plaintiff_position}</span>}
         </div>
 
@@ -213,16 +261,15 @@ export default function SetupForm({ onSubmit, loading }) {
             onFilesChange={handleDefendantDoc}
             setUploadingCount={setDefendantUploadCount}
             label="Defendant"
+            disabled={mockMode}
           />
-          {form.defendant_position && (
-            <textarea
-              rows={4}
-              value={form.defendant_position}
-              onChange={(e) => setForm((prev) => ({ ...prev, defendant_position: e.target.value }))}
-              className="doc-extracted-text"
-              placeholder="Extracted text will appear here..."
-            />
-          )}
+          <textarea
+            rows={5}
+            value={form.defendant_position}
+            onChange={(e) => setForm((prev) => ({ ...prev, defendant_position: e.target.value }))}
+            className="doc-extracted-text"
+            placeholder={mockMode ? 'UI preview mode: leave empty to use sample प्रतिउत्तरपत्र text.' : 'Extracted text will appear here. If Nepali PDF extraction fails, paste the correct प्रतिउत्तरपत्र text manually or upload DOCX/TXT.'}
+          />
           {errors.defendant_position && <span className="field-error">{errors.defendant_position}</span>}
         </div>
       </div>
@@ -232,9 +279,9 @@ export default function SetupForm({ onSubmit, loading }) {
           <span className={form.plaintiff_position ? 'complete' : ''}>Plaintiff</span>
           <span className={form.defendant_position ? 'complete' : ''}>Defendant</span>
         </div>
-        <button type="submit" className="btn-start" disabled={loading || isUploading}>
+        <button type="submit" className="btn-start" disabled={loading || isUploading || !hasRequiredDocs}>
           <Play size={17} />
-          <span>{loading ? 'Starting...' : isUploading ? 'Processing...' : 'Start 3-Round Hearing'}</span>
+          <span>{loading ? 'Starting...' : isUploading ? 'Processing...' : !hasRequiredDocs ? 'Add documents first' : 'Start Hearing'}</span>
         </button>
       </div>
     </form>
