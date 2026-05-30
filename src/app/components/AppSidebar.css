@@ -53,6 +53,9 @@
   .ka-sidebar {
     transform: translateX(-100%);
   }
+  html.mobile-webview .ka-sidebar {
+    padding-top: var(--ka-app-safe-top);
+  }
   .ka-sidebar.open {
     transform: translateX(0);
   }
@@ -300,6 +303,10 @@
   border-top: 1px solid var(--ka-border);
   position: relative;
   z-index: 70;
+}
+
+html.mobile-webview .ka-sidebar-footer {
+  padding-bottom: calc(0.75rem + var(--ka-app-safe-bottom));
 }
 
 .ka-profile-section {

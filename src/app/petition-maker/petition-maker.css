@@ -1584,6 +1584,14 @@
     padding: calc(0.75rem + env(safe-area-inset-top)) 0.875rem 0.75rem;
   }
 
+  html.mobile-webview .petition-header {
+    padding-top: calc(0.75rem + var(--ka-app-safe-top));
+  }
+
+  html.mobile-webview .petition-header-simple {
+    padding-top: calc(1rem + var(--ka-app-safe-top));
+  }
+
   .petition-header-center {
     align-items: flex-start;
     text-align: left;

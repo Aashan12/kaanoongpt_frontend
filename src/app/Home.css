@@ -111,12 +111,20 @@
   padding: 1.5rem 0;
 }
 
+html.mobile-webview .nav {
+  padding-top: calc(1.5rem + var(--ka-app-safe-top));
+}
+
 .nav-scrolled {
   background: rgba(15, 23, 42, 0.9);
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
   border-bottom: 1px solid rgba(148, 163, 184, 0.05);
   padding: 1rem 0;
+}
+
+html.mobile-webview .nav-scrolled {
+  padding-top: calc(1rem + var(--ka-app-safe-top));
 }
 
 .nav-container {
@@ -1145,6 +1153,10 @@
 @media (max-width: 480px) {
   .nav {
     padding: 0.75rem 0;
+  }
+
+  html.mobile-webview .nav {
+    padding-top: calc(1.25rem + var(--ka-app-safe-top));
   }
 
   .nav-container {

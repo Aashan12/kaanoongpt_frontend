@@ -152,6 +152,10 @@
   backdrop-filter: blur(12px);
 }
 
+html.mobile-webview .dash-topbar {
+  padding-top: calc(16px + var(--ka-app-safe-top));
+}
+
 .dash-topbar-left {
   display: flex;
   align-items: center;
@@ -531,6 +535,9 @@
 /* ─── Responsive ─── */
 @media (max-width: 768px) {
   .dash-topbar { padding: 12px 16px; }
+  html.mobile-webview .dash-topbar {
+    padding-top: calc(12px + var(--ka-app-safe-top));
+  }
   .dash-page-title { font-size: 1.1rem; }
   .dash-avatar-name { display: none; }
   .dash-main { padding: 32px 16px; }
@@ -541,6 +548,10 @@
   }
   .dash-credits-bar { flex-direction: column; gap: 12px; text-align: center; }
   .dash-nav-sidebar { width: 240px; left: -240px; }
+  html.mobile-webview .dash-nav-sidebar,
+  html.mobile-webview .dash-profile-sidebar {
+    padding-top: var(--ka-app-safe-top);
+  }
 }
 
 @media (min-width: 1024px) {

@@ -603,6 +603,12 @@
     background: #ffffff;
   }
 
+  html.mobile-webview .session-sidebar {
+    height: calc(94px + var(--ka-app-safe-top));
+    max-height: calc(94px + var(--ka-app-safe-top));
+    padding-top: var(--ka-app-safe-top);
+  }
+
   .ka-page .session-sidebar {
     padding-left: 56px;
   }
@@ -757,6 +763,11 @@
   .session-sidebar {
     height: 88px;
     max-height: 88px;
+  }
+
+  html.mobile-webview .session-sidebar {
+    height: calc(88px + var(--ka-app-safe-top));
+    max-height: calc(88px + var(--ka-app-safe-top));
   }
 
   .ka-page .session-sidebar {

@@ -81,6 +81,10 @@
     transition: all 0.2s;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
+
+  html.mobile-webview .ka-mobile-menu-btn {
+    top: calc(1rem + var(--ka-app-safe-top));
+  }
   .ka-mobile-menu-btn:hover {
     background: var(--ka-bg-hover);
     color: var(--ka-text);
